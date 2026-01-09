@@ -1,0 +1,322 @@
+{
+	"Metadata": {
+		"title": "Apartmani Todorović | Luksuzni Smeštaj u Prirodi",
+		"description": "Rezervišite svoj savršen odmor u Apartmanima Todorović. Uživajte u luksuzu, prirodi i miru. Najbolji smeštaj za vaš odmor."
+	},
+	"Navigation": {
+		"home": "Početna",
+		"apartments": "Apartmani",
+		"attractions": "Atrakcije",
+		"admin": "Admin",
+		"login": "Prijava"
+	},
+	"Hero": {
+		"title_word_1": "Živi",
+		"title_word_2": "u",
+		"title_word_3": "",
+		"title_word_4": "trenutku.",
+		"subtitle": "Otkrijte pažljivo odabrana utočišta gde se arhitektonska elegancija susreće sa sirovom lepotom prirode. Vaš beg iz svakodnevice počinje ovde.",
+		"explore": "Istraži smeštaj",
+		"est": "Od 2014.",
+		"happyClients": "Zadovoljnih gostiju",
+		"showcase": {
+			"adventure": "Avantura",
+			"serbianWoods": "Srpske Šume",
+			"popular": "Popularno",
+			"apartmentDetails": "Detalji Apartmana",
+			"apartmentsForRent": "Apartmani za izdavanje",
+			"capacity": "4 osobe • 60m²",
+			"nightlyRate": "Cena noćenja",
+			"price": "Od 45€",
+			"available": "Dostupno odmah"
+		}
+	},
+	"Stats": {
+		"properties": "Objekata",
+		"awards": "Nagrada",
+		"satisfaction": "Zadovoljstvo"
+	},
+	"Features": {
+		"wifi": "Brz WiFi",
+		"wifiDesc": "Starlink Internet",
+		"parking": "Besplatan Parking",
+		"parkingDesc": "Sigurno i Privatno",
+		"nature": "Prirodno Okruženje",
+		"natureDesc": "Pogled na Šumu i Reku"
+	},
+	"Common": {
+		"loading": "Učitavanje...",
+		"error": "Došlo je do greške",
+		"save": "Sačuvaj",
+		"cancel": "Otkaži",
+		"delete": "Obriši",
+		"edit": "Izmeni",
+		"add": "Dodaj",
+		"close": "Zatvori",
+		"confirm": "Potvrdi",
+		"back": "Nazad"
+	},
+	"Apartments": {
+		"badge": "Kolekcija",
+		"title": "Naši Apartmani",
+		"subtitle": "Utočišta dizajnirana za mir. Prirodni materijali, tišina i zadivljujući pogled na Dunav vas očekuju.",
+		"startingFrom": "Već od",
+		"viewDetails": "Pogledaj detalje",
+		"guests": "Osobe",
+		"bed": "Francuski ležaj",
+		"wifi": "Brz Wifi",
+		"reviews": "recenzija"
+	},
+	"Attractions": {
+		"badge": "ISTRAŽITE",
+		"title": "Atrakcije u Blizini",
+		"subtitle": "Golubac i okolina nude savršen spoj istorije, prirode i avanture.",
+		"readMore": "Pročitaj više"
+	},
+	"AttractionDetail": {
+		"loading": "Učitavanje atrakcije...",
+		"back": "Nazad na atrakcije",
+		"destination": "Destinacija",
+		"gallery": "Galerija",
+		"visitorInfo": "Informacije za posetioce",
+		"location": "Lokacija",
+		"hours": "Radno Vreme",
+		"tickets": "Ulaznica",
+		"getDirections": "Putanja od apartmana",
+		"bookNow": "Rezervišite Smeštaj",
+		"notFound": {
+			"title": "Atrakcija nije pronađena",
+			"description": "Nažalost, nismo uspeli da pronađemo traženu lokaciju u našoj bazi podataka. Možda je adresa pogrešna ili je atrakcija uklonjena.",
+			"seeAll": "Vidi sve atrakcije",
+			"backHome": "Nazad na početnu"
+		}
+	},
+	"ApartmentDetail": {
+		"loading": "Učitavanje...",
+		"reviews": "recenzija",
+		"locationName": "Golubac, Srbija",
+		"directions": "Kako doći",
+		"showPhotos": "Prikaži sve slike",
+		"guests": "Osobe",
+		"capacity": "Kapacitet",
+		"beds": "Kreveti",
+		"sleeping": "Spavanje",
+		"verified": "Verifikovano",
+		"premium": "Premium",
+		"aboutTitle": "O smeštaju",
+		"amenitiesTitle": "Premium Pogodnosti",
+		"locationTitle": "Lokacija",
+		"priceNight": "/ noć",
+		"checkIn": "Prijava",
+		"checkOut": "Odjava",
+		"addDate": "Dodaj datum",
+		"nights": "noći",
+		"total": "Ukupno",
+		"reserveButton": "Rezerviši smeštaj",
+		"selectDates": "Izaberite datum prijave za prikaz cena",
+		"toast": {
+			"successTitle": "Zahtev za rezervaciju je poslat!",
+			"successDesc": "Uskoro ćete dobiti potvrdu na email."
+		}
+	},
+	"Amenities": {
+		"wifi": "WiFi",
+		"parking": "Parking",
+		"ac": "Klima",
+		"terrace": "Terasa",
+		"kitchen": "Kuhinja",
+		"tv": "TV",
+		"balcony": "Balkon"
+	},
+	"Admin": {
+		"login": {
+			"title": "Apartmani Todorović",
+			"subtitle": "Admin Panel",
+			"emailLabel": "Email adresa",
+			"emailPlaceholder": "primer@email.com",
+			"passwordLabel": "Lozinka",
+			"passwordPlaceholder": "Unesite lozinku",
+			"rememberMe": "Zapamti me",
+			"loginButton": "Uloguj se",
+			"loading": "Učitavanje...",
+			"footer": "Za pomoć kontaktirajte administratora",
+			"error": "Greška pri logovanju.",
+			"unexpectedError": "Neočekivana greška. Pokušajte ponovo."
+		},
+		"apartments": {
+			"title": "Dodaj Novi Apartman",
+			"description": "Popuni informacije i uploaduj slike apartmana",
+			"tabs": { "sr": "Serbian (Default)", "en": "English" },
+			"labels": {
+				"nameSr": "Naziv Apartmana (SR) *",
+				"nameEn": "Naziv Apartmana (EN)",
+				"price": "Cena (RSD) *",
+				"capacity": "Osobe *",
+				"descSr": "Opis (SR)",
+				"descEn": "Opis (EN)",
+				"location": "Lokacija Apartmana",
+				"images": "Slike Apartmana *"
+			},
+			"placeholders": {
+				"nameSr": "npr. Apartman Todorovic 1",
+				"nameEn": "npr. Todorovic Apartment 1",
+				"price": "3000",
+				"capacity": "4",
+				"descSr": "Detaljan opis apartmana...",
+				"descEn": "Detaljan opis na engleskom..."
+			},
+			"locationHelp": "Klikni na mapu ili prevuci marker da označiš tačnu lokaciju apartmana.",
+			"locationSet": "Lokacija postavljena:",
+			"imagesHelp": "Prva slika će biti korišćena kao naslovna. Možeš uploadovati do 10 slika.",
+			"submit": "Dodaj Apartman",
+			"submitting": "Dodavanje...",
+			"cancel": "Otkaži",
+			"tips": {
+				"title": "💡 Saveti za Slike",
+				"size": "✅ Možeš uploadovati velike slike - Next.js će ih automatski optimizovati",
+				"dim": "✅ Preporučene dimenzije: 1920x1080px ili 1200x800px",
+				"format": "✅ Format: JPEG, PNG, WebP ili AVIF",
+				"maxSize": "✅ Maksimalna veličina: 10MB po slici",
+				"convert": "✅ Slike će biti konvertovane u WebP/AVIF za brže učitavanje"
+			},
+			"toast": {
+				"success": "Apartman uspešno dodat!",
+				"successDesc": "Apartman je sačuvan u bazi podataka.",
+				"error": "Greška pri dodavanju apartmana",
+				"defaultError": "Pokušajte ponovo."
+			}
+		},
+		"attractions": {
+			"title": "Upravljanje Atrakcijama",
+			"addNew": "Dodaj Novu",
+			"edit": "Izmeni",
+			"delete": "Obriši",
+			"save": "Sačuvaj",
+			"cancel": "Otkaži",
+			"loading": "Učitavanje...",
+			"noAttractions": "Nema dodatih atrakcija.",
+			"deleteConfirm": "Da li ste sigurni da želite da obrišete ovu atrakciju?",
+			"tabs": {
+				"serbian": "Serbian",
+				"english": "English"
+			},
+			"fields": {
+				"titleSr": "Naslov (SR)",
+				"titleEn": "Title (EN)",
+				"titleDe": "Titel (DE)",
+				"distance": "Udaljenost",
+				"shortDescSr": "Kratak opis (SR)",
+				"shortDescEn": "Short description (EN)",
+				"shortDescDe": "Kurzbeschreibung (DE)",
+				"longDescSr": "Detaljan opis (SR)",
+				"longDescEn": "Long description (EN)",
+				"longDescDe": "Ausführliche Beschreibung (DE)",
+				"coords": "Koordinate / Lokacija",
+				"gallery": "Galerija slika"
+			},
+			"placeholders": {
+				"attractionName": "Naziv atrakcije",
+				"distance": "npr. 4 km od apartmana",
+				"shortSubtitle": "Kratak podnaslov",
+				"coords": "Google Maps pretraga",
+				"fullText": "Pun tekst o atrakciji"
+			},
+			"toast": {
+				"loadError": "Greška pri učitavanju atrakcija",
+				"titleRequired": "Naslov je obavezan",
+				"added": "Atrakcija dodata",
+				"updated": "Atrakcija ažurirana",
+				"deleted": "Atrakcija obrisana",
+				"saveError": "Greška pri čuvanju",
+				"deleteError": "Greška pri brisanju"
+			},
+			"deleteHeading": "Obriši Atrakciju"
+		},
+		"users": {
+			"title": "Tim i Korisnici",
+			"loading": "Učitavanje korisnika...",
+			"noUsers": "Nema pronađenih korisnika.",
+			"searchPlaceholder": "Pretraži po email-u...",
+			"inviteUser": "Pozovi korisnika",
+			"table": {
+				"email": "Email",
+				"role": "Uloga",
+				"status": "Status",
+				"actions": "Akcije",
+				"promote": "Promoviši u Admina",
+				"demote": "Ukloni Admin prava",
+				"unknown": "Nepoznato"
+			},
+			"dialogs": {
+				"invite": {
+					"title": "Pozovi člana tima",
+					"description": "Pošaljite email pozivnicu za pridruživanje admin timu.",
+					"emailLabel": "Email adresa",
+					"cancel": "Otkaži",
+					"send": "Pošalji pozivnicu",
+					"sending": "Slanje..."
+				},
+				"demote": {
+					"title": "Uklanjanje Admin prava",
+					"description": "Da li ste sigurni da želite da uklonite admin prava ovom korisniku?",
+					"confirm": "Ukloni",
+					"cancel": "Otkaži"
+				}
+			},
+			"toast": {
+				"loadError": "Neuspešno učitavanje korisnika",
+				"noEmail": "Korisnik nema povezan email",
+				"promoted": "Korisnik je sada Admin",
+				"demoted": "Admin prava su uklonjena",
+				"actionFailed": "Akcija nije uspela",
+				"unexpectedError": "Došlo je do neočekivane greške",
+				"inviteSent": "Pozivnica je poslata!",
+				"inviteError": "Greška pri slanju pozivnice"
+			}
+		}
+	},
+	"Booking": {
+		"form": {
+			"title": "Rezervišite Vaš Boravak",
+			"name": "Ime i Prezime",
+			"email": "Email",
+			"phone": "Telefon",
+			"checkIn": "Dolazak",
+			"checkOut": "Odlazak",
+			"guests": "Broj Gostiju",
+			"message": "Posebni Zahtevi",
+			"messagePlaceholder": "Imate li neko posebno pitanje o smeštaju?",
+			"submit": "Potvrdi Rezervaciju",
+			"submitting": "Obrađivanje..."
+		},
+		"validation": {
+			"nameRequired": "Ime je obavezno",
+			"emailInvalid": "Neispravna email adresa",
+			"phoneRequired": "Broj telefona je obavezan",
+			"datesRequired": "Molimo izaberite datume dolaska i odlaska"
+		},
+		"calendar": {
+			"unavailableTitle": "Izabrani datumi nisu dostupni",
+			"unavailableDesc": "Molimo izaberite druge datume."
+		},
+		"toast": {
+			"errorTitle": "Došlo je do greške pri slanju zahteva",
+			"errorDesc": "Pokušajte ponovo."
+		}
+	},
+	"Footer": {
+		"subtitle": "Luksuzni butik apartmani u srcu Vrnjačke Banje.",
+		"about": "O Nama",
+		"contact": "Kontakt",
+		"privacy": "Politika Privatnosti",
+		"terms": "Uslovi Korišćenja",
+		"rights": "Sva prava zadržana",
+		"followUs": "Pratite Nas"
+	},
+	"Errors": {
+		"general": "Nešto nije u redu",
+		"notFound": "Stranica nije pronađena",
+		"unauthorized": "Neovlašćen pristup",
+		"serverError": "Greška servera"
+	}
+}

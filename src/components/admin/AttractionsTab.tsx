@@ -1,0 +1,176 @@
+"use client";
+
+import { Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
+import { AdminPageHeader } from "@/components/shared/AdminPageHeader";
+import { ConfirmDeleteDialog } from "@/components/shared/ConfirmDeleteDialog";
+import { Button } from "@/components/ui/button";
+import {
+	createAttraction,
+	deleteAttraction,
+	getAllAttractions,
+	updateAttraction,
+} from "@/features/attractions/actions";
+import { toast } from "@/lib/toast";
+import type { Attraction } from "@/types";
+import { AttractionForm } from "./AttractionForm";
+import { AttractionList } from "./AttractionList";
+
+export function AttractionsTab() {
+	const t = useTranslations("Admin.attractions");
+	const [attractions, setAttractions] = useState<Attraction[]>([]);
+	const [editingAttraction, setEditingAttraction] =
+		useState<Partial<Attraction> | null>(null);
+	const [isAddingNew, setIsAddingNew] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
+	const [deleteId, setDeleteId] = useState<string | null>(null);
+
+	useEffect(() => {
+		fetchAttractions();
+	}, []);
+
+	const fetchAttractions = async () => {
+		setIsLoading(true);
+		try {
+			const data = await getAllAttractions();
+			setAttractions(data as unknown as Attraction[]);
+		} catch (error) {
+			console.error("Failed to fetch attractions:", error);
+			toast.error(t("toast.loadError"));
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	const handleSave = async () => {
+		if (!editingAttraction || !editingAttraction.title) {
+			toast.error(t("toast.titleRequired"));
+			return;
+		}
+
+		try {
+			const formData = new FormData();
+			formData.append("title", editingAttraction.title);
+			formData.append("titleEn", editingAttraction.titleEn || "");
+			formData.append("description", editingAttraction.description || "");
+			formData.append("descriptionEn", editingAttraction.descriptionEn || "");
+			formData.append(
+				"longDescription",
+				editingAttraction.longDescription || "",
+			);
+			formData.append(
+				"longDescriptionEn",
+				editingAttraction.longDescriptionEn || "",
+			);
+			formData.append("distance", editingAttraction.distance || "");
+			formData.append("coords", editingAttraction.coords || "");
+			formData.append("image", editingAttraction.image || "");
+			formData.append(
+				"gallery",
+				JSON.stringify(editingAttraction.gallery || []),
+			);
+
+			let result;
+			if (isAddingNew) {
+				result = await createAttraction({ success: true }, formData);
+			} else if (editingAttraction.id) {
+				result = await updateAttraction(Number(editingAttraction.id), formData);
+			}
+
+			if (result?.success) {
+				toast.success(isAddingNew ? t("toast.added") : t("toast.updated"));
+				setEditingAttraction(null);
+				setIsAddingNew(false);
+				fetchAttractions();
+			} else {
+				toast.error(result?.message || t("toast.saveError"));
+			}
+		} catch (error) {
+			console.error("Save error:", error);
+			toast.error(t("toast.saveError"));
+		}
+	};
+
+	const handleDelete = async () => {
+		if (!deleteId) return;
+		try {
+			const result = await deleteAttraction(Number(deleteId));
+			if (result.success) {
+				toast.success(t("toast.deleted"));
+				fetchAttractions();
+			} else {
+				toast.error(result.message || t("toast.deleteError"));
+			}
+		} catch (error) {
+			console.error("Delete error:", error);
+			toast.error(t("toast.deleteError"));
+		} finally {
+			setDeleteId(null);
+		}
+	};
+
+	if (isLoading && !attractions.length) {
+		return <div className="p-12 text-center text-gray-400">{t("loading")}</div>;
+	}
+
+	return (
+		<div className="space-y-6">
+			<AdminPageHeader
+				title={t("title")}
+				action={
+					!editingAttraction && (
+						<Button
+							onClick={() => {
+								setIsAddingNew(true);
+								setEditingAttraction({
+									title: "",
+									description: "",
+									longDescription: "",
+									distance: "",
+									gallery: [],
+								});
+							}}
+							className="bg-black text-white rounded-xl"
+						>
+							<Plus size={20} className="mr-2" /> {t("addNew")}
+						</Button>
+					)
+				}
+			/>
+
+			{editingAttraction && (
+				<AttractionForm
+					editingAttraction={editingAttraction}
+					setEditingAttraction={setEditingAttraction}
+					onSave={handleSave}
+					onCancel={() => {
+						setEditingAttraction(null);
+						setIsAddingNew(false);
+					}}
+					isAddingNew={isAddingNew}
+				/>
+			)}
+
+			<AttractionList
+				attractions={attractions}
+				onEdit={(attr) => {
+					setIsAddingNew(false);
+					setEditingAttraction(attr);
+				}}
+				onDelete={setDeleteId}
+			/>
+
+			<ConfirmDeleteDialog
+				open={!!deleteId}
+				onOpenChange={(open) => !open && setDeleteId(null)}
+				onConfirm={handleDelete}
+				title={t("deleteHeading") || "Delete Attraction"}
+				description={
+					t("deleteConfirm") ||
+					"Are you sure you want to delete this attraction?"
+				}
+			/>
+		</div>
+	);
+}

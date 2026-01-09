@@ -1,0 +1,322 @@
+{
+	"Metadata": {
+		"title": "Apartmani Todorović | Luxury Nature Retreat",
+		"description": "Book your perfect vacation at Apartmani Todorović. Enjoy luxury, nature, and peace. The best accommodation for your holiday."
+	},
+	"Navigation": {
+		"home": "Home",
+		"apartments": "Apartments",
+		"attractions": "Attractions",
+		"admin": "Admin",
+		"login": "Login"
+	},
+	"Hero": {
+		"title_word_1": "Live",
+		"title_word_2": "in",
+		"title_word_3": "the",
+		"title_word_4": "Moment.",
+		"subtitle": "Discover curated sanctuaries where architectural elegance meets nature's raw beauty. Your escape from the ordinary begins here.",
+		"explore": "Explore Homes",
+		"est": "Est. 2014",
+		"happyClients": "Happy Clients",
+		"showcase": {
+			"adventure": "Adventure",
+			"serbianWoods": "Serbian Woods",
+			"popular": "Popular",
+			"apartmentDetails": "Apartment Details",
+			"apartmentsForRent": "Apartments for rent",
+			"capacity": "4 person • 60m²",
+			"nightlyRate": "Nightly Rate",
+			"price": "From 45€",
+			"available": "Available Now"
+		}
+	},
+	"Stats": {
+		"properties": "Properties",
+		"awards": "Awards",
+		"satisfaction": "Satisfaction"
+	},
+	"Features": {
+		"wifi": "High Speed WiFi",
+		"wifiDesc": "Starlink Connected",
+		"parking": "Free Parking",
+		"parkingDesc": "Secure & Private",
+		"nature": "Nature Surroundings",
+		"natureDesc": "Forest & River Views"
+	},
+	"Common": {
+		"loading": "Loading...",
+		"error": "An error occurred",
+		"save": "Save",
+		"cancel": "Cancel",
+		"delete": "Delete",
+		"edit": "Edit",
+		"add": "Add",
+		"close": "Close",
+		"confirm": "Confirm",
+		"back": "Back"
+	},
+	"Apartments": {
+		"badge": "The Collection",
+		"title": "Our Apartments",
+		"subtitle": "Sanctuaries designed for peace. Natural materials, silence, and breathtaking views of the Danube await you.",
+		"startingFrom": "Starting from",
+		"viewDetails": "View Details",
+		"guests": "Guests",
+		"bed": "King Bed",
+		"wifi": "Fast Wifi",
+		"reviews": "reviews"
+	},
+	"Attractions": {
+		"badge": "EXPLORE",
+		"title": "Nearby Attractions",
+		"subtitle": "Golubac and its surroundings offer a perfect blend of history, nature, and adventure.",
+		"readMore": "Read more"
+	},
+	"AttractionDetail": {
+		"loading": "Loading attraction...",
+		"back": "Back to attractions",
+		"destination": "Destination",
+		"gallery": "Gallery",
+		"visitorInfo": "Visitor Information",
+		"location": "Location",
+		"hours": "Visiting Hours",
+		"tickets": "Entry Fee",
+		"getDirections": "Directions from apartment",
+		"bookNow": "Book Accommodation",
+		"notFound": {
+			"title": "Attraction not found",
+			"description": "Unfortunately, we couldn't find the requested location in our database. The address might be wrong or the attraction has been removed.",
+			"seeAll": "See all attractions",
+			"backHome": "Back to home"
+		}
+	},
+	"ApartmentDetail": {
+		"loading": "Loading Sanctuary...",
+		"reviews": "reviews",
+		"locationName": "Golubac, Serbia",
+		"directions": "Get Directions",
+		"showPhotos": "Show all photos",
+		"guests": "Guests",
+		"capacity": "Capacity",
+		"beds": "Beds",
+		"sleeping": "Sleeping",
+		"verified": "Verified",
+		"premium": "Premium",
+		"aboutTitle": "About this sanctuary",
+		"amenitiesTitle": "Premium Amenities",
+		"locationTitle": "Location",
+		"priceNight": "/ night",
+		"checkIn": "Check-in",
+		"checkOut": "Check-out",
+		"addDate": "Add Date",
+		"nights": "nights",
+		"total": "Total",
+		"reserveButton": "Reserve Sanctuary",
+		"selectDates": "Select your check-in date to see prices",
+		"toast": {
+			"successTitle": "Reservation request sent!",
+			"successDesc": "You will receive a confirmation email shortly."
+		}
+	},
+	"Amenities": {
+		"wifi": "WiFi",
+		"parking": "Parking",
+		"ac": "Air Conditioning",
+		"terrace": "Terrace",
+		"kitchen": "Kitchen",
+		"tv": "TV",
+		"balcony": "Balcony"
+	},
+	"Admin": {
+		"login": {
+			"title": "Apartmani Todorović",
+			"subtitle": "Admin Panel",
+			"emailLabel": "Email Address",
+			"emailPlaceholder": "example@email.com",
+			"passwordLabel": "Password",
+			"passwordPlaceholder": "Enter password",
+			"rememberMe": "Remember me",
+			"loginButton": "Login",
+			"loading": "Loading...",
+			"footer": "Contact administrator for help",
+			"error": "Login error.",
+			"unexpectedError": "Unexpected error. Please try again."
+		},
+		"apartments": {
+			"title": "Add New Apartment",
+			"description": "Fill in information and upload apartment images",
+			"tabs": { "sr": "Serbian (Default)", "en": "English" },
+			"labels": {
+				"nameSr": "Apartment Name (SR) *",
+				"nameEn": "Apartment Name (EN)",
+				"price": "Price (RSD) *",
+				"capacity": "Persons *",
+				"descSr": "Description (SR)",
+				"descEn": "Description (EN)",
+				"location": "Apartment Location",
+				"images": "Apartment Images *"
+			},
+			"placeholders": {
+				"nameSr": "e.g. Apartment Todorovic 1",
+				"nameEn": "e.g. Todorovic Apartment 1",
+				"price": "3000",
+				"capacity": "4",
+				"descSr": "Detailed apartment description...",
+				"descEn": "Detailed descriptions in English..."
+			},
+			"locationHelp": "Click on the map or drag the marker to set the exact location.",
+			"locationSet": "Location set:",
+			"imagesHelp": "First image will be used as cover. You can upload up to 10 images.",
+			"submit": "Add Apartment",
+			"submitting": "Adding...",
+			"cancel": "Cancel",
+			"tips": {
+				"title": "💡 Image Tips",
+				"size": "✅ You can upload large images - Next.js will optimize them automatically",
+				"dim": "✅ Recommended dimensions: 1920x1080px or 1200x800px",
+				"format": "✅ Format: JPEG, PNG, WebP or AVIF",
+				"maxSize": "✅ Max size: 10MB per image",
+				"convert": "✅ Images will be converted to WebP/AVIF for faster loading"
+			},
+			"toast": {
+				"success": "Apartment successfully added!",
+				"successDesc": "Apartment saved to database.",
+				"error": "Error adding apartment",
+				"defaultError": "Try again."
+			}
+		},
+		"attractions": {
+			"title": "Attraction Management",
+			"addNew": "Add New",
+			"edit": "Edit",
+			"delete": "Delete",
+			"save": "Save",
+			"cancel": "Cancel",
+			"loading": "Loading...",
+			"noAttractions": "No attractions added.",
+			"deleteConfirm": "Are you sure you want to delete this attraction?",
+			"tabs": {
+				"serbian": "Serbian",
+				"english": "English"
+			},
+			"fields": {
+				"titleSr": "Title (SR)",
+				"titleEn": "Title (EN)",
+				"titleDe": "Title (DE)",
+				"distance": "Distance",
+				"shortDescSr": "Short description (SR)",
+				"shortDescEn": "Short description (EN)",
+				"shortDescDe": "Short description (DE)",
+				"longDescSr": "Detailed description (SR)",
+				"longDescEn": "Long description (EN)",
+				"longDescDe": "Long description (DE)",
+				"coords": "Coordinates / Location",
+				"gallery": "Image gallery"
+			},
+			"placeholders": {
+				"attractionName": "Attraction name",
+				"distance": "e.g. 4 km from apartment",
+				"shortSubtitle": "Short subtitle",
+				"coords": "Google Maps search",
+				"fullText": "Full text about the attraction"
+			},
+			"toast": {
+				"loadError": "Error loading attractions",
+				"titleRequired": "Title is required",
+				"added": "Attraction added",
+				"updated": "Attraction updated",
+				"deleted": "Attraction deleted",
+				"saveError": "Error saving",
+				"deleteError": "Error deleting"
+			},
+			"deleteHeading": "Delete Attraction"
+		},
+		"users": {
+			"title": "Team & Users",
+			"loading": "Loading users...",
+			"noUsers": "No users found.",
+			"searchPlaceholder": "Search by email...",
+			"inviteUser": "Invite User",
+			"table": {
+				"email": "Email",
+				"role": "Role",
+				"status": "Status",
+				"actions": "Actions",
+				"promote": "Promote to Admin",
+				"demote": "Remove Admin Rights",
+				"unknown": "Unknown"
+			},
+			"dialogs": {
+				"invite": {
+					"title": "Invite Team Member",
+					"description": "Send an email invitation to join the admin team.",
+					"emailLabel": "Email Address",
+					"cancel": "Cancel",
+					"send": "Send Invitation",
+					"sending": "Sending..."
+				},
+				"demote": {
+					"title": "Remove Admin Rights",
+					"description": "Are you sure you want to remove admin rights from this user?",
+					"confirm": "Remove",
+					"cancel": "Cancel"
+				}
+			},
+			"toast": {
+				"loadError": "Failed to load users",
+				"noEmail": "User has no email associated",
+				"promoted": "User is now an Admin",
+				"demoted": "Admin rights removed",
+				"actionFailed": "Action failed",
+				"unexpectedError": "An unexpected error occurred",
+				"inviteSent": "Invitation sent!",
+				"inviteError": "Error sending invitation"
+			}
+		}
+	},
+	"Booking": {
+		"form": {
+			"title": "Book Your Stay",
+			"name": "Full Name",
+			"email": "Email",
+			"phone": "Phone",
+			"checkIn": "Check-in",
+			"checkOut": "Check-out",
+			"guests": "Number of Guests",
+			"message": "Special Requests",
+			"messagePlaceholder": "Any special requests or questions?",
+			"submit": "Confirm Reservation",
+			"submitting": "Processing..."
+		},
+		"validation": {
+			"nameRequired": "Name is required",
+			"emailInvalid": "Invalid email address",
+			"phoneRequired": "Phone number is required",
+			"datesRequired": "Please select check-in and check-out dates"
+		},
+		"calendar": {
+			"unavailableTitle": "Selected dates are unavailable",
+			"unavailableDesc": "Please choose other dates."
+		},
+		"toast": {
+			"errorTitle": "Error sending request",
+			"errorDesc": "Please try again."
+		}
+	},
+	"Footer": {
+		"subtitle": "Luxury boutique apartments in the heart of Vrnjačka Banja.",
+		"about": "About Us",
+		"contact": "Contact",
+		"privacy": "Privacy Policy",
+		"terms": "Terms of Service",
+		"rights": "All rights reserved",
+		"followUs": "Follow Us"
+	},
+	"Errors": {
+		"general": "Something went wrong",
+		"notFound": "Page not found",
+		"unauthorized": "Unauthorized access",
+		"serverError": "Server error"
+	}
+}
