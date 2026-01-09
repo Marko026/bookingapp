@@ -52,16 +52,16 @@ export function AttractionsTab() {
 		try {
 			const formData = new FormData();
 			formData.append("title", editingAttraction.title);
-			formData.append("titleEn", editingAttraction.titleEn || "");
+			formData.append("titleEn", "");
 			formData.append("description", editingAttraction.description || "");
-			formData.append("descriptionEn", editingAttraction.descriptionEn || "");
+			formData.append("descriptionEn", "");
 			formData.append(
 				"longDescription",
 				editingAttraction.longDescription || "",
 			);
 			formData.append(
 				"longDescriptionEn",
-				editingAttraction.longDescriptionEn || "",
+				"",
 			);
 			formData.append("distance", editingAttraction.distance || "");
 			formData.append("coords", editingAttraction.coords || "");

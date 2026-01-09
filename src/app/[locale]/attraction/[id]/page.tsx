@@ -116,7 +116,7 @@ export default function AttractionDetailPage() {
 				>
 					<Image
 						src={attraction.image || "/images/placeholder.jpg"}
-						alt={attraction.title}
+						alt={getLocalizedField(attraction, "title", locale)}
 						fill
 						priority
 						quality={100}
@@ -186,7 +186,7 @@ export default function AttractionDetailPage() {
 										>
 											<Image
 												src={img}
-												alt={`${attraction.title} ${index + 1}`}
+												alt={`${getLocalizedField(attraction, "title", locale)} ${index + 1}`}
 												fill
 												sizes="(max-width: 768px) 100vw, 33vw"
 												className="object-cover transition-transform duration-700 group-hover:scale-110"

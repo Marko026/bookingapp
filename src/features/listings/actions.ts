@@ -9,6 +9,7 @@ import { getApartment as getApartmentDAL, getAllApartmentsAdmin as getAllApartme
 import { eq } from "drizzle-orm";
 import { getServerUser } from "@/lib/auth-server";
 import { createAdminClient } from "@/lib/supabase-admin";
+import { translateToEnglish } from "@/lib/translator";
 
 // Schema for creating an apartment
 const createApartmentSchema = z.object({
@@ -30,12 +31,16 @@ export const createApartment = createSafeAction(createApartmentSchema, async (da
     throw new Error("Unauthorized");
   }
 
+  // Auto-translate if English fields are missing
+  const nameEn = data.nameEn || await translateToEnglish(data.name);
+  const descriptionEn = data.descriptionEn || await translateToEnglish(data.description);
+
   // Insert apartment
   const [newApartment] = await db.insert(apartments).values({
     name: data.name,
-    nameEn: data.nameEn,
+    nameEn: nameEn,
     description: data.description,
-    descriptionEn: data.descriptionEn,
+    descriptionEn: descriptionEn,
     pricePerNight: data.pricePerNight,
     capacity: data.capacity,
     imageUrl: data.imageUrl,
@@ -116,12 +121,16 @@ export async function updateApartment(id: number, formData: FormData) {
     const rawData = Object.fromEntries(formData);
     const parsedData = createApartmentSchema.parse(rawData);
 
+    // Auto-translate if English fields are missing
+    const nameEn = parsedData.nameEn || await translateToEnglish(parsedData.name);
+    const descriptionEn = parsedData.descriptionEn || await translateToEnglish(parsedData.description);
+
     await db.update(apartments)
       .set({
         name: parsedData.name,
-        nameEn: parsedData.nameEn,
+        nameEn: nameEn,
         description: parsedData.description,
-        descriptionEn: parsedData.descriptionEn,
+        descriptionEn: descriptionEn,
         pricePerNight: parsedData.pricePerNight,
         capacity: parsedData.capacity,
         imageUrl: parsedData.imageUrl,

@@ -72,7 +72,7 @@ export function ApartmentList({ apartments }: ApartmentListProps) {
 										<div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500 z-10" />
 										<Image
 											src={apt.images[0]}
-											alt={apt.name}
+											alt={getLocalizedField(apt, "name", locale)}
 											fill
 											sizes="(max-width: 768px) 100vw, 50vw"
 											className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"

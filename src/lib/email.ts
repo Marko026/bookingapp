@@ -1,10 +1,9 @@
-"use server";
+'use server';
 
-import { env } from "@/env";
-import { Resend } from "resend";
-import { createBookingEmail } from "./emails/admin-notification";
-import { createGuestConfirmationEmail } from "./emails/guest-confirmation";
-import type { BookingData } from "./emails/types";
+import { env } from '@/env';
+import { Resend } from 'resend';
+import { createBookingEmail } from './emails/admin-notification';
+import type { BookingData } from './emails/types';
 
 const resend = new Resend(env.RESEND_API_KEY);
 
@@ -30,11 +29,11 @@ export async function sendBookingEmails(bookingData: BookingData) {
     const adminResult = await adminEmailPromise;
 
     if (adminResult.error) {
-      console.error("❌ Admin email error:", adminResult.error);
+      console.error('❌ Admin email error:', adminResult.error);
       throw new Error(`Admin email failed: ${adminResult.error.message}`);
     }
 
-    console.log("✅ Emails sent successfully:", {
+    console.log('✅ Emails sent successfully:', {
       adminEmailId: adminResult.data?.id,
       from: fromEmail,
       to: {
@@ -48,10 +47,10 @@ export async function sendBookingEmails(bookingData: BookingData) {
       adminEmailId: adminResult.data?.id,
     };
   } catch (error) {
-    console.error("❌ Email sending error:", error);
+    console.error('❌ Email sending error:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Unknown error",
+      error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
 }

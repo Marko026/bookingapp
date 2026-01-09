@@ -184,6 +184,38 @@
 				"successDesc": "Apartment saved to database.",
 				"error": "Error adding apartment",
 				"defaultError": "Try again."
+			},
+			"imageAlt": "{name} - Image {number}",
+			"manager": {
+				"title": "Manage Apartments",
+				"addNew": "Add New",
+				"loading": "Loading apartments...",
+				"tabs": {
+					"sr": "SR",
+					"en": "EN"
+				},
+				"labels": {
+					"nameSr": "Naziv (SR)",
+					"nameEn": "Name (EN)",
+					"pricePerNight": "Price per night",
+					"descSr": "Opis (SR)",
+					"descEn": "Description (EN)"
+				},
+				"placeholders": {
+					"nameEn": "English name",
+					"descEn": "English description"
+				},
+				"buttons": {
+					"cancel": "Cancel",
+					"save": "Save",
+					"edit": "Edit",
+					"delete": "Delete"
+				},
+				"imageAlt": "{name} - Image {number}",
+				"deleteDialog": {
+					"title": "Delete Apartment",
+					"description": "Are you sure you want to delete this apartment? This action cannot be undone."
+				}
 			}
 		},
 		"attractions": {

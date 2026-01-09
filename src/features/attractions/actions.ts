@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { db } from "@/db";
 import { attractionImages, attractions } from "@/db/schema";
+import { translateToEnglish } from "@/lib/translator";
 
 const attractionSchema = z.object({
 	title: z.string().min(2, "Naslov mora imati bar 2 karaktera"),
@@ -58,16 +59,21 @@ export async function createAttraction(
 
 		const validatedData = attractionSchema.parse(rawData);
 
+        // Auto-translate if English fields are missing
+        const titleEn = validatedData.titleEn || await translateToEnglish(validatedData.title);
+        const descriptionEn = validatedData.descriptionEn || await translateToEnglish(validatedData.description);
+        const longDescriptionEn = validatedData.longDescriptionEn || await translateToEnglish(validatedData.longDescription);
+
 		await db.transaction(async (tx) => {
 			const [newAttraction] = await tx
 				.insert(attractions)
 				.values({
 					title: validatedData.title,
-					titleEn: validatedData.titleEn,
+					titleEn: titleEn,
 					description: validatedData.description,
-					descriptionEn: validatedData.descriptionEn,
+					descriptionEn: descriptionEn,
 					longDescription: validatedData.longDescription,
-					longDescriptionEn: validatedData.longDescriptionEn,
+					longDescriptionEn: longDescriptionEn,
 					distance: validatedData.distance,
 					coords: validatedData.coords,
 					latitude: validatedData.latitude,
@@ -149,16 +155,21 @@ export async function updateAttraction(
 
 		const validatedData = attractionSchema.parse(rawData);
 
+        // Auto-translate if English fields are missing
+        const titleEn = validatedData.titleEn || await translateToEnglish(validatedData.title);
+        const descriptionEn = validatedData.descriptionEn || await translateToEnglish(validatedData.description);
+        const longDescriptionEn = validatedData.longDescriptionEn || await translateToEnglish(validatedData.longDescription);
+
 		await db.transaction(async (tx) => {
 			await tx
 				.update(attractions)
 				.set({
 					title: validatedData.title,
-					titleEn: validatedData.titleEn,
+					titleEn: titleEn,
 					description: validatedData.description,
-					descriptionEn: validatedData.descriptionEn,
+					descriptionEn: descriptionEn,
 					longDescription: validatedData.longDescription,
-					longDescriptionEn: validatedData.longDescriptionEn,
+					longDescriptionEn: longDescriptionEn,
 					distance: validatedData.distance,
 					coords: validatedData.coords,
 					latitude: validatedData.latitude,

@@ -25,7 +25,6 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { createApartment } from "@/features/listings/actions";
 import { toast } from "@/lib/toast";
 import { apartmentFormSchema, type ApartmentFormValues } from "../schemas";
@@ -81,7 +80,7 @@ export function ApartmentForm() {
 			// Prepare images array for server action
 			const imagesData = values.images.map((img, index) => ({
 				imageUrl: img.url,
-				altText: `${values.name} - Slika ${index + 1}`,
+				altText: t("imageAlt", { name: values.name, number: index + 1 }),
 				displayOrder: index,
 				isCover: index === 0,
 				width: img.width,
@@ -124,132 +123,80 @@ export function ApartmentForm() {
 				<CardContent className="p-10">
 					<Form {...form}>
 						<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
-							<Tabs defaultValue="sr" className="w-full">
-								<TabsList className="bg-gray-100 p-1 rounded-xl mb-6">
-									<TabsTrigger
-										value="sr"
-										className="rounded-lg data-[state=active]:bg-white"
-									>
-										{t("tabs.sr")}
-									</TabsTrigger>
-									<TabsTrigger
-										value="en"
-										className="rounded-lg data-[state=active]:bg-white"
-									>
-										{t("tabs.en")}
-									</TabsTrigger>
-								</TabsList>
-
-								<TabsContent value="sr" className="space-y-6">
-									<div className="grid grid-cols-2 gap-6">
+							<div className="space-y-6">
+								<div className="grid grid-cols-2 gap-6">
+									<FormField
+										control={form.control}
+										name="name"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>{t("labels.nameSr")}</FormLabel>
+												<FormControl>
+													<Input placeholder={t("placeholders.nameSr")} {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<div className="grid grid-cols-2 gap-4">
 										<FormField
 											control={form.control}
-											name="name"
+											name="pricePerNight"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>{t("labels.nameSr")}</FormLabel>
+													<FormLabel>{t("labels.price")}</FormLabel>
 													<FormControl>
-														<Input placeholder={t("placeholders.nameSr")} {...field} />
+														<Input 
+															type="number" 
+															placeholder={t("placeholders.price")} 
+															{...field} 
+															value={field.value as number} 
+														/>
 													</FormControl>
 													<FormMessage />
 												</FormItem>
 											)}
 										/>
-										<div className="grid grid-cols-2 gap-4">
-											<FormField
-												control={form.control}
-												name="pricePerNight"
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>{t("labels.price")}</FormLabel>
-														<FormControl>
-															<Input 
-																type="number" 
-																placeholder={t("placeholders.price")} 
-																{...field} 
-																value={field.value as number} 
-															/>
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-											<FormField
-												control={form.control}
-												name="capacity"
-												render={({ field }) => (
-													<FormItem>
-														<FormLabel>{t("labels.capacity")}</FormLabel>
-														<FormControl>
-															<Input 
-																type="number" 
-																placeholder={t("placeholders.capacity")} 
-																{...field} 
-																value={field.value as number} 
-															/>
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												)}
-											/>
-										</div>
+										<FormField
+											control={form.control}
+											name="capacity"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>{t("labels.capacity")}</FormLabel>
+													<FormControl>
+														<Input 
+															type="number" 
+															placeholder={t("placeholders.capacity")} 
+															{...field} 
+															value={field.value as number} 
+														/>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
 									</div>
-									<FormField
-										control={form.control}
-										name="description"
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>{t("labels.descSr")}</FormLabel>
-												<FormControl>
-													<RichTextEditor
-														id="description"
-														label=""
-														value={field.value || ""}
-														onChange={field.onChange}
-														placeholder={t("placeholders.descSr")}
-													/>
-												</FormControl>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
-								</TabsContent>
-
-								<TabsContent value="en" className="space-y-6">
-									<FormField
-										control={form.control}
-										name="nameEn"
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>{t("labels.nameEn")}</FormLabel>
-												<FormControl>
-													<Input placeholder={t("placeholders.nameEn")} {...field} />
-												</FormControl>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
-									<FormField
-										control={form.control}
-										name="descriptionEn"
-										render={({ field }) => (
-											<FormItem>
-												<FormLabel>{t("labels.descEn")}</FormLabel>
-												<FormControl>
-													<RichTextEditor
-														id="descriptionEn"
-														label=""
-														value={field.value || ""}
-														onChange={field.onChange}
-														placeholder={t("placeholders.descEn")}
-													/>
-												</FormControl>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
-								</TabsContent>
-							</Tabs>
+								</div>
+								<FormField
+									control={form.control}
+									name="description"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>{t("labels.descSr")}</FormLabel>
+											<FormControl>
+												<RichTextEditor
+													id="description"
+													label=""
+													value={field.value || ""}
+													onChange={field.onChange}
+													placeholder={t("placeholders.descSr")}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</div>
 
 							{/* Location Picker */}
 							<div className="space-y-2">
