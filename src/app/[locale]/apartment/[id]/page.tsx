@@ -89,9 +89,7 @@ export default function ApartmentDetailPage() {
 			<div className="min-h-screen flex items-center justify-center">
 				<div className="animate-pulse flex flex-col items-center">
 					<div className="h-12 w-12 bg-amber-600 rounded-full mb-4"></div>
-					<p className="font-serif text-xl text-gray-400">
-						{t("loading")}
-					</p>
+					<p className="font-serif text-xl text-gray-400">{t("loading")}</p>
 				</div>
 			</div>
 		);

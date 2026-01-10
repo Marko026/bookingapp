@@ -59,10 +59,7 @@ export function AttractionsTab() {
 				"longDescription",
 				editingAttraction.longDescription || "",
 			);
-			formData.append(
-				"longDescriptionEn",
-				"",
-			);
+			formData.append("longDescriptionEn", "");
 			formData.append("distance", editingAttraction.distance || "");
 			formData.append("coords", editingAttraction.coords || "");
 			formData.append("image", editingAttraction.image || "");

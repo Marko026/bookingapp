@@ -4,11 +4,11 @@ import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AttractionsTab } from "@/components/admin/AttractionsTab";
-import { UsersTab } from "@/features/admin/components/UsersTab";
-import { BookingsManager } from "@/features/admin/components/dashboard/BookingsManager";
-import { ApartmentsManager } from "@/features/admin/components/dashboard/ApartmentsManager";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ApartmentsManager } from "@/features/admin/components/dashboard/ApartmentsManager";
+import { BookingsManager } from "@/features/admin/components/dashboard/BookingsManager";
+import { UsersTab } from "@/features/admin/components/UsersTab";
 import { getCurrentUser, logoutAdmin } from "@/lib/auth";
 
 export function DashboardClient() {

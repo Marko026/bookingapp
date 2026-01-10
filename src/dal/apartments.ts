@@ -44,9 +44,16 @@ export async function getAllApartmentsPublic(): Promise<Apartment[]> {
 	}
 }
 
+import { getServerUser } from "@/lib/auth-server";
+
 // Get all apartments for admin dashboard
 export async function getAllApartmentsAdmin() {
 	try {
+		const user = await getServerUser();
+		if (!user.success) {
+			return { success: false, apartments: [] };
+		}
+
 		const allApartments = await db.query.apartments.findMany({
 			with: {
 				images: {

@@ -1,7 +1,7 @@
-import { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 import {
-	getAllApartmentsAdmin,
 	deleteApartmentAction,
+	getAllApartmentsAdmin,
 	updateApartment as updateApartmentAction,
 } from "@/features/listings/actions";
 import { toast } from "@/lib/toast";

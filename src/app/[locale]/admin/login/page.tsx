@@ -134,9 +134,7 @@ export default function LoginPage() {
 						</Button>
 
 						<div className="text-center pt-6 border-t border-gray-100 mt-6">
-							<p className="text-sm text-gray-400">
-								{t("footer")}
-							</p>
+							<p className="text-sm text-gray-400">{t("footer")}</p>
 						</div>
 					</form>
 				</CardContent>

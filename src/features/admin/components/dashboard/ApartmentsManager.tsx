@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Plus, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { useAdminApartments } from "@/features/admin/hooks/useAdminApartments";
-import { ConfirmDeleteDialog } from "@/components/shared/ConfirmDeleteDialog";
+import { useEffect, useState } from "react";
 import { ImageUpload } from "@/components/ImageUpload";
+import { ConfirmDeleteDialog } from "@/components/shared/ConfirmDeleteDialog";
 import { RichTextEditor } from "@/components/shared/RichTextEditor";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAdminApartments } from "@/features/admin/hooks/useAdminApartments";
 import { getLocalizedField } from "@/lib/localization";
 import { stripHtml } from "@/lib/utils";
 import type { Apartment } from "@/types";
@@ -19,8 +19,13 @@ import type { Apartment } from "@/types";
 export function ApartmentsManager() {
 	const t = useTranslations("Admin.apartments.manager");
 	const locale = useLocale();
-	const { apartments, isLoading, fetchApartments, removeApartment, saveApartment } =
-		useAdminApartments();
+	const {
+		apartments,
+		isLoading,
+		fetchApartments,
+		removeApartment,
+		saveApartment,
+	} = useAdminApartments();
 	const router = useRouter();
 
 	const [editingApartment, setEditingApartment] = useState<Apartment | null>(
@@ -47,13 +52,19 @@ export function ApartmentsManager() {
 
 			const imagesData = editingApartment.images.map((url, index) => ({
 				imageUrl: url,
-				altText: t("imageAlt", { name: editingApartment.name, number: index + 1 }),
+				altText: t("imageAlt", {
+					name: editingApartment.name,
+					number: index + 1,
+				}),
 				displayOrder: index,
 				isCover: index === 0,
 			}));
 			formData.append("images", JSON.stringify(imagesData));
 
-			const success = await saveApartment(Number(editingApartment.id), formData);
+			const success = await saveApartment(
+				Number(editingApartment.id),
+				formData,
+			);
 			if (success) {
 				setEditingApartment(null);
 			}
@@ -178,7 +189,9 @@ export function ApartmentsManager() {
 												{getLocalizedField(apt, "name", locale)}
 											</h3>
 											<p className="text-gray-600">
-												{stripHtml(getLocalizedField(apt, "description", locale))}
+												{stripHtml(
+													getLocalizedField(apt, "description", locale),
+												)}
 											</p>
 										</div>
 									</div>

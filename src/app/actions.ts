@@ -1,9 +1,9 @@
 "use server";
 
-import { createSafeAction } from "@/lib/safe-action";
+import { z } from "zod";
 import { db } from "@/db";
 import { inquiries } from "@/db/schema";
-import { z } from "zod";
+import { createSafeAction } from "@/lib/safe-action";
 
 const contactSchema = z.object({
 	name: z.string().min(2, "Name must be at least 2 characters"),
@@ -17,4 +17,3 @@ export const submitInquiry = createSafeAction(contactSchema, async (data) => {
 	await db.insert(inquiries).values(data);
 	return { message: "Message sent successfully!" };
 });
-

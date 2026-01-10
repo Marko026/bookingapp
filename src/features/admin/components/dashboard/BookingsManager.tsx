@@ -1,22 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { CheckCircle, Edit2, Trash, XCircle } from "lucide-react";
-import { useAdminBookings } from "@/features/admin/hooks/useAdminBookings";
+import { useEffect, useState } from "react";
 import { ConfirmDeleteDialog } from "@/components/shared/ConfirmDeleteDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "@/components/ui/table";
 import {
 	Pagination,
 	PaginationContent,
@@ -26,13 +25,14 @@ import {
 	PaginationPrevious,
 } from "@/components/ui/pagination";
 import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog";
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "@/components/ui/table";
+import { useAdminBookings } from "@/features/admin/hooks/useAdminBookings";
 import type { Booking } from "@/types";
 
 export function BookingsManager() {
@@ -115,7 +115,10 @@ export function BookingsManager() {
 					<TableBody>
 						{bookings.length === 0 ? (
 							<TableRow>
-								<TableCell colSpan={6} className="p-12 text-center text-gray-400">
+								<TableCell
+									colSpan={6}
+									className="p-12 text-center text-gray-400"
+								>
 									{isLoading ? "Loading..." : "No bookings yet."}
 								</TableCell>
 							</TableRow>

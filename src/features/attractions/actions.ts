@@ -59,10 +59,15 @@ export async function createAttraction(
 
 		const validatedData = attractionSchema.parse(rawData);
 
-        // Auto-translate if English fields are missing
-        const titleEn = validatedData.titleEn || await translateToEnglish(validatedData.title);
-        const descriptionEn = validatedData.descriptionEn || await translateToEnglish(validatedData.description);
-        const longDescriptionEn = validatedData.longDescriptionEn || await translateToEnglish(validatedData.longDescription);
+		// Auto-translate if English fields are missing
+		const titleEn =
+			validatedData.titleEn || (await translateToEnglish(validatedData.title));
+		const descriptionEn =
+			validatedData.descriptionEn ||
+			(await translateToEnglish(validatedData.description));
+		const longDescriptionEn =
+			validatedData.longDescriptionEn ||
+			(await translateToEnglish(validatedData.longDescription));
 
 		await db.transaction(async (tx) => {
 			const [newAttraction] = await tx
@@ -155,10 +160,15 @@ export async function updateAttraction(
 
 		const validatedData = attractionSchema.parse(rawData);
 
-        // Auto-translate if English fields are missing
-        const titleEn = validatedData.titleEn || await translateToEnglish(validatedData.title);
-        const descriptionEn = validatedData.descriptionEn || await translateToEnglish(validatedData.description);
-        const longDescriptionEn = validatedData.longDescriptionEn || await translateToEnglish(validatedData.longDescription);
+		// Auto-translate if English fields are missing
+		const titleEn =
+			validatedData.titleEn || (await translateToEnglish(validatedData.title));
+		const descriptionEn =
+			validatedData.descriptionEn ||
+			(await translateToEnglish(validatedData.description));
+		const longDescriptionEn =
+			validatedData.longDescriptionEn ||
+			(await translateToEnglish(validatedData.longDescription));
 
 		await db.transaction(async (tx) => {
 			await tx
