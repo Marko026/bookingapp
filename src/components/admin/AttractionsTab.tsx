@@ -12,6 +12,7 @@ import {
 	getAllAttractions,
 	updateAttraction,
 } from "@/features/attractions/actions";
+import type { AttractionFormValues } from "@/features/attractions/schemas";
 import { toast } from "@/lib/toast";
 import type { Attraction } from "@/types";
 import { AttractionForm } from "./AttractionForm";
@@ -24,6 +25,7 @@ export function AttractionsTab() {
 		useState<Partial<Attraction> | null>(null);
 	const [isAddingNew, setIsAddingNew] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [deleteId, setDeleteId] = useState<string | null>(null);
 
 	useEffect(() => {
@@ -43,36 +45,20 @@ export function AttractionsTab() {
 		}
 	};
 
-	const handleSave = async () => {
-		if (!editingAttraction || !editingAttraction.title) {
-			toast.error(t("toast.titleRequired"));
-			return;
-		}
-
+	const handleSave = async (data: AttractionFormValues) => {
+		setIsSubmitting(true);
 		try {
-			const formData = new FormData();
-			formData.append("title", editingAttraction.title);
-			formData.append("titleEn", "");
-			formData.append("description", editingAttraction.description || "");
-			formData.append("descriptionEn", "");
-			formData.append(
-				"longDescription",
-				editingAttraction.longDescription || "",
-			);
-			formData.append("longDescriptionEn", "");
-			formData.append("distance", editingAttraction.distance || "");
-			formData.append("coords", editingAttraction.coords || "");
-			formData.append("image", editingAttraction.image || "");
-			formData.append(
-				"gallery",
-				JSON.stringify(editingAttraction.gallery || []),
-			);
-
 			let result;
 			if (isAddingNew) {
-				result = await createAttraction({ success: true }, formData);
-			} else if (editingAttraction.id) {
-				result = await updateAttraction(Number(editingAttraction.id), formData);
+				const slug = data.title.toLowerCase().replace(/ /g, "-");
+				result = await createAttraction({ ...data, slug });
+			} else if (editingAttraction?.id) {
+				const slug = data.title.toLowerCase().replace(/ /g, "-");
+				result = await updateAttraction({
+					...data,
+					id: Number(editingAttraction.id),
+					slug,
+				});
 			}
 
 			if (result?.success) {
@@ -81,23 +67,25 @@ export function AttractionsTab() {
 				setIsAddingNew(false);
 				fetchAttractions();
 			} else {
-				toast.error(result?.message || t("toast.saveError"));
+				toast.error(t("toast.saveError"));
 			}
 		} catch (error) {
 			console.error("Save error:", error);
 			toast.error(t("toast.saveError"));
+		} finally {
+			setIsSubmitting(false);
 		}
 	};
 
 	const handleDelete = async () => {
 		if (!deleteId) return;
 		try {
-			const result = await deleteAttraction(Number(deleteId));
-			if (result.success) {
+			const result = await deleteAttraction({ id: Number(deleteId) });
+			if (result?.success) {
 				toast.success(t("toast.deleted"));
 				fetchAttractions();
 			} else {
-				toast.error(result.message || t("toast.deleteError"));
+				toast.error(t("toast.deleteError"));
 			}
 		} catch (error) {
 			console.error("Delete error:", error);
@@ -139,8 +127,8 @@ export function AttractionsTab() {
 			{editingAttraction && (
 				<AttractionForm
 					editingAttraction={editingAttraction}
-					setEditingAttraction={setEditingAttraction}
 					onSave={handleSave}
+					isSubmitting={isSubmitting}
 					onCancel={() => {
 						setEditingAttraction(null);
 						setIsAddingNew(false);

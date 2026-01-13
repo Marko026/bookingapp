@@ -54,3 +54,11 @@ export const createApartmentActionSchema = z.object({
 		.transform((val) => (val ? JSON.parse(val) : []))
 		.or(z.array(z.any())),
 });
+
+export const updateApartmentActionSchema = createApartmentActionSchema.extend({
+	id: z.number(),
+});
+
+export const deleteApartmentActionSchema = z.object({
+	id: z.number(),
+});

@@ -13,7 +13,11 @@ import { getServerUser } from "@/lib/auth-server";
 import { createSafeAction } from "@/lib/safe-action";
 import { createAdminClient } from "@/lib/supabase-admin";
 import { translateToEnglish } from "@/lib/translator";
-import { createApartmentActionSchema } from "./schemas";
+import {
+	createApartmentActionSchema,
+	deleteApartmentActionSchema,
+	updateApartmentActionSchema,
+} from "./schemas";
 
 export const createApartment = createSafeAction(
 	createApartmentActionSchema,
@@ -70,11 +74,12 @@ export const createApartment = createSafeAction(
 	},
 );
 
-export async function deleteApartmentAction(id: number) {
-	try {
+export const deleteApartmentAction = createSafeAction(
+	deleteApartmentActionSchema,
+	async ({ id }) => {
 		const user = await getServerUser();
 		if (!user.success) {
-			return { success: false, message: "Unauthorized" };
+			throw new Error("Unauthorized");
 		}
 
 		// 1. Fetch images to delete from storage
@@ -104,54 +109,41 @@ export async function deleteApartmentAction(id: number) {
 
 		revalidatePath("/admin");
 		return { success: true };
-	} catch (error) {
-		console.error("Delete apartment error:", error);
-		return { success: false, message: "Failed to delete" };
-	}
-}
+	},
+);
 
-export async function updateApartment(id: number, formData: FormData) {
-	try {
+export const updateApartment = createSafeAction(
+	updateApartmentActionSchema,
+	async (data) => {
 		const user = await getServerUser();
 		if (!user.success) {
-			return { success: false, message: "Unauthorized" };
+			throw new Error("Unauthorized");
 		}
 
-		const rawData = Object.fromEntries(formData);
-		const parsedData = createApartmentActionSchema.parse(rawData);
-
 		// Auto-translate if English fields are missing
-		const nameEn =
-			parsedData.nameEn || (await translateToEnglish(parsedData.name));
+		const nameEn = data.nameEn || (await translateToEnglish(data.name));
 		const descriptionEn =
-			parsedData.descriptionEn ||
-			(await translateToEnglish(parsedData.description || ""));
+			data.descriptionEn || (await translateToEnglish(data.description || ""));
 
 		await db
 			.update(apartments)
 			.set({
-				name: parsedData.name,
+				name: data.name,
 				nameEn: nameEn,
-				description: parsedData.description,
+				description: data.description,
 				descriptionEn: descriptionEn,
-				pricePerNight: parsedData.pricePerNight,
-				capacity: parsedData.capacity,
-				imageUrl: parsedData.imageUrl,
-				latitude: parsedData.latitude,
-				longitude: parsedData.longitude,
+				pricePerNight: data.pricePerNight,
+				capacity: data.capacity,
+				imageUrl: data.imageUrl,
+				latitude: data.latitude,
+				longitude: data.longitude,
 			})
-			.where(eq(apartments.id, id));
-
-		// Handle images if needed (simplified for now to match create logic if re-uploading)
-		// In a real app, update might need smarter image diffing
+			.where(eq(apartments.id, data.id));
 
 		revalidatePath("/admin");
 		return { success: true };
-	} catch (error) {
-		console.error("Update apartment error:", error);
-		return { success: false, message: "Failed to update" };
-	}
-}
+	},
+);
 
 // Re-exports from DAL
 export const getApartment = async (id: number) => {
