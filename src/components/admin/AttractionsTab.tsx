@@ -51,14 +51,20 @@ export function AttractionsTab() {
 			let result;
 			if (isAddingNew) {
 				const slug = data.title.toLowerCase().replace(/ /g, "-");
-				result = await createAttraction({ ...data, slug });
+				result = await createAttraction(
+					{ success: false },
+					{ ...data, slug },
+				);
 			} else if (editingAttraction?.id) {
 				const slug = data.title.toLowerCase().replace(/ /g, "-");
-				result = await updateAttraction({
-					...data,
-					id: Number(editingAttraction.id),
-					slug,
-				});
+				result = await updateAttraction(
+					{ success: false },
+					{
+						...data,
+						id: Number(editingAttraction.id),
+						slug,
+					},
+				);
 			}
 
 			if (result?.success) {
@@ -80,7 +86,10 @@ export function AttractionsTab() {
 	const handleDelete = async () => {
 		if (!deleteId) return;
 		try {
-			const result = await deleteAttraction({ id: Number(deleteId) });
+			const result = await deleteAttraction(
+				{ success: false },
+				{ id: Number(deleteId) },
+			);
 			if (result?.success) {
 				toast.success(t("toast.deleted"));
 				fetchAttractions();

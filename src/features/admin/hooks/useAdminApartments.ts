@@ -28,7 +28,7 @@ export function useAdminApartments() {
 
 	const removeApartment = async (id: number) => {
 		try {
-			const result = await deleteApartmentAction(id);
+			const result = await deleteApartmentAction({ success: false }, { id });
 			if (result.success) {
 				await fetchApartments();
 				toast.success("Apartman je obrisan");
@@ -43,7 +43,12 @@ export function useAdminApartments() {
 
 	const saveApartment = async (id: number, formData: FormData) => {
 		try {
-			const result = await updateApartmentAction(id, formData);
+			// Ensure ID is in formData for validation
+			if (!formData.has("id")) {
+				formData.append("id", id.toString());
+			}
+
+			const result = await updateApartmentAction({ success: false }, formData);
 			if (result.success) {
 				await fetchApartments();
 				toast.success("Apartman je uspešno ažuriran");
