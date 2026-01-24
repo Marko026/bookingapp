@@ -1,11 +1,11 @@
 "use client";
 
+import { Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
 import { useLenis } from "lenis/react";
 import { ArrowRight, CheckCircle2, House, Map, Star } from "lucide-react";
-import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/routing";
+import Image from "next/image";
 
 export function Hero() {
 	const t = useTranslations("Hero");
@@ -18,7 +18,7 @@ export function Hero() {
 	};
 
 	return (
-		<section className="relative w-full min-h-screen  overflow-hidden py-20 lg:py-24">
+		<section className="relative w-full min-h-screen overflow-hidden py-20 lg:py-24">
 			{/* Background Effects */}
 			<div className="absolute inset-0 bg-[#FFFDF9]" />
 
@@ -28,9 +28,9 @@ export function Hero() {
 
 					<motion.div
 						className="md:col-span-6 lg:col-span-5 flex flex-col gap-8 relative z-10"
-						initial={{ opacity: 0, x: -50 }}
+						initial={{ opacity: 0, x: -20 }}
 						animate={{ opacity: 1, x: 0 }}
-						transition={{ duration: 0.8, ease: "easeOut" }}
+						transition={{ duration: 0.6, ease: "easeOut" }}
 					>
 						{/* Animated Badge */}
 
@@ -48,7 +48,7 @@ export function Hero() {
 
 						{/* Headline */}
 
-						<h1 className="text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight leading-[1.1] text-neutral-900 relative">
+						<h1 className="text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight leading-[1.1] text-neutral-900">
 							{t("title_word_1")} <br />
 							<span className="italic text-neutral-400 font-light pe-4">
 								{t("title_word_2")}
@@ -57,87 +57,96 @@ export function Hero() {
 							<span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-amber-700">
 								{t("title_word_4")}
 							</span>
-							{/* MOBILE ONLY Visual Composition - Responsive Stacked Collage */}
-							<div className="md:hidden absolute left-[55%] sm:left-[65%] top-[5%] w-[45%] sm:w-[30%] h-40 pointer-events-none overflow-visible z-20">
-								{/* 1. Base Image - Responsive size */}
-								<motion.div
-									className="absolute top-0 right-2 w-[18vw] h-[18vw] max-w-[72px] max-h-[72px] sm:max-w-[80px] sm:max-h-[80px] rounded-full overflow-hidden border-[0.5px] border-amber-200 shadow-2xl z-10"
-									style={{ opacity: 1 }}
-									animate={{ y: [0, -5, 0], x: [0, 3, 0] }}
-									transition={{
-										duration: 5,
-										repeat: Infinity,
-										ease: "easeInOut",
-									}}
-								>
-									<Image
-										src="/main-img.png"
-										alt="A1"
-										fill
-										className="object-cover"
-									/>
-								</motion.div>
-
-								{/* 2. Overlapping Leaf - Responsive size and position */}
-								<motion.div
-									className="absolute top-[15%] left-0 w-[15vw] h-[20vw] max-w-[64px] max-h-[80px] sm:max-w-[72px] sm:max-h-[90px] rounded-tl-[2.5rem] rounded-br-[2.5rem] overflow-hidden border-2 border-white shadow-2xl rotate-[-12deg] z-30"
-									style={{ opacity: 1 }}
-									animate={{ y: [0, 8, 0], rotate: [-12, -5, -12] }}
-									transition={{
-										duration: 6,
-										repeat: Infinity,
-										ease: "easeInOut",
-										delay: 0.2,
-									}}
-								>
-									<Image
-										src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=400&auto=format&fit=crop"
-										alt="A2"
-										fill
-										className="object-cover"
-									/>
-								</motion.div>
-
-								{/* 3. Soft Square - Tucked partially behind */}
-								<motion.div
-									className="absolute top-[45%] right-[5%] w-[12vw] h-[12vw] max-w-[56px] max-h-[56px] sm:max-w-[64px] sm:max-h-[64px] rounded-2xl overflow-hidden border-[0.5px] border-amber-100 shadow-xl z-20"
-									style={{ opacity: 1 }}
-									animate={{ x: [0, -5, 0], scale: [1, 1.05, 1] }}
-									transition={{
-										duration: 7,
-										repeat: Infinity,
-										ease: "easeInOut",
-									}}
-								>
-									<Image
-										src="/main-img1.png"
-										alt="A3"
-										fill
-										className="object-cover"
-									/>
-								</motion.div>
-
-								{/* 4. Small Detail - Responsive size and safer position */}
-								<motion.div
-									className="absolute top-[65%] left-[20%] sm:left-[30%] w-[10vw] h-[10vw] max-w-[48px] max-h-[48px] sm:max-w-[56px] sm:max-h-[56px] rounded-full overflow-hidden border-2 border-white shadow-lg z-40"
-									style={{ opacity: 1 }}
-									animate={{ y: [0, -10, 0] }}
-									transition={{
-										duration: 5,
-										repeat: Infinity,
-										ease: "easeInOut",
-										delay: 0.4,
-									}}
-								>
-									<Image
-										src="/main-img.png"
-										alt="A4"
-										fill
-										className="object-cover"
-									/>
-								</motion.div>
-							</div>{" "}
 						</h1>
+
+						{/* MOBILE ONLY Visual Composition - Optimized LCP */}
+						<div className="md:hidden absolute left-[55%] sm:left-[64%] top-[2%] w-[45%] sm:w-[30%] h-40 pointer-events-none overflow-visible z-20">
+							{/* 1. Base Image - Priority LCP candidate on mobile */}
+							<motion.div
+								className="absolute top-0 right-2 w-[18vw] h-[18vw] max-w-[72px] max-h-[72px] sm:max-w-[80px] sm:max-h-[80px] rounded-full overflow-hidden border-[0.5px] border-amber-200 shadow-2xl z-10"
+								initial={{ opacity: 0.8, scale: 0.9 }}
+								animate={{
+									opacity: 1,
+									scale: 1,
+									y: [0, -5, 0],
+									x: [0, 3, 0],
+								}}
+								transition={{
+									opacity: { duration: 0.3 },
+									scale: { duration: 0.3 },
+									y: { duration: 5, repeat: Infinity, ease: "easeInOut" },
+									x: { duration: 5, repeat: Infinity, ease: "easeInOut" },
+								}}
+							>
+								<Image
+									src="/main-img.png"
+									alt="A1"
+									fill
+									className="object-cover"
+									priority
+									sizes="80px"
+								/>
+							</motion.div>
+
+							{/* 2. Overlapping Leaf */}
+							<motion.div
+								className="absolute top-[15%] left-0 w-[15vw] h-[20vw] max-w-[64px] max-h-[80px] sm:max-w-[72px] sm:max-h-[90px] rounded-tl-[2.5rem] rounded-br-[2.5rem] overflow-hidden border-2 border-white shadow-2xl rotate-[-12deg] z-30"
+								animate={{ y: [0, 8, 0], rotate: [-12, -5, -12] }}
+								transition={{
+									duration: 6,
+									repeat: Infinity,
+									ease: "easeInOut",
+									delay: 0.2,
+								}}
+							>
+								<Image
+									src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=400&auto=format&fit=crop"
+									alt="A2"
+									fill
+									className="object-cover"
+									sizes="90px"
+								/>
+							</motion.div>
+
+							{/* 3. Soft Square */}
+							<motion.div
+								className="absolute top-[45%] right-[5%] w-[12vw] h-[12vw] max-w-[56px] max-h-[56px] sm:max-w-[64px] sm:max-h-[64px] rounded-2xl overflow-hidden border-[0.5px] border-amber-100 shadow-xl z-20"
+								animate={{ x: [0, -5, 0], scale: [1, 1.05, 1] }}
+								transition={{
+									duration: 7,
+									repeat: Infinity,
+									ease: "easeInOut",
+								}}
+							>
+								<Image
+									src="/main-img1.png"
+									alt="A3"
+									fill
+									className="object-cover"
+									sizes="64px"
+								/>
+							</motion.div>
+
+							{/* 4. Small Detail */}
+							<motion.div
+								className="absolute top-[65%] left-[20%] sm:left-[30%] w-[10vw] h-[10vw] max-w-[48px] max-h-[48px] sm:max-w-[56px] sm:max-h-[56px] rounded-full overflow-hidden border-2 border-white shadow-lg z-40"
+								animate={{ y: [0, -10, 0] }}
+								transition={{
+									duration: 5,
+									repeat: Infinity,
+									ease: "easeInOut",
+									delay: 0.4,
+								}}
+							>
+								<Image
+									src="/main-img.png"
+									alt="A4"
+									fill
+									className="object-cover"
+									sizes="56px"
+								/>
+							</motion.div>
+						</div>
 
 						{/* Description */}
 						<p className="text-lg lg:text-xl font-light leading-relaxed max-w-lg text-neutral-500">
@@ -176,7 +185,13 @@ export function Hero() {
 										key={i}
 										className="relative w-10 h-10 rounded-full border-2 border-white bg-neutral-200 overflow-hidden"
 									>
-										<Image src={src} alt="User" fill className="object-cover" />
+										<Image
+											src={src}
+											alt="User"
+											fill
+											className="object-cover"
+											sizes="40px"
+										/>
 									</div>
 								))}
 								<div className="w-10 h-10 rounded-full border-2 border-white flex items-center justify-center text-xs font-medium bg-neutral-100 text-neutral-900">
@@ -227,19 +242,21 @@ export function Hero() {
 					{/* Right Column: Visual Composition */}
 					<motion.div
 						className="md:col-span-6 lg:col-span-7 relative h-[400px] sm:h-[500px] md:h-[550px] lg:h-[600px] w-full"
-						initial={{ opacity: 0, x: 50 }}
+						initial={{ opacity: 0, x: 20 }} // Reduced distance
 						animate={{ opacity: 1, x: 0 }}
-						transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+						transition={{ duration: 0.8, ease: "easeOut" }} // Removed delay for LCP
 					>
 						<div className="grid grid-cols-2 lg:grid-cols-12 grid-rows-4 lg:grid-rows-6 gap-3 md:gap-4 h-full w-full">
-							{/* Main Tall Image */}
+							{/* Main Tall Image - LCP Candidate */}
 							<div className="col-span-2 lg:col-span-5 row-span-2 lg:row-span-6 rounded-2xl md:rounded-[2.5rem] overflow-hidden relative group cursor-pointer shadow-2xl">
+								{/* Priority LCP Image */}
 								<Image
 									src="/main-img.png"
 									alt="Mountain Landscape"
 									fill
 									className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-90"
 									priority
+									sizes="(max-width: 768px) 100vw, 40vw"
 								/>
 								<div className="bg-gradient-to-t to-transparent from-black/60 absolute inset-0" />
 								<div className="absolute bottom-4 left-4 md:bottom-6 md:left-6 text-white">
@@ -259,6 +276,7 @@ export function Hero() {
 									alt="Lake Switzerland"
 									fill
 									className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-90"
+									sizes="(max-width: 768px) 50vw, 40vw"
 								/>
 								<div className="absolute top-3 right-3 md:top-4 md:right-4 backdrop-blur-md border px-2 py-1 md:px-3 md:py-1.5 rounded-full flex items-center gap-1.5 md:gap-2 bg-white/10 border-white/10">
 									<span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-amber-400"></span>
@@ -275,6 +293,7 @@ export function Hero() {
 									alt="Kyoto Streets"
 									fill
 									className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-90"
+									sizes="(max-width: 768px) 50vw, 40vw"
 								/>
 							</div>
 						</div>
