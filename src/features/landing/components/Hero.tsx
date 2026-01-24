@@ -1,11 +1,11 @@
 "use client";
 
-import { Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
 import { useLenis } from "lenis/react";
 import { ArrowRight, CheckCircle2, House, Map, Star } from "lucide-react";
-import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 
 export function Hero() {
 	const t = useTranslations("Hero");
@@ -41,7 +41,7 @@ export function Hero() {
 								<span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
 							</span>
 
-							<span className="text-xs font-medium text-amber-600 tracking-wide uppercase">
+							<span className="text-xs font-medium text-amber-700 tracking-wide uppercase">
 								{t("est")}
 							</span>
 						</div>
@@ -54,7 +54,7 @@ export function Hero() {
 								{t("title_word_2")}
 							</span>
 							{t("title_word_3")} <br />
-							<span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-amber-700">
+							<span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-amber-800">
 								{t("title_word_4")}
 							</span>
 						</h1>
@@ -83,8 +83,7 @@ export function Hero() {
 									alt="A1"
 									fill
 									className="object-cover"
-									priority
-									sizes="80px"
+									sizes="(max-width: 768px) 80px, 1px"
 								/>
 							</motion.div>
 
@@ -214,7 +213,7 @@ export function Hero() {
 						<div className="grid grid-cols-3 gap-8 mt-4 pt-6 border-t border-neutral-200">
 							<div>
 								<h4 className="text-2xl md:text-3xl font-bold text-neutral-900">
-									3<span className="text-lg text-amber-500 align-top">+</span>
+									3<span className="text-lg text-amber-600 align-top">+</span>
 								</h4>
 								<p className="text-[10px] tracking-wider uppercase text-neutral-500 mt-1">
 									{ts("properties")}
@@ -230,7 +229,7 @@ export function Hero() {
 							</div>
 							<div>
 								<h4 className="text-2xl md:text-3xl font-bold text-neutral-900">
-									99<span className="text-lg text-amber-500 align-top">%</span>
+									99<span className="text-lg text-amber-600 align-top">%</span>
 								</h4>
 								<p className="text-[10px] tracking-wider uppercase text-neutral-500 mt-1">
 									{ts("satisfaction")}
@@ -240,12 +239,7 @@ export function Hero() {
 					</motion.div>
 
 					{/* Right Column: Visual Composition */}
-					<motion.div
-						className="md:col-span-6 lg:col-span-7 relative h-[400px] sm:h-[500px] md:h-[550px] lg:h-[600px] w-full"
-						initial={{ opacity: 0, x: 20 }} // Reduced distance
-						animate={{ opacity: 1, x: 0 }}
-						transition={{ duration: 0.8, ease: "easeOut" }} // Removed delay for LCP
-					>
+					<div className="md:col-span-6 lg:col-span-7 relative h-[400px] sm:h-[500px] md:h-[550px] lg:h-[600px] w-full">
 						<div className="grid grid-cols-2 lg:grid-cols-12 grid-rows-4 lg:grid-rows-6 gap-3 md:gap-4 h-full w-full">
 							{/* Main Tall Image - LCP Candidate */}
 							<div className="col-span-2 lg:col-span-5 row-span-2 lg:row-span-6 rounded-2xl md:rounded-[2.5rem] overflow-hidden relative group cursor-pointer shadow-2xl">
@@ -256,11 +250,11 @@ export function Hero() {
 									fill
 									className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-90"
 									priority
-									sizes="(max-width: 768px) 100vw, 40vw"
+									sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 								/>
 								<div className="bg-gradient-to-t to-transparent from-black/60 absolute inset-0" />
 								<div className="absolute bottom-4 left-4 md:bottom-6 md:left-6 text-white">
-									<p className="text-[10px] md:text-xs font-medium uppercase tracking-wider text-amber-400 mb-0.5 md:mb-1">
+									<p className="text-[10px] md:text-xs font-medium uppercase tracking-wider text-amber-300 mb-0.5 md:mb-1">
 										{t("showcase.adventure")}
 									</p>
 									<h3 className="text-lg md:text-xl font-medium tracking-tight">
@@ -276,7 +270,7 @@ export function Hero() {
 									alt="Lake Switzerland"
 									fill
 									className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-90"
-									sizes="(max-width: 768px) 50vw, 40vw"
+									sizes="(max-width: 768px) 100vw, (max-width: 1200px) 40vw, 30vw"
 								/>
 								<div className="absolute top-3 right-3 md:top-4 md:right-4 backdrop-blur-md border px-2 py-1 md:px-3 md:py-1.5 rounded-full flex items-center gap-1.5 md:gap-2 bg-white/10 border-white/10">
 									<span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-amber-400"></span>
@@ -293,7 +287,7 @@ export function Hero() {
 									alt="Kyoto Streets"
 									fill
 									className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-90"
-									sizes="(max-width: 768px) 50vw, 40vw"
+									sizes="(max-width: 768px) 100vw, (max-width: 1200px) 40vw, 30vw"
 								/>
 							</div>
 						</div>
@@ -318,7 +312,7 @@ export function Hero() {
 								</Link>
 							</div>
 							<div className="flex items-center gap-3 mb-4">
-								<div className="w-10 h-10 rounded-xl flex items-center justify-center bg-amber-500/10 text-amber-400 ring-1 ring-amber-500/20">
+								<div className="w-10 h-10 rounded-xl flex items-center justify-center bg-amber-500/10 text-amber-500 ring-1 ring-amber-500/20">
 									<House className="w-5 h-5 fill-current" />
 								</div>
 								<div>
@@ -334,7 +328,7 @@ export function Hero() {
 								<span className="text-xs text-zinc-400">
 									{t("showcase.nightlyRate")}
 								</span>
-								<span className="text-sm font-semibold text-amber-400">
+								<span className="text-sm font-semibold text-amber-500">
 									{t("showcase.price")}
 								</span>
 							</div>
@@ -343,7 +337,7 @@ export function Hero() {
 								{t("showcase.available")}
 							</div>
 						</motion.div>
-					</motion.div>
+					</div>
 				</div>
 			</div>
 		</section>

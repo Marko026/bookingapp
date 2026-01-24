@@ -8,7 +8,10 @@
 		"apartments": "Apartmani",
 		"attractions": "Atrakcije",
 		"admin": "Admin",
-		"login": "Prijava"
+		"login": "Prijava",
+		"openMenu": "Otvori navigaciju",
+		"closeMenu": "Zatvori navigaciju",
+		"switchLanguage": "Promeni jezik"
 	},
 	"Hero": {
 		"title_word_1": "Živi",

@@ -41,12 +41,18 @@ export function LanguageSwitcher() {
 					variant="ghost"
 					size="sm"
 					className="flex items-center gap-2 hover:bg-neutral-100 transition-colors"
+					aria-label={t("switchLanguage")}
 				>
 					<Languages className="h-4 w-4" />
 					<span className="hidden md:inline">
-						{currentLang?.flag} {currentLang?.name}
+						<span role="img" aria-label={currentLang?.name}>
+							{currentLang?.flag}
+						</span>{" "}
+						{currentLang?.name}
 					</span>
-					<span className="md:hidden">{currentLang?.flag}</span>
+					<span className="md:hidden" role="img" aria-label={currentLang?.name}>
+						{currentLang?.flag}
+					</span>
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end" className="w-[150px]">

@@ -26,6 +26,7 @@ export function BentoGrid() {
 					fill
 					className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-90"
 					priority
+					sizes="(max-width: 768px) 100vw, (max-width: 1200px) 45vw, 35vw"
 				/>
 				<div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
 				<div className="absolute bottom-6 left-6 text-white z-10">
@@ -52,6 +53,7 @@ export function BentoGrid() {
 						alt="Lake Switzerland"
 						fill
 						className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-90"
+						sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 35vw"
 					/>
 					<div className="absolute top-4 right-4 backdrop-blur-md border px-3 py-1.5 rounded-full flex items-center gap-2 bg-white/10 border-white/10 shadow-lg">
 						<span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse relative">
@@ -73,6 +75,7 @@ export function BentoGrid() {
 						alt="Kyoto Streets"
 						fill
 						className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-90"
+						sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 35vw"
 					/>
 				</motion.div>
 

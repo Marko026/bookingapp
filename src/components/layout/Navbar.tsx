@@ -110,6 +110,7 @@ export function Navbar() {
 						<button
 							onClick={toggleMenu}
 							className="md:hidden p-1.5 md:p-2 text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
+							aria-label={isOpen ? t("closeMenu") : t("openMenu")}
 						>
 							{isOpen ? (
 								<X size={20} className="md:w-6 md:h-6" />

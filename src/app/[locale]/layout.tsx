@@ -1,3 +1,4 @@
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
@@ -20,6 +21,28 @@ const geistMono = Geist_Mono({
 	subsets: ["latin"],
 	display: "swap",
 });
+
+export const metadata: Metadata = {
+	metadataBase: new URL("https://apartmani-todorovic.com"),
+	themeColor: "#f59e0b",
+	appleWebApp: {
+		capable: true,
+		statusBarStyle: "default",
+		title: "Apartmani Todorović",
+	},
+	formatDetection: {
+		telephone: true,
+	},
+	icons: {
+		apple: "/logo.png", // Using existing logo as apple touch icon
+	},
+};
+
+export const viewport: Viewport = {
+	width: "device-width",
+	initialScale: 1,
+	maximumScale: 5,
+};
 
 export function generateStaticParams() {
 	return routing.locales.map((locale) => ({ locale }));

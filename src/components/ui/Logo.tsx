@@ -20,6 +20,7 @@ export function Logo({ className, variant = "dark" }: LogoProps) {
 					height={150}
 					className="h-14 w-auto object-contain"
 					priority
+					sizes="200px"
 				/>
 			</div>
 			<div className="flex flex-col items-start leading-[1.1] justify-center border-l border-gray-200/50 pl-3 md:pl-2">

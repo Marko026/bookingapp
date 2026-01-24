@@ -74,7 +74,7 @@ export function ApartmentList({ apartments }: ApartmentListProps) {
 											src={apt.images[0]}
 											alt={getLocalizedField(apt, "name", locale)}
 											fill
-											sizes="(max-width: 768px) 100vw, 50vw"
+											sizes="(max-width: 768px) 100vw, (max-width: 1200px) 48vw, 40vw"
 											className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
 										/>
 

@@ -8,7 +8,10 @@
 		"apartments": "Apartments",
 		"attractions": "Attractions",
 		"admin": "Admin",
-		"login": "Login"
+		"login": "Login",
+		"openMenu": "Open navigation menu",
+		"closeMenu": "Close navigation menu",
+		"switchLanguage": "Switch language"
 	},
 	"Hero": {
 		"title_word_1": "Live",

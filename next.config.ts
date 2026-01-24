@@ -82,6 +82,7 @@ const nextConfig: NextConfig = {
 		// Image sizes for different breakpoints
 		imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
 	},
+	// Specialist optimization trigger
 };
 
 export default withNextIntl(nextConfig);

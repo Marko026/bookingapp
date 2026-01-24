@@ -1,6 +1,7 @@
 "use client";
 
 import { Plus, Save } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -10,7 +11,6 @@ import { RichTextEditor } from "@/components/shared/RichTextEditor";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAdminApartments } from "@/features/admin/hooks/useAdminApartments";
 import { getLocalizedField } from "@/lib/localization";
 import { stripHtml } from "@/lib/utils";
@@ -179,11 +179,17 @@ export function ApartmentsManager() {
 							) : (
 								<div className="flex justify-between items-start gap-8">
 									<div className="flex gap-8">
-										<img
-											src={apt.images[0]}
-											className="w-40 h-40 object-cover rounded-2xl"
-											alt={getLocalizedField(apt, "name", locale)}
-										/>
+										<div className="relative w-40 h-40 rounded-2xl overflow-hidden shadow-sm flex-shrink-0">
+											<Image
+												src={apt.images[0]}
+												alt={
+													getLocalizedField(apt, "name", locale) || "Apartment"
+												}
+												fill
+												className="object-cover"
+												sizes="160px"
+											/>
+										</div>
 										<div>
 											<h3 className="text-2xl font-serif font-bold">
 												{getLocalizedField(apt, "name", locale)}

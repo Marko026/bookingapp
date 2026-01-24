@@ -23,12 +23,14 @@ export function Footer() {
 						<Link
 							href="https://instagram.com"
 							className="text-gray-400 hover:text-white transition-colors"
+							aria-label="Instagram"
 						>
 							Instagram
 						</Link>
 						<Link
 							href="https://facebook.com"
 							className="text-gray-400 hover:text-white transition-colors"
+							aria-label="Facebook"
 						>
 							Facebook
 						</Link>

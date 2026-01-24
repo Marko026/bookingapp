@@ -52,7 +52,7 @@ export default function AttractionDetailClient({
 								size={20}
 								className="mr-2 group-hover:-translate-x-1 transition-transform"
 							/>
-							<span className="text-gray-500 group-hover:text-amber-600">
+							<span className="text-gray-500 group-hover:text-amber-700">
 								{t("back")}
 							</span>
 						</Button>
@@ -91,9 +91,9 @@ export default function AttractionDetailClient({
 							<p className="text-white/60 text-xs uppercase tracking-[0.2em] font-medium mb-1">
 								{t("destination")}
 							</p>
-							<h2 className="text-white text-2xl font-serif drop-shadow-md">
+							<div className="text-white text-2xl font-serif drop-shadow-md font-medium">
 								{getLocalizedField(attraction, "title", locale)}
-							</h2>
+							</div>
 						</div>
 					</div>
 				</motion.div>
@@ -110,7 +110,7 @@ export default function AttractionDetailClient({
 							<h1 className="text-3xl md:text-7xl font-serif font-medium text-gray-900 mb-4 md:mb-6 leading-[1.1]">
 								{getLocalizedField(attraction, "title", locale)}
 							</h1>
-							<p className="text-lg md:text-xl text-amber-600 font-medium mb-6 md:mb-8">
+							<p className="text-lg md:text-xl text-amber-700 font-medium mb-6 md:mb-8">
 								{getLocalizedField(attraction, "description", locale)}
 							</p>
 							<div
@@ -167,7 +167,7 @@ export default function AttractionDetailClient({
 							{/* Info Items */}
 							<div className="space-y-5 md:space-y-6">
 								<div className="flex items-start gap-4">
-									<div className="p-2.5 md:p-3 bg-amber-50 text-amber-600 rounded-full shrink-0">
+									<div className="p-2.5 md:p-3 bg-amber-50 text-amber-700 rounded-full shrink-0">
 										<MapPin size={20} className="md:w-[24px] md:h-[24px]" />
 									</div>
 									<div>

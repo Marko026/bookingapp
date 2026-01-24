@@ -56,6 +56,7 @@ export function SortableImageItem({
 					console.error("Error:", e);
 				}}
 				unoptimized // Bypass Next.js optimization for Supabase URLs
+				sizes="150px"
 			/>
 
 			{/* Main Image Badge */}

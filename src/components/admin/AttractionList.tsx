@@ -1,6 +1,7 @@
 "use client";
 
 import { Edit2, Trash } from "lucide-react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -37,11 +38,15 @@ export function AttractionList({
 						<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
 							<div className="flex gap-6 items-center">
 								{attr.image && (
-									<img
-										src={attr.image}
-										className="w-24 h-24 object-cover rounded-2xl shadow-sm"
-										alt={attr.title}
-									/>
+									<div className="relative w-24 h-24 rounded-2xl overflow-hidden shadow-sm flex-shrink-0">
+										<Image
+											src={attr.image}
+											alt={attr.title}
+											fill
+											className="object-cover"
+											sizes="96px"
+										/>
+									</div>
 								)}
 								<div>
 									<h3 className="text-xl font-serif font-bold text-gray-900">
