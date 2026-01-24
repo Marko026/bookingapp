@@ -1,9 +1,9 @@
-import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Suspense } from "react";
 import { AttractionsSection } from "@/features/landing/components/AttractionsSection";
 import { Features } from "@/features/landing/components/Features";
 import { Hero } from "@/features/landing/components/Hero";
 import { ApartmentsSection } from "@/features/listings/components/ApartmentsSection";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Suspense } from "react";
 
 export const revalidate = 0; // Ensure fresh data on every request
 
@@ -21,7 +21,6 @@ export async function generateMetadata({
 		alternates: {
 			languages: {
 				en: "/en",
-				de: "/de",
 				sr: "/sr",
 			},
 		},

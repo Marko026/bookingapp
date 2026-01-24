@@ -5,16 +5,26 @@ import { Save } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
+import dynamic from "next/dynamic";
 import { ImageUpload } from "@/components/ImageUpload";
 import { FormInput } from "@/components/shared/FormInput";
 import { RichTextEditor } from "@/components/shared/RichTextEditor";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import {
 	type AttractionFormValues,
 	attractionFormSchema,
 } from "@/features/attractions/schemas";
 import type { Attraction } from "@/types";
+
+// Dynamically import MapPicker to avoid SSR issues with Leaflet
+const MapPicker = dynamic(() => import("@/components/admin/MapPicker"), {
+	ssr: false,
+	loading: () => (
+		<div className="h-[400px] w-full bg-gray-100 animate-pulse rounded-lg" />
+	),
+});
 
 interface AttractionFormProps {
 	editingAttraction: Partial<Attraction> | null;
@@ -38,6 +48,8 @@ export function AttractionForm({
 		handleSubmit,
 		control,
 		reset,
+		setValue,
+		watch,
 		formState: { errors },
 	} = useForm<AttractionFormValues>({
 		resolver: zodResolver(attractionFormSchema),
@@ -77,75 +89,100 @@ export function AttractionForm({
 		}
 	}, [editingAttraction, reset]);
 
+	const currentLat = watch("latitude");
+	const currentLng = watch("longitude");
+
 	return (
 		<Card className="rounded-[2.5rem] border-gray-100 shadow-sm overflow-hidden mb-8">
 			<CardContent className="p-8">
 				<form onSubmit={handleSubmit(onSave)} className="space-y-6">
-										<div className="space-y-6">
-											<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-												<FormInput
-													label={t("fields.titleSr")}
-													{...register("title")}
-													error={errors.title?.message}
-													placeholder={t("placeholders.attractionName")}
-												/>
-												<FormInput
-													label={t("fields.titleEn") || "Title (EN)"}
-													{...register("titleEn")}
-													placeholder="English title (optional)"
-												/>
-												<FormInput
-													label={t("fields.distance")}
-													{...register("distance")}
-													placeholder={t("placeholders.distance")}
-												/>
-												<FormInput
-													label={t("fields.coords")}
-													{...register("coords")}
-													placeholder={t("placeholders.coords")}
-												/>
-												<FormInput
-													label={t("fields.shortDescSr")}
-													{...register("description")}
-													className="md:col-span-1"
-													placeholder={t("placeholders.shortSubtitle")}
-												/>
-												<FormInput
-													label={t("fields.shortDescEn") || "Short Description (EN)"}
-													{...register("descriptionEn")}
-													className="md:col-span-1"
-													placeholder="English short description (optional)"
-												/>
-											</div>
-					
-											<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-												<Controller
-													name="longDescription"
-													control={control}
-													render={({ field }) => (
-														<RichTextEditor
-															label={t("fields.longDescSr")}
-															value={field.value || ""}
-															onChange={field.onChange}
-															placeholder={t("placeholders.fullText")}
-														/>
-													)}
-												/>
-												<Controller
-													name="longDescriptionEn"
-													control={control}
-													render={({ field }) => (
-														<RichTextEditor
-															label={t("fields.longDescEn") || "Long Description (EN)"}
-															value={field.value || ""}
-															onChange={field.onChange}
-															placeholder="Full English text (optional)"
-														/>
-													)}
-												/>
-											</div>
-										</div>
-										<div className="space-y-4">
+					<div className="space-y-6">
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+							<FormInput
+								label={t("fields.titleSr")}
+								{...register("title")}
+								error={errors.title?.message}
+								placeholder={t("placeholders.attractionName")}
+							/>
+							<FormInput
+								label={t("fields.titleEn") || "Title (EN)"}
+								{...register("titleEn")}
+								placeholder="English title (optional)"
+							/>
+							<FormInput
+								label={t("fields.distance")}
+								{...register("distance")}
+								placeholder={t("placeholders.distance")}
+							/>
+							<FormInput
+								label={t("fields.coords")}
+								{...register("coords")}
+								placeholder={t("placeholders.coords")}
+							/>
+							<FormInput
+								label={t("fields.shortDescSr")}
+								{...register("description")}
+								className="md:col-span-1"
+								placeholder={t("placeholders.shortSubtitle")}
+							/>
+							<FormInput
+								label={t("fields.shortDescEn") || "Short Description (EN)"}
+								{...register("descriptionEn")}
+								className="md:col-span-1"
+								placeholder="English short description (optional)"
+							/>
+						</div>
+
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+							<Controller
+								name="longDescription"
+								control={control}
+								render={({ field }) => (
+									<RichTextEditor
+										label={t("fields.longDescSr")}
+										value={field.value || ""}
+										onChange={field.onChange}
+										placeholder={t("placeholders.fullText")}
+									/>
+								)}
+							/>
+							<Controller
+								name="longDescriptionEn"
+								control={control}
+								render={({ field }) => (
+									<RichTextEditor
+										label={t("fields.longDescEn") || "Long Description (EN)"}
+										value={field.value || ""}
+										onChange={field.onChange}
+										placeholder="Full English text (optional)"
+									/>
+								)}
+							/>
+						</div>
+					</div>
+
+					{/* Location Picker */}
+					<div className="space-y-2">
+						<Label>{t("fields.coords")}</Label>
+						<p className="text-sm text-muted-foreground mb-4">
+							{t("locationHelp") || "Kliknite na mapu da označite lokaciju atrakcije."}
+						</p>
+						<MapPicker
+							initialLat={currentLat || undefined}
+							initialLng={currentLng || undefined}
+							onLocationSelect={(lat, lng) => {
+								setValue("latitude", lat);
+								setValue("longitude", lng);
+							}}
+						/>
+						{currentLat && currentLng && (
+							<p className="text-xs text-green-600 font-medium">
+								Lokacija postavljena: {currentLat.toFixed(6)}, {currentLng.toFixed(6)}
+							</p>
+						)}
+					</div>
+
+					<div className="space-y-4">
 						<label className="text-sm font-medium text-gray-900 block">
 							{t("fields.gallery")}
 						</label>
