@@ -1,59 +1,61 @@
 import { MapPin } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
-import { 
-    getAttractionBySlug, 
-    getApartmentOrigin, 
-    getAllAttractions 
+import {
+	getAllAttractions,
+	getApartmentOrigin,
+	getAttractionBySlug,
 } from "@/features/attractions/actions";
 import { Link, routing } from "@/i18n/routing";
 import type { Attraction } from "@/types";
 import AttractionDetailClient from "./AttractionDetailClient";
 
 interface AttractionDetailPageProps {
-    params: Promise<{ id: string; locale: string }>;
+	params: Promise<{ id: string; locale: string }>;
 }
 
 export async function generateStaticParams() {
-    const attractions = await getAllAttractions();
-    
-    // Create params for every combination of locale and attraction
-    const paths = [];
-    for (const locale of routing.locales) {
-        for (const attr of attractions) {
-            paths.push({
-                locale,
-                id: attr.slug,
-            });
-        }
-    }
-    
-    return paths;
+	const attractions = await getAllAttractions();
+
+	// Create params for every combination of locale and attraction
+	const paths = [];
+	for (const locale of routing.locales) {
+		for (const attr of attractions) {
+			paths.push({
+				locale,
+				id: attr.slug,
+			});
+		}
+	}
+
+	return paths;
 }
 
 export async function generateMetadata({ params }: AttractionDetailPageProps) {
-    const { id: slug } = await params;
-    const attractionData = await getAttractionBySlug(slug);
-    const attraction = attractionData as unknown as Attraction;
+	const { id: slug } = await params;
+	const attractionData = await getAttractionBySlug(slug);
+	const attraction = attractionData as unknown as Attraction;
 
-    if (!attraction) return { title: "Not Found" };
+	if (!attraction) return { title: "Not Found" };
 
-    return {
-        title: attraction.title,
-        description: attraction.description,
-    };
+	return {
+		title: attraction.title,
+		description: attraction.description,
+	};
 }
 
-export default async function AttractionDetailPage({ params }: AttractionDetailPageProps) {
+export default async function AttractionDetailPage({
+	params,
+}: AttractionDetailPageProps) {
 	const { id: slug } = await params;
-    const t = await getTranslations("AttractionDetail");
+	const t = await getTranslations("AttractionDetail");
 
-    const [attractionData, originData] = await Promise.all([
-        getAttractionBySlug(slug),
-        getApartmentOrigin()
-    ]);
+	const [attractionData, originData] = await Promise.all([
+		getAttractionBySlug(slug),
+		getApartmentOrigin(),
+	]);
 
-    const attraction = attractionData as unknown as Attraction;
+	const attraction = attractionData as unknown as Attraction;
 
 	if (!attraction) {
 		return (
@@ -88,10 +90,5 @@ export default async function AttractionDetailPage({ params }: AttractionDetailP
 		);
 	}
 
-	return (
-        <AttractionDetailClient 
-            attraction={attraction} 
-            origin={originData} 
-        />
-    );
+	return <AttractionDetailClient attraction={attraction} origin={originData} />;
 }

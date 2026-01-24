@@ -2,146 +2,150 @@
 
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { getApartmentLocation } from "@/dal/apartments";
+import * as attractionsDal from "@/dal/attractions";
 import { db } from "@/db";
 import { attractionImages, attractions } from "@/db/schema";
-import { translateToEnglish } from "@/lib/translator";
-import { createSafeAction } from "@/lib/safe-action";
 import { getServerUser } from "@/lib/auth-server";
-import * as attractionsDal from "@/dal/attractions";
-import { getApartmentLocation } from "@/dal/apartments";
-import { 
-    createAttractionActionSchema, 
-    updateAttractionActionSchema, 
-    deleteAttractionActionSchema 
+import { createSafeAction } from "@/lib/safe-action";
+import { translateToEnglish } from "@/lib/translator";
+import {
+	createAttractionActionSchema,
+	deleteAttractionActionSchema,
+	updateAttractionActionSchema,
 } from "./schemas";
 
 export const createAttraction = createSafeAction(
-    createAttractionActionSchema,
-    async (data) => {
-        const user = await getServerUser();
-        if (!user.success) {
-            throw new Error("Unauthorized");
-        }
+	createAttractionActionSchema,
+	async (data) => {
+		const user = await getServerUser();
+		if (!user.success) {
+			throw new Error("Unauthorized");
+		}
 
-        // Auto-translate if English fields are missing
-        const titleEn = data.titleEn || (await translateToEnglish(data.title));
-        const descriptionEn = data.descriptionEn || (await translateToEnglish(data.description || ""));
-        const longDescriptionEn = data.longDescriptionEn || (await translateToEnglish(data.longDescription || ""));
+		// Auto-translate if English fields are missing
+		const titleEn = data.titleEn || (await translateToEnglish(data.title));
+		const descriptionEn =
+			data.descriptionEn || (await translateToEnglish(data.description || ""));
+		const longDescriptionEn =
+			data.longDescriptionEn ||
+			(await translateToEnglish(data.longDescription || ""));
 
-        await db.transaction(async (tx) => {
-            const [newAttraction] = await tx
-                .insert(attractions)
-                .values({
-                    title: data.title,
-                    titleEn: titleEn,
-                    description: data.description,
-                    descriptionEn: descriptionEn,
-                    longDescription: data.longDescription,
-                    longDescriptionEn: longDescriptionEn,
-                    distance: data.distance,
-                    coords: data.coords,
-                    latitude: data.latitude,
-                    longitude: data.longitude,
-                    slug: data.slug,
-                    image: data.image,
-                })
-                .returning();
+		await db.transaction(async (tx) => {
+			const [newAttraction] = await tx
+				.insert(attractions)
+				.values({
+					title: data.title,
+					titleEn: titleEn,
+					description: data.description,
+					descriptionEn: descriptionEn,
+					longDescription: data.longDescription,
+					longDescriptionEn: longDescriptionEn,
+					distance: data.distance,
+					coords: data.coords,
+					latitude: data.latitude,
+					longitude: data.longitude,
+					slug: data.slug,
+					image: data.image,
+				})
+				.returning();
 
-            if (data.gallery && data.gallery.length > 0) {
-                const imageRecords = data.gallery.map(
-                    (url: string, index: number) => ({
-                        attractionId: newAttraction.id,
-                        imageUrl: url,
-                        displayOrder: index,
-                    }),
-                );
-                await tx.insert(attractionImages).values(imageRecords);
-            }
-        });
+			if (data.gallery && data.gallery.length > 0) {
+				const imageRecords = data.gallery.map((url: string, index: number) => ({
+					attractionId: newAttraction.id,
+					imageUrl: url,
+					displayOrder: index,
+				}));
+				await tx.insert(attractionImages).values(imageRecords);
+			}
+		});
 
-        revalidatePath("/admin/dashboard");
-        revalidatePath("/");
-        return { success: true };
-    }
+		revalidatePath("/admin/dashboard");
+		revalidatePath("/");
+		return { success: true };
+	},
 );
 
 export const updateAttraction = createSafeAction(
-    updateAttractionActionSchema,
-    async (data) => {
-        const user = await getServerUser();
-        if (!user.success) {
-            throw new Error("Unauthorized");
-        }
+	updateAttractionActionSchema,
+	async (data) => {
+		const user = await getServerUser();
+		if (!user.success) {
+			throw new Error("Unauthorized");
+		}
 
-        // Auto-translate if English fields are missing
-        const titleEn = data.titleEn || (await translateToEnglish(data.title));
-        const descriptionEn = data.descriptionEn || (await translateToEnglish(data.description || ""));
-        const longDescriptionEn = data.longDescriptionEn || (await translateToEnglish(data.longDescription || ""));
+		// Auto-translate if English fields are missing
+		const titleEn = data.titleEn || (await translateToEnglish(data.title));
+		const descriptionEn =
+			data.descriptionEn || (await translateToEnglish(data.description || ""));
+		const longDescriptionEn =
+			data.longDescriptionEn ||
+			(await translateToEnglish(data.longDescription || ""));
 
-        await db.transaction(async (tx) => {
-            await tx
-                .update(attractions)
-                .set({
-                    title: data.title,
-                    titleEn: titleEn,
-                    description: data.description,
-                    descriptionEn: descriptionEn,
-                    longDescription: data.longDescription,
-                    longDescriptionEn: longDescriptionEn,
-                    distance: data.distance,
-                    coords: data.coords,
-                    latitude: data.latitude,
-                    longitude: data.longitude,
-                    image: data.image,
-                })
-                .where(eq(attractions.id, data.id));
+		await db.transaction(async (tx) => {
+			await tx
+				.update(attractions)
+				.set({
+					title: data.title,
+					titleEn: titleEn,
+					description: data.description,
+					descriptionEn: descriptionEn,
+					longDescription: data.longDescription,
+					longDescriptionEn: longDescriptionEn,
+					distance: data.distance,
+					coords: data.coords,
+					latitude: data.latitude,
+					longitude: data.longitude,
+					image: data.image,
+				})
+				.where(eq(attractions.id, data.id));
 
-            if (data.gallery) {
-                // Delete old
-                await tx
-                    .delete(attractionImages)
-                    .where(eq(attractionImages.attractionId, data.id));
+			if (data.gallery) {
+				// Delete old
+				await tx
+					.delete(attractionImages)
+					.where(eq(attractionImages.attractionId, data.id));
 
-                // Insert new
-                if (data.gallery.length > 0) {
-                    const imageRecords = data.gallery.map(
-                        (url: string, index: number) => ({
-                            attractionId: data.id,
-                            imageUrl: url,
-                            displayOrder: index,
-                        }),
-                    );
-                    await tx.insert(attractionImages).values(imageRecords);
-                }
-            }
-        });
+				// Insert new
+				if (data.gallery.length > 0) {
+					const imageRecords = data.gallery.map(
+						(url: string, index: number) => ({
+							attractionId: data.id,
+							imageUrl: url,
+							displayOrder: index,
+						}),
+					);
+					await tx.insert(attractionImages).values(imageRecords);
+				}
+			}
+		});
 
-        revalidatePath("/admin/dashboard");
-        revalidatePath("/");
-        return { success: true };
-    }
+		revalidatePath("/admin/dashboard");
+		revalidatePath("/");
+		return { success: true };
+	},
 );
 
 export const deleteAttraction = createSafeAction(
-    deleteAttractionActionSchema,
-    async ({ id }) => {
-        const user = await getServerUser();
-        if (!user.success) {
-            throw new Error("Unauthorized");
-        }
+	deleteAttractionActionSchema,
+	async ({ id }) => {
+		const user = await getServerUser();
+		if (!user.success) {
+			throw new Error("Unauthorized");
+		}
 
-        await db.transaction(async (tx) => {
-            await tx
-                .delete(attractionImages)
-                .where(eq(attractionImages.attractionId, id));
+		await db.transaction(async (tx) => {
+			await tx
+				.delete(attractionImages)
+				.where(eq(attractionImages.attractionId, id));
 
-            await tx.delete(attractions).where(eq(attractions.id, id));
-        });
+			await tx.delete(attractions).where(eq(attractions.id, id));
+		});
 
-        revalidatePath("/admin/dashboard");
-        revalidatePath("/");
-        return { success: true };
-    }
+		revalidatePath("/admin/dashboard");
+		revalidatePath("/");
+		return { success: true };
+	},
 );
 
 export async function getAllAttractions() {
@@ -153,17 +157,17 @@ export async function getAttractionBySlug(slug: string) {
 }
 
 export async function getApartmentOrigin() {
-    try {
-        const location = await getApartmentLocation();
-        if (location) {
-            return {
-                latitude: location.latitude,
-                longitude: location.longitude,
-            };
-        }
-        return null;
-    } catch (error) {
-        console.error("Failed to fetch apartment origin:", error);
-        return null;
-    }
+	try {
+		const location = await getApartmentLocation();
+		if (location) {
+			return {
+				latitude: location.latitude,
+				longitude: location.longitude,
+			};
+		}
+		return null;
+	} catch (error) {
+		console.error("Failed to fetch apartment origin:", error);
+		return null;
+	}
 }

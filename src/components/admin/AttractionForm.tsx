@@ -2,10 +2,10 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Save } from "lucide-react";
+import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import dynamic from "next/dynamic";
 import { ImageUpload } from "@/components/ImageUpload";
 import { FormInput } from "@/components/shared/FormInput";
 import { RichTextEditor } from "@/components/shared/RichTextEditor";
@@ -165,7 +165,8 @@ export function AttractionForm({
 					<div className="space-y-2">
 						<Label>{t("fields.coords")}</Label>
 						<p className="text-sm text-muted-foreground mb-4">
-							{t("locationHelp") || "Kliknite na mapu da označite lokaciju atrakcije."}
+							{t("locationHelp") ||
+								"Kliknite na mapu da označite lokaciju atrakcije."}
 						</p>
 						<MapPicker
 							initialLat={currentLat || undefined}
@@ -177,7 +178,8 @@ export function AttractionForm({
 						/>
 						{currentLat && currentLng && (
 							<p className="text-xs text-green-600 font-medium">
-								Lokacija postavljena: {currentLat.toFixed(6)}, {currentLng.toFixed(6)}
+								Lokacija postavljena: {currentLat.toFixed(6)},{" "}
+								{currentLng.toFixed(6)}
 							</p>
 						)}
 					</div>

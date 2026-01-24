@@ -5,6 +5,19 @@ const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
 	reactStrictMode: false,
+	// Optimize imports for smaller bundles
+	experimental: {
+		optimizePackageImports: [
+			"lucide-react",
+			"@radix-ui/react-dialog",
+			"@radix-ui/react-dropdown-menu",
+			"@radix-ui/react-popover",
+			"@radix-ui/react-tabs",
+			"@radix-ui/react-tooltip",
+			"framer-motion",
+			"date-fns",
+		],
+	},
 	async headers() {
 		return [
 			{
@@ -25,6 +38,25 @@ const nextConfig: NextConfig = {
 					{
 						key: "Strict-Transport-Security",
 						value: "max-age=31536000; includeSubDomains",
+					},
+				],
+			},
+			// Cache static assets for 1 year
+			{
+				source: "/images/(.*)",
+				headers: [
+					{
+						key: "Cache-Control",
+						value: "public, max-age=31536000, immutable",
+					},
+				],
+			},
+			{
+				source: "/_next/static/(.*)",
+				headers: [
+					{
+						key: "Cache-Control",
+						value: "public, max-age=31536000, immutable",
 					},
 				],
 			},

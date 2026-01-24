@@ -29,8 +29,8 @@ export default function AttractionDetailClient({
 			? `${origin.latitude},${origin.longitude}`
 			: FALLBACK_ORIGIN;
 
-    // PRIORITIZE latitude and longitude over the coords string for accuracy
-    // Use title as final fallback to ensure it NEVER points to "#"
+	// PRIORITIZE latitude and longitude over the coords string for accuracy
+	// Use title as final fallback to ensure it NEVER points to "#"
 	const destinationParam =
 		attraction.latitude != null && attraction.longitude != null
 			? `${attraction.latitude},${attraction.longitude}`

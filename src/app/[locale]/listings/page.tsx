@@ -1,7 +1,7 @@
 import { getAllApartmentsPublic } from "@/dal/apartments";
 import { ApartmentList } from "@/features/listings/components/ApartmentList";
 
-export const revalidate = 0; // Dynamic
+export const revalidate = 3600; // Revalidate every hour (ISR)
 
 export default async function ListingsPage() {
 	const apartments = await getAllApartmentsPublic();
