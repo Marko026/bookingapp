@@ -1,9 +1,9 @@
-import { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 import {
-	getAllBookings,
-	updateBookingStatusAction,
 	deleteBooking as deleteBookingAction,
+	getAllBookings,
 	updateBooking as updateBookingAction,
+	updateBookingStatusAction,
 } from "@/features/booking/actions";
 import { toast } from "@/lib/toast";
 import type { Booking } from "@/types";
@@ -76,25 +76,28 @@ export function useAdminBookings(initialPage = 1) {
 		return false;
 	};
 
-    const updateBookingDetails = async (id: number, data: { checkIn: string, checkOut: string, totalPrice: number }) => {
-        try {
-            const result = await updateBookingAction(
-                id,
-                data.checkIn,
-                data.checkOut,
-                data.totalPrice,
-            );
-            if (result.success) {
-                await fetchBookings(pagination.page);
-                toast.success("Rezervacija je ažurirana");
-                return true;
-            }
-        } catch (error) {
-            console.error("Save booking error:", error);
-            toast.error("Greška pri izmeni rezervacije");
-        }
-        return false;
-    }
+	const updateBookingDetails = async (
+		id: number,
+		data: { checkIn: string; checkOut: string; totalPrice: number },
+	) => {
+		try {
+			const result = await updateBookingAction(
+				id,
+				data.checkIn,
+				data.checkOut,
+				data.totalPrice,
+			);
+			if (result.success) {
+				await fetchBookings(pagination.page);
+				toast.success("Rezervacija je ažurirana");
+				return true;
+			}
+		} catch (error) {
+			console.error("Save booking error:", error);
+			toast.error("Greška pri izmeni rezervacije");
+		}
+		return false;
+	};
 
 	return {
 		bookings,
@@ -103,7 +106,7 @@ export function useAdminBookings(initialPage = 1) {
 		fetchBookings,
 		updateBookingStatus,
 		removeBooking,
-        updateBookingDetails,
-        setBookings, // Exposed if needed for optimistic updates locally
+		updateBookingDetails,
+		setBookings, // Exposed if needed for optimistic updates locally
 	};
 }

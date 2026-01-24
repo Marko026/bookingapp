@@ -184,6 +184,38 @@
 				"successDesc": "Apartman je sačuvan u bazi podataka.",
 				"error": "Greška pri dodavanju apartmana",
 				"defaultError": "Pokušajte ponovo."
+			},
+			"imageAlt": "{name} - Slika {number}",
+			"manager": {
+				"title": "Upravljanje Apartmanima",
+				"addNew": "Dodaj Novi",
+				"loading": "Učitavanje apartmana...",
+				"tabs": {
+					"sr": "SR",
+					"en": "EN"
+				},
+				"labels": {
+					"nameSr": "Naziv (SR)",
+					"nameEn": "Ime (EN)",
+					"pricePerNight": "Cena po noćenju",
+					"descSr": "Opis (SR)",
+					"descEn": "Opis (EN)"
+				},
+				"placeholders": {
+					"nameEn": "Englesko ime",
+					"descEn": "Engleski opis"
+				},
+				"buttons": {
+					"cancel": "Otkaži",
+					"save": "Sačuvaj",
+					"edit": "Izmeni",
+					"delete": "Obriši"
+				},
+				"imageAlt": "{name} - Slika {number}",
+				"deleteDialog": {
+					"title": "Obriši Apartman",
+					"description": "Da li ste sigurni da želite da obrišete ovaj apartman? Ova akcija se ne može poništiti."
+				}
 			}
 		},
 		"attractions": {

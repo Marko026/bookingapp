@@ -1,5 +1,5 @@
-import { BookingData } from "./types";
 import { COMMON_STYLES } from "./styles";
+import type { BookingData } from "./types";
 import { formatDateSR } from "./utils";
 
 export function createBookingEmail(data: BookingData) {

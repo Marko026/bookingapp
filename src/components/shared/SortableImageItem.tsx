@@ -4,8 +4,8 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Star, X } from "lucide-react";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
 import type { UploadedImage } from "@/lib/image-upload";
+import { cn } from "@/lib/utils";
 
 interface SortableImageItemProps {
 	image: UploadedImage;

@@ -42,6 +42,8 @@ export interface Attraction {
 	image: string | null;
 	gallery: string[];
 	coords: string | null;
+	latitude?: number | null;
+	longitude?: number | null;
 	slug: string;
 }
 

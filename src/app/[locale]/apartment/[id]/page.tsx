@@ -30,6 +30,7 @@ import { Button } from "@/components/ui/button";
 import { BookingCalendar } from "@/features/booking/components/BookingCalendar";
 import { BookingForm } from "@/features/booking/components/BookingForm";
 import { getApartment } from "@/features/listings/actions";
+import { getLocalizedField } from "@/lib/localization";
 import { toast } from "@/lib/toast";
 import { getApartments } from "@/services/storageService";
 import type { Apartment } from "@/types";
@@ -88,9 +89,7 @@ export default function ApartmentDetailPage() {
 			<div className="min-h-screen flex items-center justify-center">
 				<div className="animate-pulse flex flex-col items-center">
 					<div className="h-12 w-12 bg-amber-600 rounded-full mb-4"></div>
-					<p className="font-serif text-xl text-gray-400">
-						{t("loading")}
-					</p>
+					<p className="font-serif text-xl text-gray-400">{t("loading")}</p>
 				</div>
 			</div>
 		);
@@ -178,9 +177,7 @@ export default function ApartmentDetailPage() {
 					{/* Header Section */}
 					<div className="mb-6 md:mb-8">
 						<h1 className="text-3xl md:text-6xl font-serif font-medium text-gray-900 leading-[1.1] mb-3 md:mb-4">
-							{locale === "en"
-								? apartment.nameEn || apartment.name
-								: apartment.name}
+							{getLocalizedField(apartment, "name", locale)}
 						</h1>
 
 						<div className="flex flex-wrap items-center gap-3 md:gap-4 text-xs md:text-sm text-gray-500">
@@ -395,10 +392,7 @@ export default function ApartmentDetailPage() {
 							<div
 								className="prose prose-stone prose-lg max-w-none text-gray-500 leading-7 md:leading-8 font-light"
 								dangerouslySetInnerHTML={{
-									__html:
-										locale === "en"
-											? apartment.descriptionEn || apartment.description
-											: apartment.description,
+									__html: getLocalizedField(apartment, "description", locale),
 								}}
 							/>
 						</div>
@@ -431,7 +425,7 @@ export default function ApartmentDetailPage() {
 								<LocationMap
 									lat={apartment.latitude}
 									lng={apartment.longitude}
-									popupText={apartment.name}
+									popupText={getLocalizedField(apartment, "name", locale)}
 								/>
 							</div>
 						)}
@@ -566,11 +560,7 @@ export default function ApartmentDetailPage() {
 						{dateRange?.from && dateRange?.to && (
 							<BookingForm
 								apartmentId={apartment.id}
-								apartmentName={
-									locale === "en"
-										? apartment.nameEn || apartment.name
-										: apartment.name
-								}
+								apartmentName={getLocalizedField(apartment, "name", locale)}
 								apartmentImage={apartment.images[0]}
 								checkIn={dateRange.from}
 								checkOut={dateRange.to}

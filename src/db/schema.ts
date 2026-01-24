@@ -3,13 +3,13 @@ import {
 	boolean,
 	date,
 	doublePrecision,
+	index,
 	integer,
 	pgTable,
 	serial,
 	text,
 	timestamp,
 	uuid,
-	index,
 } from "drizzle-orm/pg-core";
 
 export const apartments = pgTable("apartments", {
@@ -41,23 +41,31 @@ export const apartmentImages = pgTable("apartment_images", {
 	createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const bookings = pgTable("bookings", {
-	id: serial("id").primaryKey(),
-	apartmentId: integer("apartment_id")
-		.references(() => apartments.id)
-		.notNull(),
-	guestName: text("guest_name").notNull(),
-	guestEmail: text("guest_email").notNull(),
-	checkIn: date("check_in").notNull(),
-	checkOut: date("check_out").notNull(),
-	totalPrice: integer("total_price").notNull(),
-	status: text("status").default("pending").notNull(), // pending, confirmed, cancelled
-	createdAt: timestamp("created_at").defaultNow(),
-}, (table) => {
-  return {
-    overlapIdx: index("booking_overlap_idx").on(table.apartmentId, table.checkIn, table.checkOut),
-  };
-});
+export const bookings = pgTable(
+	"bookings",
+	{
+		id: serial("id").primaryKey(),
+		apartmentId: integer("apartment_id")
+			.references(() => apartments.id)
+			.notNull(),
+		guestName: text("guest_name").notNull(),
+		guestEmail: text("guest_email").notNull(),
+		checkIn: date("check_in").notNull(),
+		checkOut: date("check_out").notNull(),
+		totalPrice: integer("total_price").notNull(),
+		status: text("status").default("pending").notNull(), // pending, confirmed, cancelled
+		createdAt: timestamp("created_at").defaultNow(),
+	},
+	(table) => {
+		return {
+			overlapIdx: index("booking_overlap_idx").on(
+				table.apartmentId,
+				table.checkIn,
+				table.checkOut,
+			),
+		};
+	},
+);
 
 export const inquiries = pgTable("inquiries", {
 	id: serial("id").primaryKey(),
