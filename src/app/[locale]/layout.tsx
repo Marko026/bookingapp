@@ -1,12 +1,12 @@
-import { Geist, Geist_Mono } from "next/font/google";
-import { notFound } from "next/navigation";
-import { NextIntlClientProvider } from "next-intl";
-import { getMessages, setRequestLocale } from "next-intl/server";
-import { Toaster } from "sonner";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
-import { SmoothScroll } from "@/components/providers/SmoothScroll";
+import LenisProvider from "@/components/providers/LenisProvider"; // Import LenisProvider
 import { routing } from "@/i18n/routing";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages, setRequestLocale } from "next-intl/server";
+import { Geist, Geist_Mono } from "next/font/google";
+import { notFound } from "next/navigation";
+import { Toaster } from "sonner";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -50,30 +50,34 @@ export default async function RootLayout({
 	const direction = ["ar", "he", "fa"].includes(locale) ? "rtl" : "ltr";
 
 	return (
-		<html lang={locale} dir={direction} suppressHydrationWarning>
+		<html
+			lang={locale}
+			dir={direction}
+			className="scroll-smooth"
+			style={{ scrollBehavior: "smooth" }}
+		>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-black`}
-				suppressHydrationWarning
 			>
-				<NextIntlClientProvider messages={messages}>
-					<Toaster
-						position="top-right"
-						richColors
-						expand={false}
-						closeButton
-						toastOptions={{
-							style: {
-								borderRadius: "12px",
-								fontFamily: "var(--font-geist-sans)",
-							},
-						}}
-					/>
-					<SmoothScroll>
+				<LenisProvider> {/* Wrap with LenisProvider */}
+					<NextIntlClientProvider messages={messages}>
+						<Toaster
+							position="top-right"
+							richColors
+							expand={false}
+							closeButton
+							toastOptions={{
+								style: {
+									borderRadius: "12px",
+									fontFamily: "var(--font-geist-sans)",
+								},
+							}}
+						/>
 						<Navbar />
 						<main className="min-h-screen">{children}</main>
 						<Footer />
-					</SmoothScroll>
-				</NextIntlClientProvider>
+					</NextIntlClientProvider>
+				</LenisProvider>
 			</body>
 		</html>
 	);

@@ -1,24 +1,20 @@
 "use client";
 
-import { Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
-import { useLenis } from "lenis/react";
 import { ArrowRight, CheckCircle2, House, Map, Star } from "lucide-react";
-import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 
 export function Hero() {
 	const t = useTranslations("Hero");
 	const ts = useTranslations("Stats");
-	const lenis = useLenis();
-
-	const handleScroll = (e: React.MouseEvent) => {
-		e.preventDefault();
-		lenis?.scrollTo("#apartments");
-	};
 
 	return (
-		<section className="relative w-full min-h-screen overflow-hidden py-20 lg:py-24">
+		<section
+			id="hero"
+			className="relative w-full min-h-screen overflow-hidden py-20 lg:py-24"
+		>
 			{/* Background Effects */}
 			<div className="absolute inset-0 bg-[#FFFDF9]" />
 
@@ -157,7 +153,7 @@ export function Hero() {
 						<div className="flex flex-col sm:flex-row gap-4 mt-2">
 							<Link
 								href="/#apartments"
-								onClick={handleScroll}
+								scroll={false}
 								className="group relative overflow-hidden hover:shadow-[0_0_30px_rgba(251,191,36,0.4)] hover:-translate-y-0.5 transition-all duration-300 flex text-base font-medium text-white bg-zinc-900 h-14 rounded-2xl px-8 shadow-[0_0_20px_rgba(0,0,0,0.1)] items-center justify-center w-full sm:w-auto"
 							>
 								<div className="flex items-center gap-2 transition-transform duration-300 group-hover:-translate-x-3">
@@ -277,6 +273,7 @@ export function Hero() {
 									fill
 									className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-90"
 									sizes="(max-width: 768px) 50vw, 40vw"
+									loading="eager"
 								/>
 								<div className="absolute top-3 right-3 md:top-4 md:right-4 backdrop-blur-md border px-2 py-1 md:px-3 md:py-1.5 rounded-full flex items-center gap-1.5 md:gap-2 bg-white/10 border-white/10">
 									<span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-amber-400"></span>
@@ -300,8 +297,7 @@ export function Hero() {
 
 						{/* Floating UI Card */}
 						<motion.div
-							onClick={handleScroll}
-							className="absolute top-[40%] right-[-20px] rtl:right-auto rtl:left-[-20px] bg-black/30 backdrop-blur-md border border-white/10 p-5 rounded-[2rem] w-72 shadow-2xl transform hover:-translate-y-2 transition-transform duration-300 hidden lg:block cursor-pointer"
+							className="absolute top-[40%] right-[-20px] rtl:right-auto rtl:left-[-20px] bg-black/30 backdrop-blur-md border border-white/10 p-5 rounded-[2rem] w-72 shadow-2xl transform hover:-translate-y-2 transition-transform duration-300 hidden lg:block"
 							initial={{ opacity: 0, y: 20 }}
 							animate={{ opacity: 1, y: 0 }}
 							transition={{ duration: 0.6, delay: 0.8 }}
@@ -311,7 +307,8 @@ export function Hero() {
 									{t("showcase.apartmentDetails")}
 								</span>
 								<Link
-									href="#details"
+									href="/#apartments"
+									scroll={false}
 									className="text-xs font-medium uppercase tracking-wide text-zinc-400 flex items-center gap-1"
 								>
 									<ArrowRight className="w-4 h-4 fill-current" />

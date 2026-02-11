@@ -57,6 +57,11 @@
 }
 
 @layer base {
+  html, body {
+  }
+  html {
+    scroll-padding-top: 5rem;
+  }
   * {
     @apply border-border;
   }

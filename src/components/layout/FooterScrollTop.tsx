@@ -1,19 +1,17 @@
 "use client";
 
-import { useLenis } from "lenis/react";
 import { Logo } from "@/components/ui/Logo";
+import { Link } from "@/i18n/routing";
 
 export function FooterScrollTop() {
-	const lenis = useLenis();
-
 	return (
-		<button
-			type="button"
-			onClick={() => lenis?.scrollTo(0)}
-			className="focus:outline-none"
+		<Link
+			href="/#hero"
+			scroll={false}
+			className="focus:outline-none block w-fit"
 			aria-label="Scroll to top"
 		>
 			<Logo variant="light" className="mb-6 cursor-pointer" />
-		</button>
+		</Link>
 	);
 }
