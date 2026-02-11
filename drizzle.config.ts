@@ -1,8 +1,6 @@
-import { config } from "dotenv";
 import { defineConfig } from "drizzle-kit";
 
-config({ path: ".env.local" });
-
+// DATABASE_URL should be provided via environment variables (e.g., .env.local locally, or Vercel dashboard in production)
 if (!process.env.DATABASE_URL) {
 	throw new Error("DATABASE_URL is not set");
 }
