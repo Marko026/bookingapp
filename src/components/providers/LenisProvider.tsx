@@ -31,9 +31,6 @@ export default function LenisProvider({ children }: LenisProviderProps) {
 			lerp: 0.1, // Lower value for smoother scrolling
 			duration: 1.2, // Increased duration for a more luxurious feel
 			easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)), // Custom easing
-			direction: "vertical",
-			gestureDirection: "vertical",
-			smoothTouch: false, // Disable for touch devices if not optimized
 			touchMultiplier: 2, // Adjust touch scroll speed
 			infinite: false,
 		});
