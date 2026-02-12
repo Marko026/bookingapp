@@ -43,3 +43,7 @@ next-env.d.ts
 
 .vercel
 .env*.local
+
+# Security-sensitive setup files with API keys
+VERCEL_SETUP.md
+SECURITY_CHECKLIST.md
