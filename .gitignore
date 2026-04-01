@@ -36,14 +36,21 @@ yarn-error.log*
 
 # vercel
 .vercel
+vercel_env.txt
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 
-.vercel
 .env*.local
 
 # Security-sensitive setup files with API keys
 VERCEL_SETUP.md
 SECURITY_CHECKLIST.md
+DEPLOYMENT_VERIFICATION.md
+REDEPLOY_INSTRUCTIONS.md
+
+# Logs and previews
+*.log
+runtime_logs.txt
+email-preview.html
