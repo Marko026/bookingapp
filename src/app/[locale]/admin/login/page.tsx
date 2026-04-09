@@ -133,7 +133,7 @@ export default function LoginPage() {
 						>
 							{isLoggingIn ? (
 								<>
-									<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white inline-block mr-2" />
+									<span className="animate-spin rounded-full h-6 w-6 border-b-2 border-white inline-block mr-2" />
 									{t("loading")}
 								</>
 							) : (
