@@ -1,12 +1,11 @@
-import { Footer } from "@/components/layout/Footer";
-import { Navbar } from "@/components/layout/Navbar";
-import LenisProvider from "@/components/providers/LenisProvider"; // Import LenisProvider
-import { routing } from "@/i18n/routing";
-import { NextIntlClientProvider } from "next-intl";
-import { getMessages, setRequestLocale } from "next-intl/server";
 import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages, setRequestLocale } from "next-intl/server";
 import { Toaster } from "sonner";
+import { Footer } from "@/components/layout/Footer";
+import { Navbar } from "@/components/layout/Navbar";
+import { routing } from "@/i18n/routing";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -20,6 +19,10 @@ const geistMono = Geist_Mono({
 	subsets: ["latin"],
 	display: "swap",
 });
+
+export const metadata = {
+	metadataBase: new URL("https://apartmani-todorovic.com"),
+};
 
 export function generateStaticParams() {
 	return routing.locales.map((locale) => ({ locale }));
@@ -35,7 +38,7 @@ export default async function RootLayout({
 	const { locale } = await params;
 
 	// Ensure that the incoming `locale` is valid
-	if (!routing.locales.includes(locale as any)) {
+	if (!routing.locales.includes(locale as (typeof routing.locales)[number])) {
 		notFound();
 	}
 
@@ -50,34 +53,27 @@ export default async function RootLayout({
 	const direction = ["ar", "he", "fa"].includes(locale) ? "rtl" : "ltr";
 
 	return (
-		<html
-			lang={locale}
-			dir={direction}
-			className="scroll-smooth"
-			style={{ scrollBehavior: "smooth" }}
-		>
+		<html lang={locale} dir={direction} className="scroll-smooth">
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-black`}
 			>
-				<LenisProvider> {/* Wrap with LenisProvider */}
-					<NextIntlClientProvider messages={messages}>
-						<Toaster
-							position="top-right"
-							richColors
-							expand={false}
-							closeButton
-							toastOptions={{
-								style: {
-									borderRadius: "12px",
-									fontFamily: "var(--font-geist-sans)",
-								},
-							}}
-						/>
-						<Navbar />
-						<main className="min-h-screen">{children}</main>
-						<Footer />
-					</NextIntlClientProvider>
-				</LenisProvider>
+				<NextIntlClientProvider messages={messages} locale={locale}>
+					<Toaster
+						position="top-right"
+						richColors
+						expand={false}
+						closeButton
+						toastOptions={{
+							style: {
+								borderRadius: "12px",
+								fontFamily: "var(--font-geist-sans)",
+							},
+						}}
+					/>
+					<Navbar />
+					<main className="min-h-screen">{children}</main>
+					<Footer />
+				</NextIntlClientProvider>
 			</body>
 		</html>
 	);

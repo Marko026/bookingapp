@@ -1,6 +1,7 @@
 "use client";
 
 import { Plus, Save } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -109,10 +110,14 @@ export function ApartmentsManager() {
 									<div className="space-y-4">
 										<div className="grid grid-cols-2 gap-8">
 											<div className="space-y-2">
-												<label className="text-xs font-bold uppercase text-gray-400">
+												<label
+													htmlFor="nameSr"
+													className="text-xs font-bold uppercase text-gray-400"
+												>
 													{t("labels.nameSr")}
 												</label>
 												<Input
+													id="nameSr"
 													value={editingApartment.name}
 													onChange={(e) =>
 														setEditingApartment({
@@ -123,10 +128,14 @@ export function ApartmentsManager() {
 												/>
 											</div>
 											<div className="space-y-2">
-												<label className="text-xs font-bold uppercase text-gray-400">
+												<label
+													htmlFor="pricePerNight"
+													className="text-xs font-bold uppercase text-gray-400"
+												>
 													{t("labels.pricePerNight")}
 												</label>
 												<Input
+													id="pricePerNight"
 													type="number"
 													value={editingApartment.price}
 													onChange={(e) =>
@@ -179,8 +188,10 @@ export function ApartmentsManager() {
 							) : (
 								<div className="flex justify-between items-start gap-8">
 									<div className="flex gap-8">
-										<img
+										<Image
 											src={apt.images[0]}
+											width={160}
+											height={160}
 											className="w-40 h-40 object-cover rounded-2xl"
 											alt={getLocalizedField(apt, "name", locale)}
 										/>

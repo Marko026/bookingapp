@@ -93,7 +93,10 @@ export function BentoGrid() {
 							duration={15}
 							className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
 						/>
-						<button className="w-16 h-16 rounded-full bg-amber-400 flex items-center justify-center hover:scale-110 transition-transform duration-300 shadow-lg shadow-amber-400/20 z-10">
+						<button
+							type="button"
+							className="w-16 h-16 rounded-full bg-amber-400 flex items-center justify-center hover:scale-110 transition-transform duration-300 shadow-lg shadow-amber-400/20 z-10"
+						>
 							<ArrowUpRight className="w-6 h-6 text-black" strokeWidth={2} />
 						</button>
 					</div>

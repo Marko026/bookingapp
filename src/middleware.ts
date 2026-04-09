@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
+import { env } from "@/env";
 import { routing } from "./i18n/routing";
 
 const handleI18nRouting = createMiddleware(routing);
@@ -13,22 +14,22 @@ export async function middleware(request: NextRequest) {
 	const supabaseResponse = i18nResponse;
 
 	const supabase = createServerClient(
-		process.env.NEXT_PUBLIC_SUPABASE_URL!,
-		process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+		env.NEXT_PUBLIC_SUPABASE_URL,
+		env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
 		{
 			cookies: {
 				getAll() {
 					return request.cookies.getAll();
 				},
 				setAll(cookiesToSet) {
-					cookiesToSet.forEach(({ name, value, options }) =>
-						request.cookies.set(name, value),
-					);
+					cookiesToSet.forEach(({ name, value }) => {
+						request.cookies.set(name, value);
+					});
 					// If we're setting cookies, we need to make sure they're in the response too
 					// Since i18n middleware might have already created a response, we update it
-					cookiesToSet.forEach(({ name, value, options }) =>
-						supabaseResponse.cookies.set(name, value, options),
-					);
+					cookiesToSet.forEach(({ name, value, options }) => {
+						supabaseResponse.cookies.set(name, value, options);
+					});
 				},
 			},
 		},
@@ -74,8 +75,8 @@ export async function middleware(request: NextRequest) {
 
 		// Fallback to env vars if not found in DB (migration period)
 		const allowedEmails = [
-			process.env.NEXT_PUBLIC_ADMIN_EMAIL_1,
-			process.env.NEXT_PUBLIC_ADMIN_EMAIL_2,
+			env.NEXT_PUBLIC_ADMIN_EMAIL_1,
+			env.NEXT_PUBLIC_ADMIN_EMAIL_2,
 		].filter(Boolean);
 
 		const isEnvAdmin = allowedEmails.includes(user.email || "");

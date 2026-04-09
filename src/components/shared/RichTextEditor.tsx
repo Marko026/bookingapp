@@ -13,6 +13,7 @@ import {
 	Underline as UnderlineIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import {
 	Tooltip,
 	TooltipContent,
@@ -71,7 +72,7 @@ const MenuButton = ({
 );
 
 export function RichTextEditor({
-	id,
+	id: _id,
 	value,
 	onChange,
 	placeholder = "Napišite nešto...",
@@ -107,7 +108,7 @@ export function RichTextEditor({
 	return (
 		<div className={cn("space-y-2", className)}>
 			{label && (
-				<label className="text-sm font-medium text-gray-900">{label}</label>
+				<Label className="text-sm font-medium text-gray-900">{label}</Label>
 			)}
 
 			<div

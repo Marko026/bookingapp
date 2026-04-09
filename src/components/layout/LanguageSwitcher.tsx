@@ -3,6 +3,7 @@
 import { Languages } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import * as React from "react";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -13,7 +14,6 @@ import {
 import { usePathname, useRouter } from "@/i18n/routing";
 
 export function LanguageSwitcher() {
-	const t = useTranslations("Navigation");
 	const locale = useLocale();
 	const router = useRouter();
 	const pathname = usePathname();
@@ -32,12 +32,13 @@ export function LanguageSwitcher() {
 		{ code: "sr", name: "Srpski", flag: "🇷🇸" },
 	];
 
-	const currentLang = languages.find((l) => l.code === locale);
+	const currentLang = languages.find((l) => l.code === locale) || languages[1];
 
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button
+					type="button"
 					variant="ghost"
 					size="sm"
 					className="flex items-center gap-2 hover:bg-neutral-100 transition-colors"

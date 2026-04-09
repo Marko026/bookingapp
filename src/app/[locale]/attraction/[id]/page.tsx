@@ -7,6 +7,7 @@ import {
 	getAttractionBySlug,
 } from "@/features/attractions/actions";
 import { Link, routing } from "@/i18n/routing";
+import { getLocalizedField } from "@/lib/localization";
 import type { Attraction } from "@/types";
 import AttractionDetailClient from "./AttractionDetailClient";
 
@@ -32,15 +33,21 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: AttractionDetailPageProps) {
-	const { id: slug } = await params;
+	const { id: slug, locale } = await params;
 	const attractionData = await getAttractionBySlug(slug);
 	const attraction = attractionData as unknown as Attraction;
 
 	if (!attraction) return { title: "Not Found" };
 
+	const title = getLocalizedField(attraction, "title", locale);
+	const description = getLocalizedField(attraction, "description", locale);
+
 	return {
-		title: attraction.title,
-		description: attraction.description,
+		title: `${title} | Apartmani Todorović`,
+		description: description?.substring(0, 160),
+		openGraph: {
+			images: attraction.image ? [attraction.image] : [],
+		},
 	};
 }
 

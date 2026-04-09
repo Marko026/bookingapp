@@ -2,7 +2,7 @@
 
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
+import type { z } from "zod";
 import {
 	getAllApartmentsAdmin as getAllApartmentsAdminDAL,
 	getApartment as getApartmentDAL,
@@ -14,6 +14,7 @@ import { createSafeAction } from "@/lib/safe-action";
 import { createAdminClient } from "@/lib/supabase-admin";
 import { translateToEnglish } from "@/lib/translator";
 import {
+	type apartmentImageActionSchema,
 	createApartmentActionSchema,
 	deleteApartmentActionSchema,
 	updateApartmentActionSchema,
@@ -54,15 +55,17 @@ export const createApartment = createSafeAction(
 
 		// Insert images if present
 		if (data.images && Array.isArray(data.images) && data.images.length > 0) {
-			const imagesToInsert = data.images.map((img: any) => ({
-				apartmentId: newApartment.id,
-				imageUrl: img.imageUrl,
-				altText: img.altText,
-				displayOrder: img.displayOrder,
-				isCover: img.isCover,
-				width: img.width,
-				height: img.height,
-			}));
+			const imagesToInsert = data.images.map(
+				(img: z.infer<typeof apartmentImageActionSchema>) => ({
+					apartmentId: newApartment.id,
+					imageUrl: img.imageUrl,
+					altText: img.altText,
+					displayOrder: img.displayOrder,
+					isCover: img.isCover,
+					width: img.width,
+					height: img.height,
+				}),
+			);
 
 			await db.insert(apartmentImages).values(imagesToInsert);
 		}

@@ -1,5 +1,21 @@
 import * as z from "zod";
 
+export const apartmentImageSchema = z.object({
+	url: z.string(),
+	path: z.string(),
+	width: z.number(),
+	height: z.number(),
+});
+
+export const apartmentImageActionSchema = z.object({
+	imageUrl: z.string(),
+	altText: z.string().optional().nullable(),
+	displayOrder: z.number().optional(),
+	isCover: z.boolean().optional(),
+	width: z.number().optional().nullable(),
+	height: z.number().optional().nullable(),
+});
+
 export const apartmentFormSchema = z.object({
 	name: z.string().min(2, "Naziv mora imati bar 2 karaktera"),
 	nameEn: z.string().optional(),
@@ -9,16 +25,7 @@ export const apartmentFormSchema = z.object({
 	capacity: z.coerce.number().min(1, "Kapacitet je obavezan"),
 	latitude: z.number().nullable().optional(),
 	longitude: z.number().nullable().optional(),
-	images: z
-		.array(
-			z.object({
-				url: z.string(),
-				path: z.string(),
-				width: z.number(),
-				height: z.number(),
-			}),
-		)
-		.min(1, "Bar jedna slika je obavezna"),
+	images: z.array(apartmentImageSchema).min(1, "Bar jedna slika je obavezna"),
 });
 
 export type ApartmentFormValues = z.infer<typeof apartmentFormSchema>;
@@ -52,7 +59,8 @@ export const createApartmentActionSchema = z.object({
 		.string()
 		.optional()
 		.transform((val) => (val ? JSON.parse(val) : []))
-		.or(z.array(z.any())),
+		.pipe(z.array(apartmentImageActionSchema))
+		.or(z.array(apartmentImageActionSchema)),
 });
 
 export const updateApartmentActionSchema = createApartmentActionSchema.extend({

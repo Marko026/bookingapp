@@ -64,10 +64,14 @@ export default function LoginPage() {
 				<CardContent className="px-8 pb-8">
 					<form onSubmit={handleLogin} className="space-y-5">
 						<div className="space-y-2">
-							<label className="text-sm font-bold text-gray-700 block">
+							<label
+								htmlFor="email"
+								className="text-sm font-bold text-gray-700 block"
+							>
 								{t("emailLabel")}
 							</label>
 							<Input
+								id="email"
 								type="email"
 								placeholder={t("emailPlaceholder")}
 								className="py-7 rounded-2xl text-lg border-2 border-gray-200 focus:border-amber-500 focus:ring-amber-500/20 transition-all bg-gray-50 focus:bg-white"
@@ -79,10 +83,14 @@ export default function LoginPage() {
 						</div>
 
 						<div className="space-y-2">
-							<label className="text-sm font-bold text-gray-700 block">
+							<label
+								htmlFor="password"
+								className="text-sm font-bold text-gray-700 block"
+							>
 								{t("passwordLabel")}
 							</label>
 							<Input
+								id="password"
 								type="password"
 								placeholder={t("passwordPlaceholder")}
 								className="py-7 rounded-2xl text-lg border-2 border-gray-200 focus:border-amber-500 focus:ring-amber-500/20 transition-all bg-gray-50 focus:bg-white"

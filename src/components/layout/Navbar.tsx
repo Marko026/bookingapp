@@ -5,7 +5,6 @@ import { Home, List, MapPin, Menu, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import { useLenis } from "@/components/providers/LenisProvider"; // Import useLenis
 import { Logo } from "@/components/ui/Logo";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
@@ -18,8 +17,6 @@ export function Navbar() {
 	const [isTop, setIsTop] = useState(true);
 	const lastScrollY = useRef(0);
 	const pathname = usePathname();
-	const router = useRouter();
-	const lenis = useLenis(); // Get Lenis instance
 
 	const navLinks = [
 		{ name: t("home"), path: "/#hero", id: "hero" },
@@ -27,7 +24,10 @@ export function Navbar() {
 		{ name: t("attractions"), path: "/#attractions", id: "attractions" },
 	];
 
+	const [isMounted, setIsMounted] = useState(false);
+
 	useEffect(() => {
+		setIsMounted(true);
 		const handleScroll = () => {
 			const currentScrollY = window.scrollY;
 			setIsTop(currentScrollY < 50);
@@ -50,18 +50,29 @@ export function Navbar() {
 		href: string,
 	) => {
 		setIsOpen(false);
-		if (href.startsWith("/#") && lenis) {
-			e.preventDefault(); // Prevent default Next.js Link behavior
-			// We need to strip the current locale from the pathname to correctly identify the hash target
-			const currentPath = pathname.endsWith("/")
-				? pathname.slice(0, -1)
-				: pathname; // Remove trailing slash if present
-			const targetId = href.split("#")[1]; // Get the ID from the hash, e.g., "apartments"
-			const targetElement = document.getElementById(targetId);
 
-			if (targetElement) {
-				lenis.scrollTo(targetElement);
+		// Logic for Logo click (goes to homepage and scrolls to top if already there)
+		if (href === "/") {
+			if (pathname === "/") {
+				e.preventDefault();
+				window.scrollTo({ top: 0, behavior: "smooth" });
 			}
+			return;
+		}
+
+		if (href.startsWith("/#")) {
+			const targetId = href.split("#")[1];
+
+			if (pathname === "/") {
+				// We are on the homepage, handle smooth scroll
+				e.preventDefault();
+				const targetElement = document.getElementById(targetId);
+
+				if (targetElement) {
+					targetElement.scrollIntoView({ behavior: "smooth" });
+				}
+			}
+			// If not on the homepage, let Next.js handle the routing to the page with hash
 		}
 	};
 
@@ -77,16 +88,15 @@ export function Navbar() {
 					className={cn(
 						"pointer-events-auto w-full px-6 py-2 transition-all duration-500 flex items-center justify-between h-20", // Standard height
 						// Visual logic: Glass at top, Custom smooth shadow on scroll
-						isTop
+						!isMounted || isTop
 							? "bg-white/90 backdrop-blur-xl border-b border-white/20"
 							: "bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100",
 					)}
 				>
 					{/* Logo Container - optimizing allows for larger visual logo */}
 					<Link
-						href="/#hero"
-						scroll={false}
-						onClick={(e) => handleNavClick(e, "/#hero")} // Pass event and href
+						href="/"
+						onClick={(e) => handleNavClick(e, "/")} // Pass event and href
 						className="flex items-center group relative z-50 pointer-events-auto"
 					>
 						<Logo className="origin-left" />
@@ -97,8 +107,7 @@ export function Navbar() {
 						{navLinks.map((link) => (
 							<Link
 								key={link.path + link.name}
-								href={link.path as any}
-								scroll={false}
+								href={link.path as string}
 								onClick={(e) => handleNavClick(e, link.path)} // Pass event and href
 								className={cn(
 									"px-5 py-2 rounded-full text-sm font-medium transition-all duration-200",
@@ -109,17 +118,16 @@ export function Navbar() {
 							</Link>
 						))}
 						<div className="ms-2 ps-2 border-s border-gray-100">
-							<LanguageSwitcher />
+							{isMounted && <LanguageSwitcher />}
 						</div>
 					</div>
 
 					{/* Right Side: Mobile Toggle only + Switcher */}
 					<div className="flex items-center gap-2 ms-auto md:ms-0">
-						<div className="md:hidden">
-							<LanguageSwitcher />
-						</div>
+						<div className="md:hidden">{isMounted && <LanguageSwitcher />}</div>
 						{/* Mobile Menu Toggle */}
 						<button
+							type="button"
 							onClick={toggleMenu}
 							className="md:hidden p-1.5 md:p-2 text-gray-900 hover:bg-gray-100 rounded-full transition-colors pointer-events-auto"
 						>
@@ -146,8 +154,7 @@ export function Navbar() {
 							{navLinks.map((link) => (
 								<Link
 									key={link.path + link.name}
-									href={link.path as any}
-									scroll={false}
+									href={link.path as string}
 									onClick={(e) => handleNavClick(e, link.path)} // Pass event and href
 									className="flex items-center justify-between p-5 rounded-3xl bg-gray-50 text-xl font-serif text-gray-900 active:scale-95 transition-all"
 								>

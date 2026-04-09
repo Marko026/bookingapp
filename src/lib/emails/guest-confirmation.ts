@@ -84,16 +84,16 @@ export function createGuestConfirmationEmail(data: BookingData) {
 
             <!-- Action Button -->
             <div class="btn-container">
-                <a href="https://apartmanitodorovic.rs" class="btn">Posetite Naš Sajt</a>
+                <a href="https://apartmani-todorovic.com" class="btn">Posetite Naš Sajt</a>
             </div>
         </div>
 
         <!-- Footer -->
         <div class="footer">
             <div class="footer-links">
-                <a href="#">Instagram</a>
-                <a href="#">Facebook</a>
-                <a href="#">Kontakt</a>
+                <a href="https://www.instagram.com/apartmanitodorovic_vinci/">Instagram</a>
+                <a href="https://www.facebook.com/apartmanitodorovicvinci/">Facebook</a>
+                <a href="mailto:info@apartmani-todorovic.com">Kontakt</a>
             </div>
             <p class="footer-text">
                 © 2026 Apartmani Todorović. Sva prava zadržana.<br>

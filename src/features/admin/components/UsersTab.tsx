@@ -2,7 +2,7 @@
 
 import { UserPlus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AdminPageHeader } from "@/components/shared/AdminPageHeader";
 import { ConfirmDeleteDialog } from "@/components/shared/ConfirmDeleteDialog";
 import { SearchInput } from "@/components/shared/SearchInput";
@@ -33,7 +33,7 @@ export function UsersTab() {
 	const [confirmToggleUser, setConfirmToggleUser] =
 		useState<UserWithRole | null>(null);
 
-	const fetchUsers = async () => {
+	const fetchUsers = useCallback(async () => {
 		setIsLoading(true);
 		try {
 			const result = await getRegisteredUsers();
@@ -50,11 +50,11 @@ export function UsersTab() {
 		} finally {
 			setIsLoading(false);
 		}
-	};
+	}, [t]);
 
 	useEffect(() => {
 		fetchUsers();
-	}, []);
+	}, [fetchUsers]);
 
 	const handleToggleAdmin = async (user: UserWithRole) => {
 		const isPromoting = user.role !== "admin";

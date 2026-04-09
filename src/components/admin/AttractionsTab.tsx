@@ -2,7 +2,7 @@
 
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AdminPageHeader } from "@/components/shared/AdminPageHeader";
 import { ConfirmDeleteDialog } from "@/components/shared/ConfirmDeleteDialog";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import {
 	updateAttraction,
 } from "@/features/attractions/actions";
 import type { AttractionFormValues } from "@/features/attractions/schemas";
+import type { ActionState } from "@/lib/safe-action";
 import { toast } from "@/lib/toast";
 import type { Attraction } from "@/types";
 import { AttractionForm } from "./AttractionForm";
@@ -28,11 +29,7 @@ export function AttractionsTab() {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [deleteId, setDeleteId] = useState<string | null>(null);
 
-	useEffect(() => {
-		fetchAttractions();
-	}, []);
-
-	const fetchAttractions = async () => {
+	const fetchAttractions = useCallback(async () => {
 		setIsLoading(true);
 		try {
 			const data = await getAllAttractions();
@@ -43,25 +40,35 @@ export function AttractionsTab() {
 		} finally {
 			setIsLoading(false);
 		}
-	};
+	}, [t]);
+
+	useEffect(() => {
+		fetchAttractions();
+	}, [fetchAttractions]);
 
 	const handleSave = async (data: AttractionFormValues) => {
 		setIsSubmitting(true);
 		try {
-			let result;
+			let result: ActionState<Attraction | Attraction[]> | undefined;
 			if (isAddingNew) {
 				const slug = data.title.toLowerCase().replace(/ /g, "-");
-				result = await createAttraction({ success: false }, { ...data, slug });
+				result = (await createAttraction(
+					{ success: false },
+					{
+						...data,
+						slug,
+					},
+				)) as ActionState<Attraction>;
 			} else if (editingAttraction?.id) {
 				const slug = data.title.toLowerCase().replace(/ /g, "-");
-				result = await updateAttraction(
+				result = (await updateAttraction(
 					{ success: false },
 					{
 						...data,
 						id: Number(editingAttraction.id),
 						slug,
 					},
-				);
+				)) as ActionState<Attraction>;
 			}
 
 			if (result?.success) {

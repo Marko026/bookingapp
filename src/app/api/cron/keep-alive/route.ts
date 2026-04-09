@@ -1,6 +1,6 @@
+import { sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { sql } from "drizzle-orm";
 import { env } from "@/env";
 
 // Vercel rute ovog tipa ne smeju biti keširane
@@ -17,7 +17,7 @@ export async function GET(request: Request) {
 	try {
 		// Najlakši upit koji budi bazu i registruje aktivnost na Supabase-u
 		await db.execute(sql`SELECT 1`);
-		
+
 		return NextResponse.json({
 			success: true,
 			message: "Baza je uspešno pingovana kako bi se sprečilo gašenje.",
@@ -27,7 +27,7 @@ export async function GET(request: Request) {
 		console.error("Keep-alive ping failed:", error);
 		return NextResponse.json(
 			{ success: false, error: "Pingovanje baze nije uspelo" },
-			{ status: 500 }
+			{ status: 500 },
 		);
 	}
 }

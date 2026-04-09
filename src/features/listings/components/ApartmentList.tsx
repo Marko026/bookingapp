@@ -52,7 +52,7 @@ export function ApartmentList({ apartments }: ApartmentListProps) {
 				<div className="flex flex-col gap-12 md:gap-24 lg:gap-32">
 					{apartments.map((apt, index) => (
 						<Link
-							href={`/apartment/${apt.id}` as any}
+							href={`/apartment/${apt.id}` as string}
 							key={apt.id}
 							className="group block"
 						>
@@ -88,7 +88,7 @@ export function ApartmentList({ apartments }: ApartmentListProps) {
 												{apt.rating}
 											</span>
 											<span className="text-[10px] md:text-xs text-gray-500 font-medium ml-1">
-												(42 {t("reviews")})
+												({apt.reviewsCount} {t("reviews")})
 											</span>
 										</div>
 									</div>
@@ -104,7 +104,7 @@ export function ApartmentList({ apartments }: ApartmentListProps) {
 												className="md:w-4 md:h-4 lg:w-[18px] lg:h-[18px]"
 											/>
 											<span className="text-[11px] md:text-xs lg:text-sm">
-												2 {t("guests")}
+												{apt.maxGuests} {t("guests")}
 											</span>
 										</div>
 										<div className="h-3 w-px bg-gray-300" />

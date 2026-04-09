@@ -99,9 +99,9 @@ export function createBookingEmail(data: BookingData) {
         <!-- Footer -->
         <div class="footer">
             <div class="footer-links">
-                <a href="#">Sajt</a>
-                <a href="#">Lokacija</a>
-                <a href="#">Kontakt</a>
+                <a href="https://apartmani-todorovic.com">Sajt</a>
+                <a href="https://www.google.com/maps?q=Apartmani+Todorovic+Vinci">Lokacija</a>
+                <a href="mailto:info@apartmani-todorovic.com">Kontakt</a>
             </div>
             <p class="footer-text">
                 © 2026 Apartmani Todorović. Sva prava zadržana.<br>

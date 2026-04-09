@@ -39,7 +39,11 @@ describe("DAL: apartments", () => {
 				},
 			];
 
-			(db.query.apartments.findMany as any).mockResolvedValue(mockApartments);
+			vi.mocked(db.query.apartments.findMany).mockResolvedValue(
+				mockApartments as unknown as Awaited<
+					ReturnType<typeof db.query.apartments.findMany>
+				>,
+			);
 
 			const result = await getAllApartmentsPublic();
 
@@ -50,7 +54,7 @@ describe("DAL: apartments", () => {
 		});
 
 		it("should return empty array on error", async () => {
-			(db.query.apartments.findMany as any).mockRejectedValue(
+			vi.mocked(db.query.apartments.findMany).mockRejectedValue(
 				new Error("DB Error"),
 			);
 

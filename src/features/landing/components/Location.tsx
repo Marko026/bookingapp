@@ -89,7 +89,7 @@ function AttractionCard({
 
 	return (
 		<div className="flex flex-col h-full">
-			<Link href={`/attraction/${slug}` as any} className="flex-grow">
+			<Link href={`/attraction/${slug}` as string} className="flex-grow">
 				<motion.div
 					initial={{ opacity: 0, y: 40 }}
 					whileInView={{ opacity: 1, y: 0 }}

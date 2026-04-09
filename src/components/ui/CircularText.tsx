@@ -40,7 +40,8 @@ export function CircularText({
 			>
 				{characters.map((char, i) => (
 					<span
-						key={i}
+						// biome-ignore lint/suspicious/noArrayIndexKey: Circular text characters rarely change order
+						key={`${char}-${i}`}
 						className="absolute top-0 left-1/2 -translate-x-1/2 origin-bottom"
 						style={{
 							height: radius,

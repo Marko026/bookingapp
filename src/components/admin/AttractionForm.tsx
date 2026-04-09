@@ -185,9 +185,9 @@ export function AttractionForm({
 					</div>
 
 					<div className="space-y-4">
-						<label className="text-sm font-medium text-gray-900 block">
+						<Label className="text-sm font-medium text-gray-900 block">
 							{t("fields.gallery")}
-						</label>
+						</Label>
 						<Controller
 							name="gallery"
 							control={control}

@@ -11,21 +11,37 @@ vi.mock("next-intl", () => ({
 // Mock framer-motion to avoid animation issues in tests
 vi.mock("framer-motion", () => ({
 	motion: {
-		div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-		h1: ({ children, ...props }: any) => <h1 {...props}>{children}</h1>,
+		div: ({ children, ...props }: React.ComponentProps<"div">) => (
+			<div {...props}>{children}</div>
+		),
+		h1: ({ children, ...props }: React.ComponentProps<"h1">) => (
+			<h1 {...props}>{children}</h1>
+		),
 	},
 }));
 
 // Mock next/image
 vi.mock("next/image", () => ({
-	default: ({ src, alt, ...props }: any) => (
-		<img src={src} alt={alt} {...props} />
-	),
+	default: ({
+		src,
+		alt,
+		...props
+	}: {
+		src: string;
+		alt: string;
+		[key: string]: unknown;
+	}) => <img src={src} alt={alt} {...(props as Record<string, unknown>)} />,
 }));
 
 // Mock next/link
 vi.mock("@/i18n/routing", () => ({
-	Link: ({ children, ...props }: any) => <a {...props}>{children}</a>,
+	Link: ({
+		children,
+		...props
+	}: {
+		children: React.ReactNode;
+		[key: string]: unknown;
+	}) => <a {...(props as Record<string, unknown>)}>{children}</a>,
 }));
 
 describe("Hero Component - Hydration Safety", () => {

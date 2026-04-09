@@ -1,7 +1,8 @@
 "use client";
+// Turbopack refresh: 2026-04-06T10:37:50Z
 
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, House, Map, Star } from "lucide-react";
+import { ArrowRight, CheckCircle2, House, Map as MapIcon, Star } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
@@ -157,7 +158,7 @@ export function Hero() {
 								className="group relative overflow-hidden hover:shadow-[0_0_30px_rgba(251,191,36,0.4)] hover:-translate-y-0.5 transition-all duration-300 flex text-base font-medium text-white bg-zinc-900 h-14 rounded-2xl px-8 shadow-[0_0_20px_rgba(0,0,0,0.1)] items-center justify-center w-full sm:w-auto"
 							>
 								<div className="flex items-center gap-2 transition-transform duration-300 group-hover:-translate-x-3">
-									<Map className="w-5 h-5" strokeWidth={1.5} />
+									<MapIcon className="w-5 h-5" strokeWidth={1.5} />
 									<span>{t("explore")}</span>
 								</div>
 								<div className="absolute right-3 rtl:left-3 translate-x-4 rtl:-translate-x-4 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
