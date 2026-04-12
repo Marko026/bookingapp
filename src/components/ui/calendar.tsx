@@ -45,7 +45,7 @@ function Calendar({
 				...formatters,
 			}}
 			classNames={{
-				root: cn("w-fit", defaultClassNames.root),
+				root: cn("w-fit max-w-[280px] md:max-w-none", defaultClassNames.root),
 				months: cn(
 					"flex gap-4 flex-col md:flex-row relative",
 					defaultClassNames.months,
@@ -57,12 +57,12 @@ function Calendar({
 				),
 				button_previous: cn(
 					buttonVariants({ variant: buttonVariant }),
-					"size-9 aria-disabled:opacity-50 p-0 select-none",
+					"size-7 md:size-9 aria-disabled:opacity-50 p-0 select-none",
 					defaultClassNames.button_previous,
 				),
 				button_next: cn(
 					buttonVariants({ variant: buttonVariant }),
-					"size-9 aria-disabled:opacity-50 p-0 select-none",
+					"size-7 md:size-9 aria-disabled:opacity-50 p-0 select-none",
 					defaultClassNames.button_next,
 				),
 				month_caption: cn(
@@ -82,10 +82,10 @@ function Calendar({
 					defaultClassNames.dropdown,
 				),
 				caption_label: cn(
-					"select-none font-medium",
+					"select-none font-medium text-xs md:text-sm",
 					captionLayout === "label"
-						? "text-sm"
-						: "rounded-md pl-2 pr-1 flex items-center gap-1 text-sm h-8 [&>svg]:text-muted-foreground [&>svg]:size-3.5",
+						? "text-xs md:text-sm"
+						: "rounded-md pl-1 pr-0.5 md:pl-2 md:pr-1 flex items-center gap-1 text-xs md:text-sm h-7 md:h-8 [&>svg]:text-muted-foreground [&>svg]:size-3",
 					defaultClassNames.caption_label,
 				),
 				table: "w-full border-collapse",

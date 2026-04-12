@@ -82,10 +82,10 @@ export function BookingCalendar({
 	};
 
 	return (
-		<div className="p-2 md:p-4 bg-white rounded-[1.5rem] md:rounded-[2rem] border border-gray-100 shadow-sm flex justify-center">
+		<div className="p-1 md:p-4 bg-white rounded-xl md:rounded-[2rem] border border-gray-100 shadow-sm flex justify-center">
 			{isLoading ? (
-				<div className="flex items-center justify-center p-8">
-					<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black"></div>
+				<div className="flex items-center justify-center p-4 md:p-8">
+					<div className="animate-spin rounded-full h-6 w-6 md:h-8 md:w-8 border-b-2 border-black"></div>
 				</div>
 			) : (
 				<Calendar
@@ -94,11 +94,15 @@ export function BookingCalendar({
 					onSelect={handleSelect}
 					numberOfMonths={1}
 					disabled={[{ before: startOfToday() }, ...disabledDates]}
-					className="rounded-md border-none"
+					className="rounded-md border-none text-xs md:text-sm"
 					classNames={{
 						day_selected:
 							"bg-black text-white hover:bg-black hover:text-white focus:bg-black focus:text-white",
 						day_today: "bg-gray-100 text-gray-900",
+						day: "h-7 w-7 md:h-8 md:w-8 text-xs md:text-sm",
+						head_cell: "text-[10px] md:text-xs",
+						cell: "h-7 md:h-8",
+						caption: "text-xs md:text-sm",
 					}}
 				/>
 			)}
