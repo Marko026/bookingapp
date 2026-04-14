@@ -20,8 +20,8 @@ export function Navbar() {
 
 	const navLinks = [
 		{ name: t("home"), path: "/", id: "hero" },
-		{ name: t("apartments"), path: "/listings", id: "apartments" },
-		{ name: t("attractions"), path: "/attractions", id: "attractions" },
+		{ name: t("apartments"), path: "/", id: "apartments" },
+		{ name: t("attractions"), path: "/", id: "attractions" },
 	];
 
 	const [isMounted, setIsMounted] = useState(false);
@@ -45,15 +45,17 @@ export function Navbar() {
 
 	const toggleMenu = () => setIsOpen(!isOpen);
 
+	const isHomePage =
+		pathname === "/" ||
+		pathname?.startsWith("/sr") ||
+		pathname?.startsWith("/en");
 	const handleNavClick = (
 		e: React.MouseEvent<HTMLAnchorElement>,
 		targetId: string,
-		path: string,
 	) => {
-		e.preventDefault();
-		setIsOpen(false);
-
-		if (path === "/") {
+		if (isHomePage && pathname === "/") {
+			e.preventDefault();
+			setIsOpen(false);
 			const targetElement = document.getElementById(targetId);
 			if (targetElement) {
 				targetElement.scrollIntoView({ behavior: "smooth" });
@@ -98,7 +100,7 @@ export function Navbar() {
 							<Link
 								key={link.path + link.name}
 								href={link.path as string}
-								onClick={(e) => handleNavClick(e, link.id, link.path)}
+								onClick={(e) => handleNavClick(e, link.id)}
 								className={cn(
 									"px-5 py-2 rounded-full text-sm font-medium transition-all duration-200",
 									"text-gray-600 hover:text-gray-900 hover:bg-white/50",
@@ -143,7 +145,7 @@ export function Navbar() {
 								<Link
 									key={link.path + link.name}
 									href={link.path as string}
-									onClick={(e) => handleNavClick(e, link.id, link.path)}
+									onClick={(e) => handleNavClick(e, link.id)}
 									className="flex items-center justify-between p-5 rounded-3xl bg-gray-50 text-xl font-serif text-gray-900 active:scale-95 transition-all"
 								>
 									<span>{link.name}</span>
