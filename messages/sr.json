@@ -65,7 +65,12 @@
 		"guests": "Osobe",
 		"bed": "Francuski ležaj",
 		"wifi": "Brz Wifi",
+		"reviewsCount": "({count} recenzija)",
 		"reviews": "recenzija"
+	},
+	"Listings": {
+		"title": "Svi Apartmani",
+		"subtitle": "Istražite našu kompletnu kolekciju eko-sertifikovanih luksuznih apartmana smeštenih u srcu prirode."
 	},
 	"Attractions": {
 		"badge": "ISTRAŽITE",
@@ -93,6 +98,7 @@
 	},
 	"ApartmentDetail": {
 		"loading": "Učitavanje...",
+		"reviewsCount": "({count} recenzija)",
 		"reviews": "recenzija",
 		"locationName": "Golubac, Srbija",
 		"directions": "Kako doći",
@@ -114,6 +120,7 @@
 		"total": "Ukupno",
 		"reserveButton": "Rezerviši smeštaj",
 		"selectDates": "Izaberite datum prijave za prikaz cena",
+		"cancelButton": "Otkaži",
 		"toast": {
 			"successTitle": "Zahtev za rezervaciju je poslat!",
 			"successDesc": "Uskoro ćete dobiti potvrdu na email."
@@ -284,6 +291,7 @@
 					"title": "Pozovi člana tima",
 					"description": "Pošaljite email pozivnicu za pridruživanje admin timu.",
 					"emailLabel": "Email adresa",
+					"invalidEmail": "Neispravna email adresa",
 					"cancel": "Otkaži",
 					"send": "Pošalji pozivnicu",
 					"sending": "Slanje..."
@@ -332,6 +340,8 @@
 			"unavailableDesc": "Molimo izaberite druge datume."
 		},
 		"toast": {
+			"successTitle": "Zahtev za rezervaciju poslat!",
+			"successDesc": "Uskoro ćete primiti potvrdu na email.",
 			"errorTitle": "Došlo je do greške pri slanju zahteva",
 			"errorDesc": "Pokušajte ponovo."
 		}

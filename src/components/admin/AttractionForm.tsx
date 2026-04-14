@@ -8,7 +8,6 @@ import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ImageUpload } from "@/components/ImageUpload";
 import { FormInput } from "@/components/shared/FormInput";
-import { RichTextEditor } from "@/components/shared/RichTextEditor";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -26,6 +25,19 @@ const MapPicker = dynamic(() => import("@/components/admin/MapPicker"), {
 	),
 });
 
+const RichTextEditor = dynamic(
+	() =>
+		import("@/components/shared/RichTextEditor").then(
+			(mod) => mod.RichTextEditor,
+		),
+	{
+		ssr: false,
+		loading: () => (
+			<div className="h-[150px] w-full bg-gray-50 animate-pulse rounded-[1.5rem] border border-gray-100" />
+		),
+	},
+);
+
 interface AttractionFormProps {
 	editingAttraction: Partial<Attraction> | null;
 	onSave: (data: AttractionFormValues) => Promise<void>;
@@ -38,7 +50,6 @@ export function AttractionForm({
 	editingAttraction,
 	onSave,
 	onCancel,
-	isAddingNew,
 	isSubmitting = false,
 }: AttractionFormProps) {
 	const t = useTranslations("Admin.attractions");
@@ -62,8 +73,8 @@ export function AttractionForm({
 			longDescriptionEn: editingAttraction?.longDescriptionEn || "",
 			distance: editingAttraction?.distance || "",
 			coords: editingAttraction?.coords || "",
-			latitude: editingAttraction?.latitude || null,
-			longitude: editingAttraction?.longitude || null,
+			latitude: editingAttraction?.latitude ?? null,
+			longitude: editingAttraction?.longitude ?? null,
 			image: editingAttraction?.image || "",
 			gallery: editingAttraction?.gallery || [],
 		},

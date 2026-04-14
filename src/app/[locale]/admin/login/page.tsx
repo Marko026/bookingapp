@@ -5,8 +5,10 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type React from "react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FormError } from "@/components/ui/form-error";
 import { Input } from "@/components/ui/input";
 import { getCurrentUser, loginAdmin } from "@/lib/auth";
 
@@ -52,7 +54,10 @@ export default function LoginPage() {
 
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-white p-4">
-			<Card className="w-full max-w-md shadow-2xl rounded-3xl border-0 bg-white/90 backdrop-blur-sm">
+			<Card
+				className="w-full max-w-md shadow-2xl rounded-3xl border-0 bg-white/90 backdrop-blur-sm"
+				suppressHydrationWarning
+			>
 				<CardHeader className="space-y-1 pb-6">
 					<CardTitle className="text-4xl font-serif font-bold text-center text-gray-900">
 						{t("title")}
@@ -74,7 +79,9 @@ export default function LoginPage() {
 								id="email"
 								type="email"
 								placeholder={t("emailPlaceholder")}
-								className="py-7 rounded-2xl text-lg border-2 border-gray-200 focus:border-amber-500 focus:ring-amber-500/20 transition-all bg-gray-50 focus:bg-white"
+								className={`py-7 rounded-2xl text-lg border border-gray-100 transition-all bg-gray-50/50 focus:bg-white shadow-sm hover:shadow-md ${
+									loginError ? "border-red-200 bg-red-50/5" : ""
+								}`}
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
 								required
@@ -93,7 +100,9 @@ export default function LoginPage() {
 								id="password"
 								type="password"
 								placeholder={t("passwordPlaceholder")}
-								className="py-7 rounded-2xl text-lg border-2 border-gray-200 focus:border-amber-500 focus:ring-amber-500/20 transition-all bg-gray-50 focus:bg-white"
+								className={`py-7 rounded-2xl text-lg border border-gray-100 transition-all bg-gray-50/50 focus:bg-white shadow-sm hover:shadow-md ${
+									loginError ? "border-red-200 bg-red-50/5" : ""
+								}`}
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
 								required
@@ -101,14 +110,7 @@ export default function LoginPage() {
 							/>
 						</div>
 
-						{loginError && (
-							<div className="flex items-center gap-3 p-4 bg-red-50 border-2 border-red-200 rounded-2xl animate-in slide-in-from-top-1">
-								<AlertCircle size={20} className="text-red-600 flex-shrink-0" />
-								<span className="text-red-700 font-medium text-base">
-									{loginError}
-								</span>
-							</div>
-						)}
+						<FormError message={loginError} />
 
 						<div className="flex items-center gap-2">
 							<input

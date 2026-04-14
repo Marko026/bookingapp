@@ -33,15 +33,6 @@ export async function sendBookingEmails(bookingData: BookingData) {
 			throw new Error(`Admin email failed: ${adminResult.error.message}`);
 		}
 
-		console.log("✅ Emails sent successfully:", {
-			adminEmailId: adminResult.data?.id,
-			from: fromEmail,
-			to: {
-				guest: bookingData.guestEmail,
-				admin: adminEmail,
-			},
-		});
-
 		return {
 			success: true,
 			adminEmailId: adminResult.data?.id,

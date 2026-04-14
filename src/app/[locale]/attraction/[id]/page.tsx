@@ -8,6 +8,7 @@ import {
 } from "@/features/attractions/actions";
 import { Link, routing } from "@/i18n/routing";
 import { getLocalizedField } from "@/lib/localization";
+import { sanitizeHtml } from "@/lib/security";
 import type { Attraction } from "@/types";
 import AttractionDetailClient from "./AttractionDetailClient";
 
@@ -67,7 +68,7 @@ export default async function AttractionDetailPage({
 	if (!attraction) {
 		return (
 			<div className="flex items-center justify-center pt-32 pb-20 min-h-[60vh] bg-white">
-				<div className="max-w-md w-full px-6 text-center">
+				<div className="max-w-md w-full px-4 md:px-6 text-center">
 					<div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-8 animate-pulse text-amber-600">
 						<MapPin size={32} />
 					</div>
@@ -95,6 +96,14 @@ export default async function AttractionDetailPage({
 				</div>
 			</div>
 		);
+	}
+
+	// Sanitize on the server
+	if (attraction.longDescription) {
+		attraction.longDescription = sanitizeHtml(attraction.longDescription);
+	}
+	if (attraction.longDescriptionEn) {
+		attraction.longDescriptionEn = sanitizeHtml(attraction.longDescriptionEn);
 	}
 
 	return <AttractionDetailClient attraction={attraction} origin={originData} />;

@@ -2,12 +2,6 @@ export function validateImageFile(file: File): {
 	valid: boolean;
 	error?: string;
 } {
-	console.log("🔍 Validating file:", {
-		name: file.name,
-		type: file.type,
-		size: `${(file.size / 1024 / 1024).toFixed(2)}MB`,
-	});
-
 	// Check file type
 	const validTypes = [
 		"image/jpeg",
@@ -25,13 +19,6 @@ export function validateImageFile(file: File): {
 		const fileName = file.name.toLowerCase();
 		const validExtensions = [".jpg", ".jpeg", ".png", ".webp", ".avif"];
 		isValidType = validExtensions.some((ext) => fileName.endsWith(ext));
-
-		if (isValidType) {
-			console.log(
-				"⚠️ File type missing or invalid, but extension is valid:",
-				fileName,
-			);
-		}
 	}
 
 	if (!isValidType) {
@@ -54,6 +41,5 @@ export function validateImageFile(file: File): {
 		};
 	}
 
-	console.log("✅ File validation passed");
 	return { valid: true };
 }

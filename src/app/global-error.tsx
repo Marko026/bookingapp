@@ -16,7 +16,7 @@ export default function GlobalError({
 	}, [error]);
 
 	return (
-		<html>
+		<html lang="sr">
 			<body>
 				<div className="min-h-screen flex items-center justify-center p-6 bg-[#FFFDF9]">
 					<div className="max-w-md w-full text-center space-y-8">
@@ -31,9 +31,12 @@ export default function GlobalError({
 								Kritična greška
 							</h1>
 							<p className="text-gray-500 text-lg">
-								Aplikacija je naišla na neočekivan problem. Molimo vas da osvežite stranicu ili se vratite na početnu.
+								Aplikacija je naišla na neočekivan problem. Molimo vas da
+								osvežite stranicu ili se vratite na početnu.
 								<span className="block text-xs font-mono mt-4 text-gray-400 bg-gray-50 p-2 rounded-lg truncate">
-									{error.message || (error.digest && `ID: ${error.digest}`) || "Unknown error"}
+									{error.message ||
+										(error.digest && `ID: ${error.digest}`) ||
+										"Unknown error"}
 								</span>
 							</p>
 						</div>

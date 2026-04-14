@@ -4,7 +4,7 @@ import { Link } from "@/i18n/routing";
 
 export default function NotFound() {
 	return (
-		<html>
+		<html lang="sr">
 			<head>
 				<title>Stranica nije pronađena | Apartmani Todorović</title>
 			</head>

@@ -2,7 +2,13 @@
 // Turbopack refresh: 2026-04-06T10:37:50Z
 
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, House, Map as MapIcon, Star } from "lucide-react";
+import {
+	ArrowRight,
+	CheckCircle2,
+	House,
+	Map as MapIcon,
+	Star,
+} from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
@@ -45,7 +51,7 @@ export function Hero() {
 
 						{/* Headline */}
 
-						<h1 className="text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight leading-[1.1] text-neutral-900">
+						<h1 className="text-4xl sm:text-6xl lg:text-7xl font-medium tracking-tight leading-[1.1] text-neutral-900">
 							{t("title_word_1")} <br />
 							<span className="italic text-neutral-400 font-light pe-4">
 								{t("title_word_2")}
@@ -77,11 +83,11 @@ export function Hero() {
 							>
 								<Image
 									src="/main-img.png"
-									alt="A1"
+									alt=""
 									fill
 									className="object-cover"
 									priority
-									sizes="80px"
+									sizes="(max-width: 768px) 80px, 10vw"
 								/>
 							</motion.div>
 
@@ -98,10 +104,11 @@ export function Hero() {
 							>
 								<Image
 									src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=400&auto=format&fit=crop"
-									alt="A2"
+									alt=""
 									fill
 									className="object-cover"
-									sizes="90px"
+									priority
+									sizes="(max-width: 768px) 90px, 10vw"
 								/>
 							</motion.div>
 
@@ -117,10 +124,11 @@ export function Hero() {
 							>
 								<Image
 									src="/main-img1.png"
-									alt="A3"
+									alt=""
 									fill
 									className="object-cover"
-									sizes="64px"
+									priority
+									sizes="(max-width: 768px) 64px, 10vw"
 								/>
 							</motion.div>
 
@@ -137,10 +145,11 @@ export function Hero() {
 							>
 								<Image
 									src="/main-img.png"
-									alt="A4"
+									alt=""
 									fill
 									className="object-cover"
-									sizes="56px"
+									priority
+									sizes="(max-width: 768px) 56px, 10vw"
 								/>
 							</motion.div>
 						</div>
@@ -153,26 +162,30 @@ export function Hero() {
 						{/* Buttons */}
 						<div className="flex flex-col sm:flex-row gap-4 mt-2">
 							<Link
-								href="/#apartments"
-								scroll={false}
+								href="#apartments"
 								className="group relative overflow-hidden hover:shadow-[0_0_30px_rgba(251,191,36,0.4)] hover:-translate-y-0.5 transition-all duration-300 flex text-base font-medium text-white bg-zinc-900 h-14 rounded-2xl px-8 shadow-[0_0_20px_rgba(0,0,0,0.1)] items-center justify-center w-full sm:w-auto"
 							>
 								<div className="flex items-center gap-2 transition-transform duration-300 group-hover:-translate-x-3">
-									<MapIcon className="w-5 h-5" strokeWidth={1.5} />
+									<MapIcon
+										className="w-5 h-5"
+										strokeWidth={1.5}
+										aria-hidden="true"
+									/>
 									<span>{t("explore")}</span>
 								</div>
 								<div className="absolute right-3 rtl:left-3 translate-x-4 rtl:-translate-x-4 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
 									<ArrowRight
 										className="w-5 h-5 text-amber-500"
 										strokeWidth={2}
+										aria-hidden="true"
 									/>
 								</div>
 							</Link>
 						</div>
 
 						{/* Trust Section */}
-						<div className="pt-6 border-t flex items-center gap-6 mt-4 border-neutral-200">
-							<div className="flex -space-x-3">
+						<div className="pt-6 border-t flex items-center justify-between md:justify-start md:gap-6 mt-4 border-neutral-200">
+							<div className="flex -space-x-3 shrink-0">
 								{[
 									"https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=64&h=64",
 									"https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=64&h=64",
@@ -184,7 +197,7 @@ export function Hero() {
 									>
 										<Image
 											src={src}
-											alt="User"
+											alt=""
 											fill
 											className="object-cover"
 											sizes="40px"
@@ -195,13 +208,17 @@ export function Hero() {
 									+2k
 								</div>
 							</div>
-							<div>
+							<div className="flex flex-col items-end md:items-start">
 								<div className="flex items-center gap-1 text-amber-500">
 									{[...Array(5)].map((_, i) => (
-										<Star key={i} className="w-4 h-4 fill-current" />
+										<Star
+											key={i}
+											className="w-3.5 h-3.5 md:w-4 md:h-4 fill-current"
+											aria-hidden="true"
+										/>
 									))}
 								</div>
-								<p className="text-sm text-neutral-500 mt-0.5">
+								<p className="text-[12px] md:text-sm text-neutral-500 mt-0.5">
 									{t("happyClients")}
 								</p>
 							</div>
@@ -249,7 +266,7 @@ export function Hero() {
 								{/* Priority LCP Image */}
 								<Image
 									src="/main-img.png"
-									alt="Mountain Landscape"
+									alt=""
 									fill
 									className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-90"
 									priority
@@ -270,7 +287,7 @@ export function Hero() {
 							<div className="col-span-1 lg:col-span-7 row-span-2 lg:row-span-3 rounded-2xl md:rounded-[2.5rem] overflow-hidden relative group cursor-pointer shadow-2xl">
 								<Image
 									src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=800&auto=format&fit=crop"
-									alt="Lake Switzerland"
+									alt=""
 									fill
 									className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-90"
 									sizes="(max-width: 768px) 50vw, 40vw"
@@ -288,9 +305,10 @@ export function Hero() {
 							<div className="col-span-1 lg:col-span-7 row-span-2 lg:row-span-3 rounded-2xl md:rounded-[2.5rem] overflow-hidden relative group cursor-pointer shadow-2xl">
 								<Image
 									src="/main-img1.png"
-									alt="Kyoto Streets"
+									alt=""
 									fill
 									className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-90"
+									priority
 									sizes="(max-width: 768px) 50vw, 40vw"
 								/>
 							</div>
@@ -311,13 +329,17 @@ export function Hero() {
 									href="/#apartments"
 									scroll={false}
 									className="text-xs font-medium uppercase tracking-wide text-zinc-400 flex items-center gap-1"
+									aria-label={t("explore")}
 								>
-									<ArrowRight className="w-4 h-4 fill-current" />
+									<ArrowRight
+										className="w-4 h-4 fill-current"
+										aria-hidden="true"
+									/>
 								</Link>
 							</div>
 							<div className="flex items-center gap-3 mb-4">
 								<div className="w-10 h-10 rounded-xl flex items-center justify-center bg-amber-500/10 text-amber-400 ring-1 ring-amber-500/20">
-									<House className="w-5 h-5 fill-current" />
+									<House className="w-5 h-5 fill-current" aria-hidden="true" />
 								</div>
 								<div>
 									<p className="text-sm font-medium text-white">
@@ -337,7 +359,7 @@ export function Hero() {
 								</span>
 							</div>
 							<div className="mt-3 flex items-center gap-2 text-xs font-medium w-max px-2 py-1 rounded-md text-emerald-400 bg-emerald-400/10">
-								<CheckCircle2 className="w-3 h-3" />
+								<CheckCircle2 className="w-3 h-3" aria-hidden="true" />
 								{t("showcase.available")}
 							</div>
 						</motion.div>

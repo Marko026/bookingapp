@@ -11,9 +11,13 @@ import type { Apartment } from "@/types";
 
 interface ApartmentListProps {
 	apartments: Apartment[];
+	showHeader?: boolean;
 }
 
-export function ApartmentList({ apartments }: ApartmentListProps) {
+export function ApartmentList({
+	apartments,
+	showHeader = true,
+}: ApartmentListProps) {
 	const t = useTranslations("Apartments");
 	const locale = useLocale();
 
@@ -24,32 +28,34 @@ export function ApartmentList({ apartments }: ApartmentListProps) {
 		>
 			<div className="max-w-7xl mx-auto">
 				{/* Header Section */}
-				<div className="mb-10 md:mb-20 text-center md:text-left">
-					<motion.p
-						initial={{ opacity: 0 }}
-						whileInView={{ opacity: 1 }}
-						className="text-[10px] md:text-xs font-bold tracking-[0.25em] text-amber-600 uppercase mb-2 md:mb-3"
-					>
-						{t("badge")}
-					</motion.p>
-					<motion.h2
-						initial={{ opacity: 0, y: 20 }}
-						whileInView={{ opacity: 1, y: 0 }}
-						className="text-3xl md:text-5xl lg:text-7xl font-serif font-medium text-gray-900 mb-4 md:mb-6"
-					>
-						{t("title")}
-					</motion.h2>
-					<motion.p
-						initial={{ opacity: 0, y: 20 }}
-						whileInView={{ opacity: 1, y: 0 }}
-						transition={{ delay: 0.1 }}
-						className="text-gray-500 text-base md:text-lg lg:text-xl max-w-2xl leading-relaxed md:mx-0"
-					>
-						{t("subtitle")}
-					</motion.p>
-				</div>
+				{showHeader && (
+					<div className="mb-10 md:mb-20 text-center md:text-left">
+						<motion.p
+							initial={{ opacity: 0 }}
+							whileInView={{ opacity: 1 }}
+							className="text-[10px] md:text-xs font-bold tracking-[0.25em] text-amber-600 uppercase mb-2 md:mb-3"
+						>
+							{t("badge")}
+						</motion.p>
+						<motion.h2
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							className="text-3xl md:text-5xl lg:text-7xl font-serif font-medium text-gray-900 mb-4 md:mb-6"
+						>
+							{t("title")}
+						</motion.h2>
+						<motion.p
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							transition={{ delay: 0.1 }}
+							className="text-gray-500 text-base md:text-lg lg:text-xl max-w-2xl leading-relaxed md:mx-0"
+						>
+							{t("subtitle")}
+						</motion.p>
+					</div>
+				)}
 
-				<div className="flex flex-col gap-12 md:gap-24 lg:gap-32">
+				<div className="flex flex-col gap-8 md:gap-24 lg:gap-32">
 					{apartments.map((apt, index) => (
 						<Link
 							href={`/apartment/${apt.id}` as string}
@@ -88,7 +94,7 @@ export function ApartmentList({ apartments }: ApartmentListProps) {
 												{apt.rating}
 											</span>
 											<span className="text-[10px] md:text-xs text-gray-500 font-medium ml-1">
-												({apt.reviewsCount} {t("reviews")})
+												{`(${apt.reviewsCount} ${t("reviews")})`}
 											</span>
 										</div>
 									</div>
@@ -104,7 +110,7 @@ export function ApartmentList({ apartments }: ApartmentListProps) {
 												className="md:w-4 md:h-4 lg:w-[18px] lg:h-[18px]"
 											/>
 											<span className="text-[11px] md:text-xs lg:text-sm">
-												{apt.maxGuests} {t("guests")}
+												{`${apt.maxGuests} ${t("guests")}`}
 											</span>
 										</div>
 										<div className="h-3 w-px bg-gray-300" />
@@ -143,7 +149,7 @@ export function ApartmentList({ apartments }: ApartmentListProps) {
 												{t("startingFrom")}
 											</span>
 											<span className="text-xl md:text-2xl lg:text-3xl font-serif font-medium text-gray-900">
-												{apt.price}€
+												{`${apt.price}€`}
 											</span>
 										</div>
 

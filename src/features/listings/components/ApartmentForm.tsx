@@ -7,7 +7,6 @@ import { useTranslations } from "next-intl";
 import { startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { ImageUpload } from "@/components/ImageUpload";
-import { RichTextEditor } from "@/components/shared/RichTextEditor";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -36,6 +35,19 @@ const MapPicker = dynamic(() => import("@/components/admin/MapPicker"), {
 		<div className="h-[400px] w-full bg-gray-100 animate-pulse rounded-lg" />
 	),
 });
+
+const RichTextEditor = dynamic(
+	() =>
+		import("@/components/shared/RichTextEditor").then(
+			(mod) => mod.RichTextEditor,
+		),
+	{
+		ssr: false,
+		loading: () => (
+			<div className="h-[150px] w-full bg-gray-50 animate-pulse rounded-[1.5rem] border border-gray-100" />
+		),
+	},
+);
 
 export function ApartmentForm() {
 	const t = useTranslations("Admin.apartments");
@@ -113,17 +125,17 @@ export function ApartmentForm() {
 	return (
 		<div className="container max-w-4xl mx-auto py-12 px-4">
 			<Card className="rounded-[2.5rem] border-gray-100 shadow-sm overflow-hidden">
-				<CardHeader className="pt-10 px-10">
-					<CardTitle className="text-3xl font-serif font-bold">
+				<CardHeader className="pt-8 px-6 md:pt-10 md:px-10">
+					<CardTitle className="text-2xl md:text-3xl font-serif font-bold">
 						{t("title")}
 					</CardTitle>
 					<CardDescription>{t("description")}</CardDescription>
 				</CardHeader>
-				<CardContent className="p-10">
+				<CardContent className="p-6 md:p-10">
 					<Form {...form}>
 						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 							<div className="space-y-6">
-								<div className="grid grid-cols-2 gap-6">
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 									<FormField
 										control={form.control}
 										name="name"
@@ -132,6 +144,7 @@ export function ApartmentForm() {
 												<FormLabel>{t("labels.nameSr")}</FormLabel>
 												<FormControl>
 													<Input
+														className="text-base"
 														placeholder={t("placeholders.nameSr")}
 														{...field}
 													/>
@@ -140,7 +153,7 @@ export function ApartmentForm() {
 											</FormItem>
 										)}
 									/>
-									<div className="grid grid-cols-2 gap-4">
+									<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 										<FormField
 											control={form.control}
 											name="pricePerNight"
@@ -149,6 +162,7 @@ export function ApartmentForm() {
 													<FormLabel>{t("labels.price")}</FormLabel>
 													<FormControl>
 														<Input
+															className="text-base"
 															type="number"
 															placeholder={t("placeholders.price")}
 															{...field}
@@ -167,6 +181,7 @@ export function ApartmentForm() {
 													<FormLabel>{t("labels.capacity")}</FormLabel>
 													<FormControl>
 														<Input
+															className="text-base"
 															type="number"
 															placeholder={t("placeholders.capacity")}
 															{...field}
@@ -239,14 +254,19 @@ export function ApartmentForm() {
 							</div>
 
 							{/* Submit */}
-							<div className="flex gap-4">
-								<Button type="submit" disabled={isPending} className="flex-1">
+							<div className="flex flex-col sm:flex-row gap-4">
+								<Button
+									type="submit"
+									disabled={isPending}
+									className="flex-1 py-6 text-base"
+								>
 									{isPending ? t("submitting") : t("submit")}
 								</Button>
 								<Button
 									type="button"
 									variant="outline"
 									onClick={() => router.back()}
+									className="py-6 text-base"
 								>
 									{t("cancel")}
 								</Button>

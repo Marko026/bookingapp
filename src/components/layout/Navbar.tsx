@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/ui/Logo";
-import { Link, usePathname, useRouter } from "@/i18n/routing";
+import { Link, usePathname } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
@@ -86,7 +86,7 @@ export function Navbar() {
 			>
 				<div
 					className={cn(
-						"pointer-events-auto w-full px-6 py-2 transition-all duration-500 flex items-center justify-between h-20", // Standard height
+						"pointer-events-auto w-full px-4 md:px-6 py-2 transition-all duration-500 flex items-center justify-between h-20", // Standard height
 						// Visual logic: Glass at top, Custom smooth shadow on scroll
 						!isMounted || isTop
 							? "bg-white/90 backdrop-blur-xl border-b border-white/20"
@@ -148,7 +148,7 @@ export function Navbar() {
 						initial={{ opacity: 0, y: -20 }}
 						animate={{ opacity: 1, y: 0 }}
 						exit={{ opacity: 0, y: -20 }}
-						className="fixed inset-0 z-40 bg-white md:hidden pt-28 px-6 flex flex-col h-screen overflow-y-auto"
+						className="fixed inset-0 z-40 bg-white md:hidden pt-28 px-4 flex flex-col h-screen overflow-y-auto"
 					>
 						<div className="flex flex-col space-y-3 pb-20">
 							{navLinks.map((link) => (

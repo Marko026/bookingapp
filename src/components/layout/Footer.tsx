@@ -6,7 +6,7 @@ export function Footer() {
 	const t = useTranslations("Footer");
 
 	return (
-		<footer className="bg-gray-900 text-white py-12 px-6">
+		<footer className="bg-gray-900 text-white py-12 px-4 md:px-6">
 			<div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
 				<div>
 					<FooterScrollTop />
@@ -40,7 +40,7 @@ export function Footer() {
 				</div>
 			</div>
 			<div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-gray-800 text-center text-gray-500 text-sm">
-				© {new Date().getFullYear()} Apartmani Todorović. {t("rights")}
+				{`© 2026 Apartmani Todorović. ${t("rights")}`}
 			</div>
 		</footer>
 	);

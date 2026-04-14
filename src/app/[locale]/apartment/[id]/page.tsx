@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { getAllApartmentsPublic, getApartment } from "@/dal/apartments";
 import { routing } from "@/i18n/routing";
+import { sanitizeHtml } from "@/lib/security";
 import type { Apartment } from "@/types";
 import ApartmentDetailClient from "./ApartmentDetailClient";
 
@@ -72,9 +73,14 @@ export default async function ApartmentDetailPage({
 		notFound();
 	}
 
-	return (
-		<ApartmentDetailClient
-			apartment={result.apartment as unknown as Apartment}
-		/>
-	);
+	// Sanitize description fields on the server to prevent hydration mismatch and XSS
+	const apt = result.apartment;
+	if (apt.description) {
+		apt.description = sanitizeHtml(apt.description);
+	}
+	if (apt.descriptionEn) {
+		apt.descriptionEn = sanitizeHtml(apt.descriptionEn);
+	}
+
+	return <ApartmentDetailClient apartment={apt as unknown as Apartment} />;
 }

@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AdminDashboardLoading() {
 	return (
-		<div className="min-h-screen bg-gray-50 pt-24 px-6 pb-20">
+		<div className="min-h-screen bg-gray-50 pt-24 px-4 md:px-6 pb-20">
 			<div className="max-w-6xl mx-auto">
 				{/* Dashboard Header */}
 				<div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">

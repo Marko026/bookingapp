@@ -2,9 +2,7 @@
 
 import { Languages } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useLocale, useTranslations } from "next-intl";
-import * as React from "react";
-import { Button } from "@/components/ui/button";
+import { useLocale } from "next-intl";
 import {
 	DropdownMenu,
 	DropdownMenuContent,

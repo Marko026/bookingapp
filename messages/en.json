@@ -65,7 +65,12 @@
 		"guests": "Guests",
 		"bed": "King Bed",
 		"wifi": "Fast Wifi",
+		"reviewsCount": "({count} reviews)",
 		"reviews": "reviews"
+	},
+	"Listings": {
+		"title": "All Listings",
+		"subtitle": "Explore our complete collection of eco-certified luxury apartments interspersed throughout the forest sanctuary."
 	},
 	"Attractions": {
 		"badge": "EXPLORE",
@@ -93,6 +98,7 @@
 	},
 	"ApartmentDetail": {
 		"loading": "Loading Sanctuary...",
+		"reviewsCount": "({count} reviews)",
 		"reviews": "reviews",
 		"locationName": "Golubac, Serbia",
 		"directions": "Get Directions",
@@ -114,6 +120,7 @@
 		"total": "Total",
 		"reserveButton": "Reserve Sanctuary",
 		"selectDates": "Select your check-in date to see prices",
+		"cancelButton": "Cancel",
 		"toast": {
 			"successTitle": "Reservation request sent!",
 			"successDesc": "You will receive a confirmation email shortly."
@@ -284,6 +291,7 @@
 					"title": "Invite Team Member",
 					"description": "Send an email invitation to join the admin team.",
 					"emailLabel": "Email Address",
+					"invalidEmail": "Invalid email address",
 					"cancel": "Cancel",
 					"send": "Send Invitation",
 					"sending": "Sending..."
@@ -332,6 +340,8 @@
 			"unavailableDesc": "Please choose other dates."
 		},
 		"toast": {
+			"successTitle": "Reservation request sent!",
+			"successDesc": "You will receive a confirmation email shortly.",
 			"errorTitle": "Error sending request",
 			"errorDesc": "Please try again."
 		}

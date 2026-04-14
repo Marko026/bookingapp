@@ -1,5 +1,4 @@
 "use client";
-
 import { addDays, isSameDay, startOfToday } from "date-fns";
 import { useTranslations } from "next-intl";
 import * as React from "react";
@@ -27,22 +26,18 @@ export function BookingCalendar({
 			setIsLoading(true);
 			try {
 				const result = await getApartmentBookings(Number(apartmentId));
-
 				if (result.success && result.bookings) {
 					const disabled: Date[] = [];
-
 					result.bookings.forEach((booking) => {
 						if (booking.status !== "cancelled") {
 							let current = new Date(booking.checkIn);
 							const end = new Date(booking.checkOut);
-
 							while (current < end) {
 								disabled.push(new Date(current));
 								current = addDays(current, 1);
 							}
 						}
 					});
-
 					setDisabledDates(disabled);
 				}
 			} catch (error) {
@@ -51,34 +46,53 @@ export function BookingCalendar({
 				setIsLoading(false);
 			}
 		};
-
 		fetchBookings();
 	}, [apartmentId]);
 
 	const handleSelect = (range: DateRange | undefined) => {
-		if (range?.from && range?.to) {
-			// Check if any date in the range is disabled
-			let current = new Date(range.from);
-			let isInvalid = false;
-			while (current <= range.to) {
-				if (disabledDates.some((d) => isSameDay(d, current))) {
-					isInvalid = true;
-					break;
-				}
-				current = addDays(current, 1);
-			}
+		if (!range?.from) {
+			setDate(range);
+			onDateSelect(range);
+			return;
+		}
 
-			if (isInvalid) {
+		// Ako je odabran samo jedan datum, provjeri da li je zauzet
+		if (!range.to) {
+			const isDisabled = disabledDates.some((d) => isSameDay(d, range.from));
+			if (isDisabled) {
 				toast.error(t("calendar.unavailableTitle"), {
 					description: t("calendar.unavailableDesc"),
 				});
-				setDate({ from: range.from, to: undefined });
-				onDateSelect({ from: range.from, to: undefined });
+				setDate({ from: undefined, to: undefined });
+				onDateSelect({ from: undefined, to: undefined });
 				return;
 			}
+			setDate(range);
+			onDateSelect(range);
+			return;
 		}
-		setDate(range);
-		onDateSelect(range);
+
+		// Provjeri da li je bilo koji dan u rasponu zauzet
+		let current = new Date(range.from);
+		let isInvalid = false;
+		while (current <= range.to) {
+			if (disabledDates.some((d) => isSameDay(d, current))) {
+				isInvalid = true;
+				break;
+			}
+			current = addDays(current, 1);
+		}
+
+		if (isInvalid) {
+			toast.error(t("calendar.unavailableTitle"), {
+				description: "Izaberite novi raspon datuma.",
+			});
+			setDate({ from: undefined, to: undefined });
+			onDateSelect({ from: undefined, to: undefined });
+		} else {
+			setDate(range);
+			onDateSelect(range);
+		}
 	};
 
 	return (

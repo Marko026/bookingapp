@@ -7,7 +7,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
 import { getLocalizedField } from "@/lib/localization";
-import { sanitizeHtml } from "@/lib/security";
 import type { Attraction } from "@/types";
 
 const FALLBACK_ORIGIN = "Vinci,Golubac";
@@ -116,10 +115,11 @@ export default function AttractionDetailClient({
 							</p>
 							<div
 								className="prose prose-stone prose-lg max-w-none text-gray-500 leading-7 md:leading-8 font-light mb-8 md:mb-12"
-								suppressHydrationWarning
 								dangerouslySetInnerHTML={{
-									__html: sanitizeHtml(
-										getLocalizedField(attraction, "longDescription", locale),
+									__html: getLocalizedField(
+										attraction,
+										"longDescription",
+										locale,
 									),
 								}}
 							/>

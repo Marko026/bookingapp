@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { memo } from "react";
 import { cn } from "@/lib/utils";
 
 interface OptimizedImageProps {
@@ -16,10 +17,32 @@ interface OptimizedImageProps {
 }
 
 /**
- * Optimized Image Component with automatic WebP/AVIF conversion
- * Uses Next.js Image component with blur placeholder and responsive sizing
+ * Shimmer effect for image loading placeholder
  */
-export function OptimizedImage({
+const shimmer = (w: number, h: number) => `
+<svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="g">
+      <stop stop-color="#f3f4f6" offset="20%" />
+      <stop stop-color="#e5e7eb" offset="50%" />
+      <stop stop-color="#f3f4f6" offset="70%" />
+    </linearGradient>
+  </defs>
+  <rect width="${w}" height="${h}" fill="#f3f4f6" />
+  <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
+  <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
+</svg>`;
+
+const toBase64 = (str: string) =>
+	typeof window === "undefined"
+		? Buffer.from(str).toString("base64")
+		: window.btoa(str);
+
+/**
+ * Optimized Image Component with automatic WebP/AVIF conversion
+ * Uses Next.js Image component with shimmer placeholder and responsive sizing
+ */
+export const OptimizedImage = memo(function OptimizedImage({
 	src,
 	alt,
 	width,
@@ -30,50 +53,53 @@ export function OptimizedImage({
 	fill = false,
 	sizes,
 	objectFit = "cover",
-	loading = "lazy",
+	loading,
 }: OptimizedImageProps) {
 	// Default sizes for responsive images
 	const defaultSizes =
 		sizes || "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw";
 
+	const imageWidth = width || 800;
+	const imageHeight = height || 600;
+
+	const commonProps = {
+		src,
+		alt,
+		quality,
+		priority,
+		sizes: defaultSizes,
+		placeholder: "blur" as const,
+		blurDataURL: `data:image/svg+xml;base64,${toBase64(
+			shimmer(imageWidth, imageHeight),
+		)}`,
+		loading: priority ? undefined : loading,
+	};
+
 	if (fill) {
 		return (
 			<Image
-				src={src}
-				alt={alt}
+				{...commonProps}
 				fill
 				className={cn("object-cover", className)}
 				style={{ objectFit }}
-				quality={quality}
-				priority={priority}
-				sizes={defaultSizes}
-				placeholder="blur"
-				blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4="
 			/>
 		);
 	}
 
 	return (
 		<Image
-			src={src}
-			alt={alt}
-			width={width || 800}
-			height={height || 600}
+			{...commonProps}
+			width={imageWidth}
+			height={imageHeight}
 			className={className}
-			quality={quality}
-			priority={priority}
-			sizes={defaultSizes}
-			loading={loading}
-			placeholder="blur"
-			blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4="
 		/>
 	);
-}
+});
 
 /**
  * Apartment Gallery Image - Optimized for apartment listings
  */
-export function ApartmentImage({
+export const ApartmentImage = memo(function ApartmentImage({
 	src,
 	alt,
 	className,
@@ -95,12 +121,12 @@ export function ApartmentImage({
 			sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
 		/>
 	);
-}
+});
 
 /**
  * Thumbnail Image - Optimized for small previews
  */
-export function ThumbnailImage({
+export const ThumbnailImage = memo(function ThumbnailImage({
 	src,
 	alt,
 	className,
@@ -120,4 +146,4 @@ export function ThumbnailImage({
 			sizes="150px"
 		/>
 	);
-}
+});

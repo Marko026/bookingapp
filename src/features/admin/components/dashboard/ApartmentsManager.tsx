@@ -1,13 +1,13 @@
 "use client";
 
 import { Plus, Save } from "lucide-react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { ImageUpload } from "@/components/ImageUpload";
 import { ConfirmDeleteDialog } from "@/components/shared/ConfirmDeleteDialog";
-import { RichTextEditor } from "@/components/shared/RichTextEditor";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,19 @@ import { useAdminApartments } from "@/features/admin/hooks/useAdminApartments";
 import { getLocalizedField } from "@/lib/localization";
 import { stripHtml } from "@/lib/utils";
 import type { Apartment } from "@/types";
+
+const RichTextEditor = dynamic(
+	() =>
+		import("@/components/shared/RichTextEditor").then(
+			(mod) => mod.RichTextEditor,
+		),
+	{
+		ssr: false,
+		loading: () => (
+			<div className="h-[150px] w-full bg-gray-50 animate-pulse rounded-[1.5rem] border border-gray-100" />
+		),
+	},
+);
 
 export function ApartmentsManager() {
 	const t = useTranslations("Admin.apartments.manager");
@@ -186,35 +199,37 @@ export function ApartmentsManager() {
 									</div>
 								</div>
 							) : (
-								<div className="flex justify-between items-start gap-8">
-									<div className="flex gap-8">
+								<div className="flex flex-col md:flex-row justify-between items-start gap-6 md:gap-8">
+									<div className="flex flex-col md:flex-row gap-6 md:gap-8 w-full md:w-auto">
 										<Image
 											src={apt.images[0]}
 											width={160}
 											height={160}
-											className="w-40 h-40 object-cover rounded-2xl"
+											className="w-full md:w-40 h-48 md:h-40 object-cover rounded-2xl"
 											alt={getLocalizedField(apt, "name", locale)}
 										/>
-										<div>
-											<h3 className="text-2xl font-serif font-bold">
+										<div className="flex-1">
+											<h3 className="text-xl md:text-2xl font-serif font-bold">
 												{getLocalizedField(apt, "name", locale)}
 											</h3>
-											<p className="text-gray-600">
+											<p className="text-gray-600 line-clamp-3 md:line-clamp-none">
 												{stripHtml(
 													getLocalizedField(apt, "description", locale),
 												)}
 											</p>
 										</div>
 									</div>
-									<div className="flex gap-2">
+									<div className="flex gap-2 w-full md:w-auto">
 										<Button
 											variant="outline"
+											className="flex-1 md:flex-none"
 											onClick={() => setEditingApartment(apt)}
 										>
 											{t("buttons.edit")}
 										</Button>
 										<Button
 											variant="destructive"
+											className="flex-1 md:flex-none"
 											onClick={() =>
 												setDeleteConfirm({
 													isOpen: true,

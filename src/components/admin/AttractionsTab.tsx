@@ -49,26 +49,26 @@ export function AttractionsTab() {
 	const handleSave = async (data: AttractionFormValues) => {
 		setIsSubmitting(true);
 		try {
-			let result: ActionState<Attraction | Attraction[]> | undefined;
+			let result: any | undefined;
 			if (isAddingNew) {
 				const slug = data.title.toLowerCase().replace(/ /g, "-");
-				result = (await createAttraction(
+				result = await createAttraction(
 					{ success: false },
 					{
 						...data,
 						slug,
 					},
-				)) as ActionState<Attraction>;
+				);
 			} else if (editingAttraction?.id) {
 				const slug = data.title.toLowerCase().replace(/ /g, "-");
-				result = (await updateAttraction(
+				result = await updateAttraction(
 					{ success: false },
 					{
 						...data,
 						id: Number(editingAttraction.id),
 						slug,
 					},
-				)) as ActionState<Attraction>;
+				);
 			}
 
 			if (result?.success) {

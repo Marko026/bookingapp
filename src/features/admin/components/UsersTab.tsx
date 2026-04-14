@@ -26,7 +26,6 @@ export function UsersTab() {
 
 	// Invite state
 	const [isInviteOpen, setIsInviteOpen] = useState(false);
-	const [inviteEmail, setInviteEmail] = useState("");
 	const [isInviting, setIsInviting] = useState(false);
 
 	// Admin toggle confirmation
@@ -87,14 +86,12 @@ export function UsersTab() {
 		}
 	};
 
-	const handleInvite = async () => {
-		if (!inviteEmail) return;
+	const handleInvite = async (email: string) => {
 		setIsInviting(true);
 		try {
-			const result = await inviteUser(inviteEmail);
+			const result = await inviteUser(email);
 			if (result.success) {
 				toast.success(t("toast.inviteSent"));
-				setInviteEmail("");
 				setIsInviteOpen(false);
 			} else {
 				toast.error(t("toast.inviteError"), { description: result.error });
@@ -148,8 +145,6 @@ export function UsersTab() {
 				open={isInviteOpen}
 				onOpenChange={setIsInviteOpen}
 				onInvite={handleInvite}
-				email={inviteEmail}
-				setEmail={setInviteEmail}
 				isInviting={isInviting}
 			/>
 

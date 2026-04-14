@@ -1,7 +1,6 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import dynamic from "next/dynamic";
 import {
 	BedDouble,
 	Car,
@@ -20,6 +19,12 @@ import {
 	Wind,
 	X,
 } from "lucide-react";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import { useLocale, useTranslations } from "next-intl";
+import { useCallback, useEffect, useState } from "react";
+import type { DateRange } from "react-day-picker";
+import { Button } from "@/components/ui/button";
 import {
 	Dialog,
 	DialogContent,
@@ -32,11 +37,6 @@ import { useRouter } from "@/i18n/routing";
 import { getLocalizedField } from "@/lib/localization";
 import { toast } from "@/lib/toast";
 import type { Apartment } from "@/types";
-import { useLocale, useTranslations } from "next-intl";
-import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
-import type { DateRange } from "react-day-picker";
-import { Button } from "@/components/ui/button";
 
 const LocationMap = dynamic(() => import("@/components/LocationMap"), {
 	ssr: false,

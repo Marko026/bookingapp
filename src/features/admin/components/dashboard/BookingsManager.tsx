@@ -88,6 +88,7 @@ export function BookingsManager() {
 
 	return (
 		<Card className="rounded-[2rem] border-gray-100 shadow-sm overflow-hidden bg-white/50 backdrop-blur-sm">
+			{/* Table view for Desktop */}
 			<div className="hidden md:block overflow-x-auto min-h-[500px]">
 				<Table>
 					<TableHeader className="bg-gray-50/50">
@@ -211,6 +212,103 @@ export function BookingsManager() {
 						)}
 					</TableBody>
 				</Table>
+			</div>
+
+			{/* List view for Mobile */}
+			<div className="md:hidden divide-y divide-gray-100">
+				{bookings.length === 0 ? (
+					<div className="p-8 text-center text-gray-400">
+						{isLoading ? "Loading..." : "No bookings yet."}
+					</div>
+				) : (
+					bookings.map((booking) => (
+						<div key={booking.id} className="p-4 space-y-4">
+							<div className="flex justify-between items-start">
+								<div>
+									<div className="font-bold text-gray-900">
+										{booking.guestName}
+									</div>
+									<div className="text-xs text-gray-400">
+										{booking.guestEmail}
+									</div>
+								</div>
+								<Badge
+									className={
+										booking.status === "confirmed"
+											? "bg-green-100 text-green-800"
+											: booking.status === "cancelled"
+												? "bg-red-100 text-red-800"
+												: "bg-yellow-100 text-yellow-800"
+									}
+								>
+									{booking.status}
+								</Badge>
+							</div>
+
+							<div className="grid grid-cols-2 gap-4 text-sm">
+								<div>
+									<div className="text-gray-400 text-xs uppercase font-bold">
+										Dates
+									</div>
+									<div>
+										{new Date(booking.checkIn).toLocaleDateString()} -{" "}
+										{new Date(booking.checkOut).toLocaleDateString()}
+									</div>
+								</div>
+								<div>
+									<div className="text-gray-400 text-xs uppercase font-bold">
+										Total
+									</div>
+									<div className="font-bold text-lg">{booking.totalPrice}€</div>
+								</div>
+							</div>
+
+							<div className="flex gap-2 pt-2">
+								{booking.status === "pending" && (
+									<>
+										<Button
+											size="sm"
+											className="flex-1 rounded-xl bg-black"
+											onClick={() =>
+												updateBookingStatus(booking.id, "confirmed")
+											}
+										>
+											<CheckCircle size={16} className="mr-2" /> Confirm
+										</Button>
+										<Button
+											size="sm"
+											variant="destructive"
+											className="flex-1 rounded-xl"
+											onClick={() =>
+												updateBookingStatus(booking.id, "cancelled")
+											}
+										>
+											<XCircle size={16} className="mr-2" /> Cancel
+										</Button>
+									</>
+								)}
+								<Button
+									size="icon"
+									variant="outline"
+									className="rounded-xl"
+									onClick={() => handleStartEdit(booking)}
+								>
+									<Edit2 size={16} />
+								</Button>
+								<Button
+									size="icon"
+									variant="outline"
+									className="rounded-xl border-red-300 text-red-600"
+									onClick={() =>
+										setDeleteConfirm({ isOpen: true, id: booking.id })
+									}
+								>
+									<Trash size={16} />
+								</Button>
+							</div>
+						</div>
+					))
+				)}
 			</div>
 
 			{/* Pagination */}

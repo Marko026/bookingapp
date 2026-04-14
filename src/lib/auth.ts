@@ -61,9 +61,6 @@ export async function loginAdmin(
 			process.env.NEXT_PUBLIC_ADMIN_EMAIL_2,
 		].filter(Boolean);
 
-		console.log("🔍 Debug - Allowed emails:", allowedEmails);
-		console.log("🔍 Debug - User email:", data.user.email);
-
 		if (!allowedEmails.includes(data.user.email)) {
 			await supabase.auth.signOut();
 			return {

@@ -33,7 +33,6 @@ export async function uploadImage(
 	}
 
 	// Compress image before upload
-	console.log("🗜️ Compressing image...");
 	const compressedBlob = await compressImage(file);
 
 	// Create new file from compressed blob
@@ -41,14 +40,6 @@ export async function uploadImage(
 		[compressedBlob],
 		file.name.replace(/\.[^.]+$/, ".jpg"), // Force .jpg extension
 		{ type: "image/jpeg" },
-	);
-
-	// Log compression results
-	const originalSize = (file.size / 1024 / 1024).toFixed(2);
-	const compressedSize = (compressedFile.size / 1024 / 1024).toFixed(2);
-	const savings = ((1 - compressedFile.size / file.size) * 100).toFixed(0);
-	console.log(
-		`✅ Compressed: ${originalSize}MB → ${compressedSize}MB (${savings}% smaller)`,
 	);
 
 	// Get dimensions from compressed image
@@ -75,10 +66,6 @@ export async function uploadImage(
 	const {
 		data: { publicUrl },
 	} = supabase.storage.from(bucket).getPublicUrl(data.path);
-
-	console.log("✅ Image uploaded successfully:");
-	console.log("  Path:", data.path);
-	console.log("  Public URL:", publicUrl);
 
 	return {
 		url: publicUrl,
