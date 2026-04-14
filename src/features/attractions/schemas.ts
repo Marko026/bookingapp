@@ -11,16 +11,12 @@ export const attractionFormSchema = z.object({
 	longDescriptionEn: z.string().optional(),
 	distance: z.string().min(1, "Udaljenost je obavezna"),
 	coords: z.string().optional(),
-	latitude: z
-		.number()
-		.nullable()
-		.refine((val) => val !== null, "Molimo označite lokaciju na mapi"),
-	longitude: z
-		.number()
-		.nullable()
-		.refine((val) => val !== null, "Molimo označite lokaciju na mapi"),
-	image: z.string().min(1, "Naslovna slika je obavezna"),
-	gallery: z.array(z.string()),
+	latitude: z.number().optional(),
+	longitude: z.number().optional(),
+	image: z.string().optional(),
+	gallery: z
+		.array(z.string())
+		.min(1, "Galerija je obavezna - dodajte bar jednu sliku"),
 });
 
 export type AttractionFormValues = z.infer<typeof attractionFormSchema>;

@@ -45,10 +45,27 @@ export function ApartmentsManager() {
 	const [editingApartment, setEditingApartment] = useState<Apartment | null>(
 		null,
 	);
+	const [originalApartment, setOriginalApartment] = useState<Apartment | null>(
+		null,
+	);
 	const [deleteConfirm, setDeleteConfirm] = useState<{
 		isOpen: boolean;
 		id: number | null;
 	}>({ isOpen: false, id: null });
+
+	const hasChanges = (
+		current: Apartment | null,
+		original: Apartment | null,
+	) => {
+		if (!current || !original) return false;
+		return (
+			current.name !== original.name ||
+			current.description !== original.description ||
+			current.price !== original.price ||
+			current.maxGuests !== original.maxGuests ||
+			JSON.stringify(current.images) !== JSON.stringify(original.images)
+		);
+	};
 
 	useEffect(() => {
 		fetchApartments();
@@ -81,6 +98,7 @@ export function ApartmentsManager() {
 			);
 			if (success) {
 				setEditingApartment(null);
+				setOriginalApartment(null);
 			}
 		}
 	};
@@ -187,15 +205,18 @@ export function ApartmentsManager() {
 										}))}
 									/>
 									<div className="flex justify-end gap-2">
-										<Button
-											variant="ghost"
-											onClick={() => setEditingApartment(null)}
-										>
-											{t("buttons.cancel")}
-										</Button>
-										<Button onClick={handleSave}>
-											<Save size={20} className="mr-2" /> {t("buttons.save")}
-										</Button>
+										{hasChanges(editingApartment, originalApartment) ? (
+											<Button onClick={handleSave}>
+												<Save size={20} className="mr-2" /> {t("buttons.save")}
+											</Button>
+										) : (
+											<Button
+												variant="ghost"
+												onClick={() => setEditingApartment(null)}
+											>
+												{t("buttons.cancel")}
+											</Button>
+										)}
 									</div>
 								</div>
 							) : (
@@ -223,7 +244,10 @@ export function ApartmentsManager() {
 										<Button
 											variant="outline"
 											className="flex-1 md:flex-none"
-											onClick={() => setEditingApartment(apt)}
+											onClick={() => {
+												setEditingApartment(apt);
+												setOriginalApartment(apt);
+											}}
 										>
 											{t("buttons.edit")}
 										</Button>

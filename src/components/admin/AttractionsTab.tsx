@@ -49,22 +49,30 @@ export function AttractionsTab() {
 	const handleSave = async (data: AttractionFormValues) => {
 		setIsSubmitting(true);
 		try {
+			const normalizedDistance = data.distance.replace(/\s*km\s*/gi, "").trim();
+
+			const dataWithImage = {
+				...data,
+				image: data.gallery?.[0] || data.image || "",
+				distance: normalizedDistance,
+			};
+
 			let result: any | undefined;
 			if (isAddingNew) {
-				const slug = data.title.toLowerCase().replace(/ /g, "-");
+				const slug = dataWithImage.title.toLowerCase().replace(/ /g, "-");
 				result = await createAttraction(
 					{ success: false },
 					{
-						...data,
+						...dataWithImage,
 						slug,
 					},
 				);
 			} else if (editingAttraction?.id) {
-				const slug = data.title.toLowerCase().replace(/ /g, "-");
+				const slug = dataWithImage.title.toLowerCase().replace(/ /g, "-");
 				result = await updateAttraction(
 					{ success: false },
 					{
-						...data,
+						...dataWithImage,
 						id: Number(editingAttraction.id),
 						slug,
 					},
@@ -77,7 +85,10 @@ export function AttractionsTab() {
 				setIsAddingNew(false);
 				fetchAttractions();
 			} else {
-				toast.error(t("toast.saveError"));
+				console.error("Save failed:", result);
+				toast.error(
+					t("toast.saveError") + (result?.error ? `: ${result.error}` : ""),
+				);
 			}
 		} catch (error) {
 			console.error("Save error:", error);

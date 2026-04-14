@@ -1,0 +1,3 @@
+{"timestamp":"2026-04-13T21:00:44.988Z","type":"wave_start","batchId":"20260413T230038","waveIndex":0,"phase":"executing","taskIds":["EXAMPLE-001"],"laneCount":1}
+{"timestamp":"2026-04-13T21:20:23.999Z","type":"batch_complete","batchId":"20260413T230038","waveIndex":0,"phase":"completed","succeededTasks":0,"failedTasks":0,"skippedTasks":1,"blockedTasks":0,"batchDurationMs":1185731}
+{"timestamp":"2026-04-13T21:28:35.747Z","type":"wave_start","batchId":"20260413T232829","waveIndex":0,"phase":"executing","taskIds":["EXAMPLE-002"],"laneCount":1}

@@ -19,9 +19,9 @@ export function Navbar() {
 	const pathname = usePathname();
 
 	const navLinks = [
-		{ name: t("home"), path: "/#hero", id: "hero" },
-		{ name: t("apartments"), path: "/#apartments", id: "apartments" },
-		{ name: t("attractions"), path: "/#attractions", id: "attractions" },
+		{ name: t("home"), path: "/", id: "hero" },
+		{ name: t("apartments"), path: "/", id: "apartments" },
+		{ name: t("attractions"), path: "/", id: "attractions" },
 	];
 
 	const [isMounted, setIsMounted] = useState(false);
@@ -47,32 +47,13 @@ export function Navbar() {
 
 	const handleNavClick = (
 		e: React.MouseEvent<HTMLAnchorElement>,
-		href: string,
+		targetId: string,
 	) => {
+		e.preventDefault();
 		setIsOpen(false);
-
-		// Logic for Logo click (goes to homepage and scrolls to top if already there)
-		if (href === "/") {
-			if (pathname === "/") {
-				e.preventDefault();
-				window.scrollTo({ top: 0, behavior: "smooth" });
-			}
-			return;
-		}
-
-		if (href.startsWith("/#")) {
-			const targetId = href.split("#")[1];
-
-			if (pathname === "/") {
-				// We are on the homepage, handle smooth scroll
-				e.preventDefault();
-				const targetElement = document.getElementById(targetId);
-
-				if (targetElement) {
-					targetElement.scrollIntoView({ behavior: "smooth" });
-				}
-			}
-			// If not on the homepage, let Next.js handle the routing to the page with hash
+		const targetElement = document.getElementById(targetId);
+		if (targetElement) {
+			targetElement.scrollIntoView({ behavior: "smooth" });
 		}
 	};
 
@@ -86,29 +67,34 @@ export function Navbar() {
 			>
 				<div
 					className={cn(
-						"pointer-events-auto w-full px-4 md:px-6 py-2 transition-all duration-500 flex items-center justify-between h-20", // Standard height
-						// Visual logic: Glass at top, Custom smooth shadow on scroll
-						!isMounted || isTop
-							? "bg-white/90 backdrop-blur-xl border-b border-white/20"
-							: "bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100",
+						"pointer-events-auto w-full px-4 md:px-6 py-2 transition-all duration-500 flex items-center justify-between h-20",
+						!isTop && "bg-white/80 backdrop-blur-md shadow-sm py-1",
 					)}
 				>
-					{/* Logo Container - optimizing allows for larger visual logo */}
 					<Link
 						href="/"
-						onClick={(e) => handleNavClick(e, "/")} // Pass event and href
-						className="flex items-center group relative z-50 pointer-events-auto"
+						onClick={(e) => {
+							if (pathname === "/" || !pathname) {
+								e.preventDefault();
+								window.scrollTo({ top: 0, behavior: "smooth" });
+							}
+							setIsOpen(false);
+						}}
+						className="flex items-center gap-2"
 					>
-						<Logo className="origin-left" />
+						<Logo
+							className="h-10 w-10 md:h-12 md:w-12"
+							variant="dark"
+							noBackground
+						/>
 					</Link>
 
-					{/* Desktop Links - Aligned Right */}
 					<div className="hidden md:flex items-center gap-1 ms-auto">
 						{navLinks.map((link) => (
 							<Link
 								key={link.path + link.name}
 								href={link.path as string}
-								onClick={(e) => handleNavClick(e, link.path)} // Pass event and href
+								onClick={(e) => handleNavClick(e, link.id)}
 								className={cn(
 									"px-5 py-2 rounded-full text-sm font-medium transition-all duration-200",
 									"text-gray-600 hover:text-gray-900 hover:bg-white/50",
@@ -122,10 +108,8 @@ export function Navbar() {
 						</div>
 					</div>
 
-					{/* Right Side: Mobile Toggle only + Switcher */}
 					<div className="flex items-center gap-2 ms-auto md:ms-0">
 						<div className="md:hidden">{isMounted && <LanguageSwitcher />}</div>
-						{/* Mobile Menu Toggle */}
 						<button
 							type="button"
 							onClick={toggleMenu}
@@ -141,13 +125,13 @@ export function Navbar() {
 				</div>
 			</motion.nav>
 
-			{/* Mobile Menu Overlay */}
 			<AnimatePresence>
 				{isOpen && (
 					<motion.div
-						initial={{ opacity: 0, y: -20 }}
-						animate={{ opacity: 1, y: 0 }}
-						exit={{ opacity: 0, y: -20 }}
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+						transition={{ duration: 0.2 }}
 						className="fixed inset-0 z-40 bg-white md:hidden pt-28 px-4 flex flex-col h-screen overflow-y-auto"
 					>
 						<div className="flex flex-col space-y-3 pb-20">
@@ -155,7 +139,7 @@ export function Navbar() {
 								<Link
 									key={link.path + link.name}
 									href={link.path as string}
-									onClick={(e) => handleNavClick(e, link.path)} // Pass event and href
+									onClick={(e) => handleNavClick(e, link.id)}
 									className="flex items-center justify-between p-5 rounded-3xl bg-gray-50 text-xl font-serif text-gray-900 active:scale-95 transition-all"
 								>
 									<span>{link.name}</span>

@@ -1,0 +1,26 @@
+{
+	"batchId": "20260413T230038",
+	"updatedAt": 1776115221073,
+	"agents": {
+		"orch-marke-lane-1-worker": {
+			"batchId": "20260413T230038",
+			"agentId": "orch-marke-lane-1-worker",
+			"role": "worker",
+			"laneNumber": 1,
+			"taskId": "EXAMPLE-001",
+			"repoId": "default",
+			"pid": 23504,
+			"parentPid": 6196,
+			"startedAt": 1776114921414,
+			"status": "exited",
+			"cwd": "C:\\Users\\marke\\OneDrive\\Desktop\\bookingapp\\.worktrees\\marke-20260413T230038\\lane-1",
+			"packet": {
+				"promptPath": "C:\\Users\\marke\\OneDrive\\Desktop\\bookingapp\\.worktrees\\marke-20260413T230038\\lane-1\\taskplane-tasks\\EXAMPLE-001-hello-world/PROMPT.md",
+				"statusPath": "C:\\Users\\marke\\OneDrive\\Desktop\\bookingapp\\.worktrees\\marke-20260413T230038\\lane-1\\taskplane-tasks\\EXAMPLE-001-hello-world\\STATUS.md",
+				"donePath": "C:\\Users\\marke\\OneDrive\\Desktop\\bookingapp\\.worktrees\\marke-20260413T230038\\lane-1\\taskplane-tasks\\EXAMPLE-001-hello-world\\.DONE",
+				"reviewsDir": "C:\\Users\\marke\\OneDrive\\Desktop\\bookingapp\\.worktrees\\marke-20260413T230038\\lane-1\\taskplane-tasks\\EXAMPLE-001-hello-world/.reviews",
+				"taskFolder": "C:\\Users\\marke\\OneDrive\\Desktop\\bookingapp\\.worktrees\\marke-20260413T230038\\lane-1\\taskplane-tasks\\EXAMPLE-001-hello-world"
+			}
+		}
+	}
+}

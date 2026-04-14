@@ -1,23 +1,24 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Save } from "lucide-react";
+import { Languages, Loader2, Save } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ImageUpload } from "@/components/ImageUpload";
 import { FormInput } from "@/components/shared/FormInput";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { translateText } from "@/features/attractions/actions/translate";
 import {
 	type AttractionFormValues,
 	attractionFormSchema,
 } from "@/features/attractions/schemas";
+import { toast } from "@/lib/toast";
 import type { Attraction } from "@/types";
 
-// Dynamically import MapPicker to avoid SSR issues with Leaflet
 const MapPicker = dynamic(() => import("@/components/admin/MapPicker"), {
 	ssr: false,
 	loading: () => (
@@ -53,6 +54,7 @@ export function AttractionForm({
 	isSubmitting = false,
 }: AttractionFormProps) {
 	const t = useTranslations("Admin.attractions");
+	const [isTranslating, setIsTranslating] = useState(false);
 
 	const {
 		register,
@@ -61,7 +63,7 @@ export function AttractionForm({
 		reset,
 		setValue,
 		watch,
-		formState: { errors },
+		formState: { errors, isDirty },
 	} = useForm<AttractionFormValues>({
 		resolver: zodResolver(attractionFormSchema),
 		defaultValues: {
@@ -73,14 +75,13 @@ export function AttractionForm({
 			longDescriptionEn: editingAttraction?.longDescriptionEn || "",
 			distance: editingAttraction?.distance || "",
 			coords: editingAttraction?.coords || "",
-			latitude: editingAttraction?.latitude ?? null,
-			longitude: editingAttraction?.longitude ?? null,
+			latitude: editingAttraction?.latitude ?? undefined,
+			longitude: editingAttraction?.longitude ?? undefined,
 			image: editingAttraction?.image || "",
 			gallery: editingAttraction?.gallery || [],
 		},
 	});
 
-	// Reset form when editingAttraction changes
 	useEffect(() => {
 		if (editingAttraction) {
 			reset({
@@ -92,8 +93,8 @@ export function AttractionForm({
 				longDescriptionEn: editingAttraction.longDescriptionEn || "",
 				distance: editingAttraction.distance || "",
 				coords: editingAttraction.coords || "",
-				latitude: editingAttraction.latitude || null,
-				longitude: editingAttraction.longitude || null,
+				latitude: editingAttraction.latitude ?? undefined,
+				longitude: editingAttraction.longitude ?? undefined,
 				image: editingAttraction.image || "",
 				gallery: editingAttraction.gallery || [],
 			});
@@ -103,10 +104,78 @@ export function AttractionForm({
 	const currentLat = watch("latitude");
 	const currentLng = watch("longitude");
 
+	const handleTranslateAll = async () => {
+		const title = watch("title");
+		const description = watch("description");
+		const longDescription = watch("longDescription");
+
+		if (!title && !description && !longDescription) return;
+
+		setIsTranslating(true);
+
+		try {
+			const [titleEn, descriptionEn, longDescriptionEn] = await Promise.all([
+				title ? translateText(title) : Promise.resolve(""),
+				description ? translateText(description) : Promise.resolve(""),
+				longDescription ? translateText(longDescription) : Promise.resolve(""),
+			]);
+
+			if (!titleEn && !descriptionEn && !longDescriptionEn) {
+				toast.error("Prevod nije uspeo. Pokušajte ponovo.");
+				return;
+			}
+
+			const existingTitleEn = watch("titleEn") || "";
+			const existingDescEn = watch("descriptionEn") || "";
+			const existingLongDescEn = watch("longDescriptionEn") || "";
+
+			const finalTitleEn = existingTitleEn
+				? `${existingTitleEn}\n\n${titleEn}`
+				: titleEn;
+			const finalDescEn = existingDescEn
+				? `${existingDescEn}\n\n${descriptionEn}`
+				: descriptionEn;
+			const finalLongDescEn = existingLongDescEn
+				? `${existingLongDescEn}\n\n${longDescriptionEn}`
+				: longDescriptionEn;
+
+			setValue("titleEn", finalTitleEn, { shouldValidate: false });
+			setValue("descriptionEn", finalDescEn, { shouldValidate: false });
+			setValue("longDescriptionEn", finalLongDescEn, { shouldValidate: false });
+		} catch (error) {
+			console.error("Translation error:", error);
+			toast.error("Prevod nije uspeo. Pokušajte ponovo.");
+		} finally {
+			setIsTranslating(false);
+		}
+	};
+
+	const hasSrContent =
+		watch("title") || watch("description") || watch("longDescription");
+
 	return (
 		<Card className="rounded-[2.5rem] border-gray-100 shadow-sm overflow-hidden mb-8">
 			<CardContent className="p-8">
 				<form onSubmit={handleSubmit(onSave)} className="space-y-6">
+					{hasSrContent && (
+						<div className="flex justify-end mb-4">
+							<Button
+								type="button"
+								variant="outline"
+								onClick={handleTranslateAll}
+								disabled={isTranslating}
+								className="gap-2"
+							>
+								{isTranslating ? (
+									<Loader2 className="h-4 w-4 animate-spin" />
+								) : (
+									<Languages className="h-4 w-4" />
+								)}
+								{t("translateAll") || "Prevedi sve na engleski"}
+							</Button>
+						</div>
+					)}
+
 					<div className="space-y-6">
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 							<FormInput
@@ -118,12 +187,14 @@ export function AttractionForm({
 							<FormInput
 								label={t("fields.titleEn") || "Title (EN)"}
 								{...register("titleEn")}
-								placeholder="English title (optional)"
+								placeholder="English title"
 							/>
 							<FormInput
 								label={t("fields.distance")}
 								{...register("distance")}
-								placeholder={t("placeholders.distance")}
+								error={errors.distance?.message}
+								placeholder="30"
+								suffix="km"
 							/>
 							<FormInput
 								label={t("fields.coords")}
@@ -133,6 +204,7 @@ export function AttractionForm({
 							<FormInput
 								label={t("fields.shortDescSr")}
 								{...register("description")}
+								error={errors.description?.message}
 								className="md:col-span-1"
 								placeholder={t("placeholders.shortSubtitle")}
 							/>
@@ -140,7 +212,7 @@ export function AttractionForm({
 								label={t("fields.shortDescEn") || "Short Description (EN)"}
 								{...register("descriptionEn")}
 								className="md:col-span-1"
-								placeholder="English short description (optional)"
+								placeholder="English short description"
 							/>
 						</div>
 
@@ -154,6 +226,7 @@ export function AttractionForm({
 										value={field.value || ""}
 										onChange={field.onChange}
 										placeholder={t("placeholders.fullText")}
+										error={errors.longDescription?.message}
 									/>
 								)}
 							/>
@@ -165,14 +238,13 @@ export function AttractionForm({
 										label={t("fields.longDescEn") || "Long Description (EN)"}
 										value={field.value || ""}
 										onChange={field.onChange}
-										placeholder="Full English text (optional)"
+										placeholder="Full English text"
 									/>
 								)}
 							/>
 						</div>
 					</div>
 
-					{/* Location Picker */}
 					<div className="space-y-2">
 						<Label>{t("fields.coords")}</Label>
 						<p className="text-sm text-muted-foreground mb-4">
@@ -187,6 +259,9 @@ export function AttractionForm({
 								setValue("longitude", lng);
 							}}
 						/>
+						{errors.latitude && (
+							<p className="text-xs text-red-500">{errors.latitude.message}</p>
+						)}
 						{currentLat && currentLng && (
 							<p className="text-xs text-green-600 font-medium">
 								Lokacija postavljena: {currentLat.toFixed(6)},{" "}
@@ -217,6 +292,9 @@ export function AttractionForm({
 								/>
 							)}
 						/>
+						{errors.gallery && (
+							<p className="text-xs text-red-500">{errors.gallery.message}</p>
+						)}
 					</div>
 
 					<div className="flex justify-end gap-3 pt-4">
@@ -230,7 +308,7 @@ export function AttractionForm({
 						</Button>
 						<Button
 							type="submit"
-							disabled={isSubmitting}
+							disabled={isSubmitting || !isDirty}
 							className="bg-black text-white px-8 rounded-xl"
 						>
 							<Save size={18} className="mr-2" />{" "}

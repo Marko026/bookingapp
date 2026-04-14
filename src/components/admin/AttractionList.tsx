@@ -51,7 +51,7 @@ export function AttractionList({
 									<h3 className="text-xl font-serif font-bold text-gray-900">
 										{attr.title}
 									</h3>
-									<p className="text-gray-500 text-sm">{attr.distance}</p>
+									<p className="text-gray-500 text-sm">{attr.distance} km</p>
 									<p className="text-gray-600 mt-1 line-clamp-1">
 										{stripHtml(attr.description || "")}
 									</p>

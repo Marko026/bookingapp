@@ -66,7 +66,6 @@ export function Location({ attractions = [] }: { attractions?: Attraction[] }) {
 }
 
 function AttractionCard({
-	id,
 	slug,
 	image,
 	title,
@@ -75,7 +74,6 @@ function AttractionCard({
 	coords,
 	index,
 }: {
-	id: string;
 	slug: string;
 	image: string;
 	title: string;
@@ -108,7 +106,7 @@ function AttractionCard({
 
 						<div className="absolute top-4 right-4 md:top-5 md:right-5 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] md:text-xs font-bold flex items-center gap-1.5 shadow-sm text-gray-900">
 							<MapPin size={14} className="text-amber-500 fill-amber-500" />
-							{distance}
+							{distance} km
 						</div>
 					</div>
 

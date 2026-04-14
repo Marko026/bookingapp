@@ -58,7 +58,9 @@ export function BookingCalendar({
 
 		// Ako je odabran samo jedan datum, provjeri da li je zauzet
 		if (!range.to) {
-			const isDisabled = disabledDates.some((d) => isSameDay(d, range.from));
+			if (!range.from) return;
+			const fromDate = range.from as Date;
+			const isDisabled = disabledDates.some((d) => isSameDay(d, fromDate));
 			if (isDisabled) {
 				toast.error(t("calendar.unavailableTitle"), {
 					description: t("calendar.unavailableDesc"),

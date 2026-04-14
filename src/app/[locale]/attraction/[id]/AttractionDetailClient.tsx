@@ -81,7 +81,7 @@ export default function AttractionDetailClient({
 					<div className="absolute top-6 left-6 md:top-8 md:left-8 bg-white/10 backdrop-blur-xl px-5 py-2.5 rounded-full flex items-center gap-2.5 border border-white/20 shadow-xl">
 						<div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
 						<span className="text-xs md:text-sm font-semibold text-white tracking-wide">
-							{attraction.distance}
+							{attraction.distance} km
 						</span>
 					</div>
 
@@ -175,7 +175,7 @@ export default function AttractionDetailClient({
 											{t("location")}
 										</span>
 										<p className="text-base md:text-lg font-medium text-gray-900">
-											{attraction.distance}
+											{attraction.distance} km
 										</p>
 									</div>
 								</div>

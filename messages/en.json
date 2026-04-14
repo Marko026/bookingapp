@@ -231,6 +231,7 @@
 			"edit": "Edit",
 			"delete": "Delete",
 			"save": "Save",
+			"saving": "Saving...",
 			"cancel": "Cancel",
 			"loading": "Loading...",
 			"noAttractions": "No attractions added.",
@@ -239,6 +240,8 @@
 				"serbian": "Serbian",
 				"english": "English"
 			},
+			"translateAll": "Translate all to English",
+			"locationHelp": "Click on the map to mark the attraction location.",
 			"fields": {
 				"titleSr": "Title (SR)",
 				"titleEn": "Title (EN)",

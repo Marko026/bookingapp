@@ -231,6 +231,7 @@
 			"edit": "Izmeni",
 			"delete": "Obriši",
 			"save": "Sačuvaj",
+			"saving": "Čuvanje...",
 			"cancel": "Otkaži",
 			"loading": "Učitavanje...",
 			"noAttractions": "Nema dodatih atrakcija.",
@@ -239,6 +240,8 @@
 				"serbian": "Serbian",
 				"english": "English"
 			},
+			"translateAll": "Prevedi sve na engleski",
+			"locationHelp": "Kliknite na mapu da označite lokaciju atrakcije.",
 			"fields": {
 				"titleSr": "Naslov (SR)",
 				"titleEn": "Title (EN)",

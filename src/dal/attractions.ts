@@ -16,6 +16,7 @@ export async function getAllAttractions() {
 		return result.map((attr) => ({
 			...attr,
 			id: attr.id.toString(),
+			distance: attr.distance ?? "",
 			gallery: attr.images.map((img) => img.imageUrl),
 		}));
 	} catch (error) {

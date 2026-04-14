@@ -4,15 +4,32 @@ import { cn } from "@/lib/utils";
 interface LogoProps {
 	className?: string;
 	variant?: "dark" | "light";
+	noBackground?: boolean;
 }
 
-export function Logo({ className, variant = "dark" }: LogoProps) {
+export function Logo({
+	className,
+	variant = "dark",
+	noBackground = false,
+}: LogoProps) {
 	const textColor = variant === "dark" ? "text-gray-900" : "text-white";
 	const subTextColor = variant === "dark" ? "text-gray-600" : "text-gray-300";
 
 	return (
 		<div className={cn("flex items-center ", className)}>
-			<div className="relative flex items-center justify-center bg-white p-0.5 rounded-xl overflow-hidden">
+			{!noBackground && (
+				<div className="relative flex items-center justify-center bg-white p-0.5 rounded-xl overflow-hidden">
+					<Image
+						src="/logo.png"
+						alt="Apartmani Todorović Logo"
+						width={500}
+						height={150}
+						className="h-14 w-auto object-contain"
+						priority
+					/>
+				</div>
+			)}
+			{noBackground && (
 				<Image
 					src="/logo.png"
 					alt="Apartmani Todorović Logo"
@@ -21,7 +38,7 @@ export function Logo({ className, variant = "dark" }: LogoProps) {
 					className="h-14 w-auto object-contain"
 					priority
 				/>
-			</div>
+			)}
 			<div className="flex flex-col items-start leading-[1.1] justify-center border-l border-gray-200/50 pl-3 md:pl-2">
 				<span
 					className={cn(
