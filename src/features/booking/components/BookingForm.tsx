@@ -4,10 +4,12 @@ import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useActionState, useEffect } from "react";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { createBooking, type State } from "@/features/booking/actions";
-import { toast } from "@/lib/toast";
+import { FormError } from "@/components/ui/form-error";
+import { toast } from "sonner";
+import { createBooking } from "../actions";
 
 interface BookingFormProps {
 	apartmentId: string;
@@ -20,11 +22,6 @@ interface BookingFormProps {
 	onSuccess: () => void;
 }
 
-const initialState: State = {
-	message: "",
-	success: false,
-};
-
 export function BookingForm({
 	apartmentId,
 	apartmentName,
@@ -36,17 +33,18 @@ export function BookingForm({
 	onSuccess,
 }: BookingFormProps) {
 	const t = useTranslations("Booking");
-	const [state, formAction, isPending] = useActionState(
-		createBooking,
-		initialState,
-	);
+	const [state, formAction, isPending] = useActionState(createBooking, {
+		message: "",
+		success: false,
+	});
 
 	useEffect(() => {
 		if (state.success) {
 			onSuccess();
 		} else if (state.message && !state.success) {
-			toast.error(t("toast.errorTitle"), {
-				description: t("toast.errorDesc"),
+			toast.error(t("toast.errorTitle") || "Greška pri rezervaciji", {
+				description: state.message || t("toast.errorDesc"),
+				className: "bg-red-50 text-red-900 border-red-100 rounded-2xl p-4",
 			});
 		}
 	}, [state.success, state.message, onSuccess, t]);
@@ -56,7 +54,7 @@ export function BookingForm({
 			initial={{ scale: 0.95, opacity: 0, y: 20 }}
 			animate={{ scale: 1, opacity: 1, y: 0 }}
 			exit={{ scale: 0.95, opacity: 0, y: 20 }}
-			className="bg-white rounded-[2rem] md:rounded-[2.5rem] w-full max-w-md p-6 md:p-8 shadow-2xl"
+			className="bg-white rounded-[2rem] md:rounded-[2.5rem] w-full max-w-md p-6 md:p-8 shadow-2xl max-h-[90vh] overflow-y-auto"
 		>
 			<div className="flex justify-between items-center mb-6 md:mb-8">
 				<h3 className="text-2xl md:text-3xl font-serif font-medium">
@@ -104,14 +102,13 @@ export function BookingForm({
 							required={name !== "phone"}
 							name={name}
 							type={type}
-							className="w-full px-4 py-3 md:px-5 md:py-4 rounded-xl md:rounded-2xl bg-gray-50 focus:bg-white border border-transparent focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 outline-none font-medium transition-all text-sm md:text-base"
+							className={cn(
+								"w-full px-4 py-3 md:px-5 md:py-4 rounded-xl md:rounded-2xl bg-gray-50 focus:bg-white border border-transparent focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 outline-none font-medium transition-all text-base",
+								state?.errors?.[name] && "border-red-500 bg-red-50/10",
+							)}
 							placeholder={label}
 						/>
-						{state.errors && state.errors[name] && (
-							<p className="mt-1 text-xs text-red-500">
-								{state.errors[name][0]}
-							</p>
-						)}
+						<FormError message={state?.errors?.[name]?.[0]} />
 					</div>
 				))}
 
@@ -126,7 +123,7 @@ export function BookingForm({
 						id="question"
 						name="question"
 						placeholder={t("form.messagePlaceholder")}
-						className="w-full px-4 py-3 md:px-5 md:py-4 rounded-xl md:rounded-2xl bg-gray-50 focus:bg-white border border-transparent focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 outline-none font-medium transition-all text-sm md:text-base min-h-[100px] resize-none"
+						className="w-full px-4 py-3 md:px-5 md:py-4 rounded-xl md:rounded-2xl bg-gray-50 focus:bg-white border border-transparent focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 outline-none font-medium transition-all text-base min-h-[100px] resize-none"
 					/>
 				</div>
 

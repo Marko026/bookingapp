@@ -34,7 +34,7 @@ import { toast } from "@/lib/toast";
 import type { Apartment } from "@/types";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { Button } from "@/components/ui/button";
 
@@ -68,13 +68,13 @@ export default function ApartmentDetailClient({
 		window.scrollTo(0, 0);
 	}, []);
 
-	const handleBookingSuccess = () => {
+	const handleBookingSuccess = useCallback(() => {
 		setBookingFormVisible(false);
 		toast.success(t("toast.successTitle"), {
 			description: t("toast.successDesc"),
 		});
 		router.push("/");
-	};
+	}, [router, t]);
 
 	const nextImage = () =>
 		setCurrentImageIndex((prev) => (prev + 1) % apartment.images.length);
