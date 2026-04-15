@@ -49,7 +49,6 @@ export function Location({ attractions = [] }: { attractions?: Attraction[] }) {
 					{attractions.map((attraction, index) => (
 						<AttractionCard
 							key={attraction.id}
-							id={attraction.id}
 							slug={attraction.slug}
 							image={attraction.image || "/images/placeholder.jpg"}
 							title={getLocalizedField(attraction, "title", locale)}
