@@ -194,14 +194,17 @@ export default function AttractionDetailClient({
 									</Button>
 								</a>
 
-								<Link href="/#apartments" className="block">
-									<Button
-										variant="outline"
-										className="w-full !py-6 md:!py-7 text-base md:text-lg border-gray-200 text-gray-900 hover:bg-gray-50 hover:border-gray-300 rounded-xl md:rounded-2xl flex items-center justify-center gap-2"
-									>
-										{t("bookNow")} <ArrowUpRight size={18} />
-									</Button>
-								</Link>
+								<Button
+									variant="outline"
+									onClick={() =>
+										document
+											.getElementById("apartments")
+											?.scrollIntoView({ behavior: "smooth" })
+									}
+									className="w-full !py-6 md:!py-7 text-base md:text-lg border-gray-200 text-gray-900 hover:bg-gray-50 hover:border-gray-300 rounded-xl md:rounded-2xl flex items-center justify-center gap-2"
+								>
+									{t("bookNow")} <ArrowUpRight size={18} />
+								</Button>
 							</div>
 						</motion.div>
 					</div>

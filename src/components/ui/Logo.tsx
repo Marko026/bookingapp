@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface LogoProps {
@@ -12,12 +13,19 @@ export function Logo({
 	variant = "dark",
 	noBackground = false,
 }: LogoProps) {
+	const [isMounted, setIsMounted] = useState(false);
 	const textColor = variant === "dark" ? "text-gray-900" : "text-white";
 	const subTextColor = variant === "dark" ? "text-gray-600" : "text-gray-300";
 
+	useEffect(() => {
+		setIsMounted(true);
+	}, []);
+
+	const showBackground = isMounted && !noBackground;
+
 	return (
 		<div className={cn("flex items-center ", className)}>
-			{!noBackground && (
+			{showBackground && (
 				<div className="relative flex items-center justify-center bg-white p-0.5 rounded-xl overflow-hidden">
 					<Image
 						src="/logo.png"
@@ -29,7 +37,7 @@ export function Logo({
 					/>
 				</div>
 			)}
-			{noBackground && (
+			{!showBackground && (
 				<Image
 					src="/logo.png"
 					alt="Apartmani Todorović Logo"

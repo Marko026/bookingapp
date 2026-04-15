@@ -31,6 +31,10 @@ export const createAttraction = createSafeAction(
 			data.longDescriptionEn ||
 			(await translateToEnglish(data.longDescription || ""));
 
+		const mainImage =
+			data.image ||
+			(data.gallery && data.gallery.length > 0 ? data.gallery[0] : null);
+
 		await db.transaction(async (tx) => {
 			const [newAttraction] = await tx
 				.insert(attractions)
@@ -46,7 +50,7 @@ export const createAttraction = createSafeAction(
 					latitude: data.latitude,
 					longitude: data.longitude,
 					slug: data.slug,
-					image: data.image,
+					image: mainImage,
 				})
 				.returning();
 
@@ -82,6 +86,10 @@ export const updateAttraction = createSafeAction(
 			data.longDescriptionEn ||
 			(await translateToEnglish(data.longDescription || ""));
 
+		const mainImage =
+			data.image ||
+			(data.gallery && data.gallery.length > 0 ? data.gallery[0] : null);
+
 		await db.transaction(async (tx) => {
 			await tx
 				.update(attractions)
@@ -96,7 +104,7 @@ export const updateAttraction = createSafeAction(
 					coords: data.coords,
 					latitude: data.latitude,
 					longitude: data.longitude,
-					image: data.image,
+					image: mainImage,
 				})
 				.where(eq(attractions.id, data.id));
 

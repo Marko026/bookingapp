@@ -47,6 +47,12 @@ interface AttractionFormProps {
 	isSubmitting?: boolean;
 }
 
+interface TranslationState {
+	titleEn: string;
+	descriptionEn: string;
+	longDescriptionEn: string;
+}
+
 export function AttractionForm({
 	editingAttraction,
 	onSave,
@@ -55,6 +61,11 @@ export function AttractionForm({
 }: AttractionFormProps) {
 	const t = useTranslations("Admin.attractions");
 	const [isTranslating, setIsTranslating] = useState(false);
+	const [translations, setTranslations] = useState<TranslationState>({
+		titleEn: editingAttraction?.titleEn || "",
+		descriptionEn: editingAttraction?.descriptionEn || "",
+		longDescriptionEn: editingAttraction?.longDescriptionEn || "",
+	});
 
 	const {
 		register,
@@ -68,11 +79,8 @@ export function AttractionForm({
 		resolver: zodResolver(attractionFormSchema),
 		defaultValues: {
 			title: editingAttraction?.title || "",
-			titleEn: editingAttraction?.titleEn || "",
 			description: editingAttraction?.description || "",
-			descriptionEn: editingAttraction?.descriptionEn || "",
 			longDescription: editingAttraction?.longDescription || "",
-			longDescriptionEn: editingAttraction?.longDescriptionEn || "",
 			distance: editingAttraction?.distance || "",
 			coords: editingAttraction?.coords || "",
 			latitude: editingAttraction?.latitude ?? undefined,
@@ -86,11 +94,8 @@ export function AttractionForm({
 		if (editingAttraction) {
 			reset({
 				title: editingAttraction.title || "",
-				titleEn: editingAttraction.titleEn || "",
 				description: editingAttraction.description || "",
-				descriptionEn: editingAttraction.descriptionEn || "",
 				longDescription: editingAttraction.longDescription || "",
-				longDescriptionEn: editingAttraction.longDescriptionEn || "",
 				distance: editingAttraction.distance || "",
 				coords: editingAttraction.coords || "",
 				latitude: editingAttraction.latitude ?? undefined,
@@ -125,9 +130,9 @@ export function AttractionForm({
 				return;
 			}
 
-			const existingTitleEn = watch("titleEn") || "";
-			const existingDescEn = watch("descriptionEn") || "";
-			const existingLongDescEn = watch("longDescriptionEn") || "";
+			const existingTitleEn = translations.titleEn || "";
+			const existingDescEn = translations.descriptionEn || "";
+			const existingLongDescEn = translations.longDescriptionEn || "";
 
 			const finalTitleEn = existingTitleEn
 				? `${existingTitleEn}\n\n${titleEn}`
@@ -139,9 +144,11 @@ export function AttractionForm({
 				? `${existingLongDescEn}\n\n${longDescriptionEn}`
 				: longDescriptionEn;
 
-			setValue("titleEn", finalTitleEn, { shouldValidate: false });
-			setValue("descriptionEn", finalDescEn, { shouldValidate: false });
-			setValue("longDescriptionEn", finalLongDescEn, { shouldValidate: false });
+			setTranslations({
+				titleEn: finalTitleEn,
+				descriptionEn: finalDescEn,
+				longDescriptionEn: finalLongDescEn,
+			});
 		} catch (error) {
 			console.error("Translation error:", error);
 			toast.error("Prevod nije uspeo. Pokušajte ponovo.");

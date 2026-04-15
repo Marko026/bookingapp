@@ -161,8 +161,13 @@ export function Hero() {
 
 						{/* Buttons */}
 						<div className="flex flex-col sm:flex-row gap-4 mt-2">
-							<Link
-								href="#apartments"
+							<button
+								type="button"
+								onClick={() =>
+									document
+										.getElementById("apartments")
+										?.scrollIntoView({ behavior: "smooth" })
+								}
 								className="group relative overflow-hidden hover:shadow-[0_0_30px_rgba(251,191,36,0.4)] hover:-translate-y-0.5 transition-all duration-300 flex text-base font-medium text-white bg-zinc-900 h-14 rounded-2xl px-8 shadow-[0_0_20px_rgba(0,0,0,0.1)] items-center justify-center w-full sm:w-auto"
 							>
 								<div className="flex items-center gap-2 transition-transform duration-300 group-hover:-translate-x-3">
@@ -180,7 +185,7 @@ export function Hero() {
 										aria-hidden="true"
 									/>
 								</div>
-							</Link>
+							</button>
 						</div>
 
 						{/* Trust Section */}
@@ -325,9 +330,13 @@ export function Hero() {
 								<span className="text-xs font-medium uppercase tracking-wide text-zinc-400">
 									{t("showcase.apartmentDetails")}
 								</span>
-								<Link
-									href="/#apartments"
-									scroll={false}
+								<button
+									type="button"
+									onClick={() =>
+										document
+											.getElementById("apartments")
+											?.scrollIntoView({ behavior: "smooth" })
+									}
 									className="text-xs font-medium uppercase tracking-wide text-zinc-400 flex items-center gap-1"
 									aria-label={t("explore")}
 								>
@@ -335,7 +344,7 @@ export function Hero() {
 										className="w-4 h-4 fill-current"
 										aria-hidden="true"
 									/>
-								</Link>
+								</button>
 							</div>
 							<div className="flex items-center gap-3 mb-4">
 								<div className="w-10 h-10 rounded-xl flex items-center justify-center bg-amber-500/10 text-amber-400 ring-1 ring-amber-500/20">

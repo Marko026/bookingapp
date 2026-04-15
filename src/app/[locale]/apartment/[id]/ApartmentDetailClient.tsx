@@ -73,7 +73,7 @@ export default function ApartmentDetailClient({
 		toast.success(t("toast.successTitle"), {
 			description: t("toast.successDesc"),
 		});
-		router.push("/");
+		router.replace("/");
 	}, [router, t]);
 
 	const nextImage = () =>

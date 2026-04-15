@@ -10,7 +10,7 @@ import { Link, usePathname } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
-export function Navbar() {
+export function Navbar({ className }: { className?: string }) {
 	const t = useTranslations("Navigation");
 	const [isOpen, setIsOpen] = useState(false);
 	const [isVisible, setIsVisible] = useState(true);
