@@ -1,3 +1,5 @@
+import { env } from "@/env";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { createClient } from "@/lib/supabase";
 
 export interface AuthResult {
@@ -16,6 +18,17 @@ export async function loginAdmin(
 	email: string,
 	password: string,
 ): Promise<AuthResult> {
+	const rateLimit = checkRateLimit(`login:${email}`, {
+		maxRequests: 5,
+		windowMs: 300_000,
+	});
+	if (!rateLimit.allowed) {
+		return {
+			success: false,
+			error: "Previše pokušaja. Pokušajte ponovo za nekoliko minuta.",
+		};
+	}
+
 	try {
 		const supabase = createClient();
 
@@ -56,10 +69,9 @@ export async function loginAdmin(
 		}
 
 		// Provera da li je email među dozvoljenim admin email-ovima
-		const allowedEmails = [
-			process.env.NEXT_PUBLIC_ADMIN_EMAIL_1,
-			process.env.NEXT_PUBLIC_ADMIN_EMAIL_2,
-		].filter(Boolean);
+		const allowedEmails = [env.ADMIN_EMAIL_1, env.ADMIN_EMAIL_2].filter(
+			Boolean,
+		);
 
 		if (!allowedEmails.includes(data.user.email)) {
 			await supabase.auth.signOut();
@@ -96,9 +108,6 @@ export async function logoutAdmin(): Promise<void> {
 /**
  * Provera da li je user trenutno ulogovan
  */
-/**
- * Provera da li je user trenutno ulogovan
- */
 export async function getCurrentUser(): Promise<AuthResult> {
 	try {
 		const supabase = createClient();
@@ -124,10 +133,9 @@ export async function getCurrentUser(): Promise<AuthResult> {
 
 		if (adminError || !adminRecord || adminRecord.role !== "admin") {
 			// Fallback za stare hardkodovane admine dok se ne završi migracija
-			const allowedEmails = [
-				process.env.NEXT_PUBLIC_ADMIN_EMAIL_1,
-				process.env.NEXT_PUBLIC_ADMIN_EMAIL_2,
-			].filter(Boolean);
+			const allowedEmails = [env.ADMIN_EMAIL_1, env.ADMIN_EMAIL_2].filter(
+				Boolean,
+			);
 
 			if (!allowedEmails.includes(user.email)) {
 				return {

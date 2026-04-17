@@ -31,7 +31,7 @@ export async function getRegisteredUsers(): Promise<{
 		} = await supabase.auth.admin.listUsers();
 
 		if (usersError) {
-			console.error("DEBUG - listUsers error:", usersError);
+			console.error("listUsers error:", usersError);
 			return { success: false, error: `Auth Error: ${usersError.message}` };
 		}
 
@@ -41,7 +41,7 @@ export async function getRegisteredUsers(): Promise<{
 			.select("user_id, role");
 
 		if (adminError) {
-			console.error("DEBUG - admin_users fetch error:", adminError);
+			console.error("admin_users fetch error:", adminError);
 			// If table doesn't exist, we'll return an empty list of admins instead of failing completely,
 			// but we should still log it.
 			if (adminError.code === "42P01") {

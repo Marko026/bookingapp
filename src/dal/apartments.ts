@@ -1,6 +1,7 @@
-import { asc, eq } from "drizzle-orm";
+import { asc, eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { apartments } from "@/db/schema";
+import { getServerUser } from "@/lib/auth-server";
 import type { Apartment } from "@/types";
 import "server-only";
 
@@ -26,7 +27,6 @@ export async function getApartmentLocation() {
 // Get all apartments for public landing page
 export async function getAllApartmentsPublic(): Promise<Apartment[]> {
 	try {
-		// Use Drizzle relational query to fetch apartments with images in a single query
 		const allApartments = await db.query.apartments.findMany({
 			with: {
 				images: {
@@ -45,16 +45,16 @@ export async function getAllApartmentsPublic(): Promise<Apartment[]> {
 				descriptionEn: apt.descriptionEn,
 				price: apt.pricePerNight,
 				maxGuests: apt.capacity,
-				beds: Math.ceil(apt.capacity / 2), // Estimate beds
+				beds: Math.ceil(apt.capacity / 2),
 				images:
 					apt.images.length > 0
 						? apt.images.map((img) => img.imageUrl)
 						: [
 								"https://images.unsplash.com/photo-1542718610-a1d656d1884c?auto=format&fit=crop&q=80&w=1600",
-							], // Fallback
-				reviewsCount: 42, // Placeholder
-				rating: 4.9, // Placeholder
-				amenities: ["WiFi", "Parking", "Klima", "Terasa", "Kuhinja", "TV"], // Placeholder
+							],
+				reviewsCount: 0,
+				rating: 0,
+				amenities: [],
 				slug: apt.name.toLowerCase().replace(/ /g, "-"),
 				latitude: apt.latitude ?? undefined,
 				longitude: apt.longitude ?? undefined,
@@ -66,7 +66,74 @@ export async function getAllApartmentsPublic(): Promise<Apartment[]> {
 	}
 }
 
-import { getServerUser } from "@/lib/auth-server";
+export async function getApartmentsPublicPaginated(
+	page = 1,
+	pageSize = 10,
+): Promise<{
+	apartments: Apartment[];
+	total: number;
+	page: number;
+	pageSize: number;
+	totalPages: number;
+}> {
+	try {
+		page = Math.max(1, page);
+		pageSize = Math.max(1, Math.min(100, pageSize));
+		const offset = (page - 1) * pageSize;
+
+		const [apartmentsResult, countResult] = await Promise.all([
+			db.query.apartments.findMany({
+				with: {
+					images: {
+						orderBy: (images, { asc }) => [asc(images.displayOrder)],
+					},
+				},
+				orderBy: (apartments, { asc }) => [asc(apartments.id)],
+				limit: pageSize,
+				offset,
+			}),
+			db
+				.select({ count: sql<number>`cast(count(*) as integer)` })
+				.from(apartments),
+		]);
+
+		const total = countResult[0]?.count ?? 0;
+
+		const mappedApartments = apartmentsResult.map((apt) => ({
+			id: apt.id.toString(),
+			name: apt.name,
+			nameEn: apt.nameEn,
+			description: apt.description || "",
+			descriptionEn: apt.descriptionEn,
+			price: apt.pricePerNight,
+			maxGuests: apt.capacity,
+			beds: Math.ceil(apt.capacity / 2),
+			images:
+				apt.images.length > 0
+					? apt.images.map((img) => img.imageUrl)
+					: [
+							"https://images.unsplash.com/photo-1542718610-a1d656d1884c?auto=format&fit=crop&q=80&w=1600",
+						],
+			reviewsCount: 0,
+			rating: 0,
+			amenities: [],
+			slug: apt.name.toLowerCase().replace(/ /g, "-"),
+			latitude: apt.latitude ?? undefined,
+			longitude: apt.longitude ?? undefined,
+		}));
+
+		return {
+			apartments: mappedApartments,
+			total,
+			page,
+			pageSize,
+			totalPages: Math.ceil(total / pageSize),
+		};
+	} catch (error) {
+		console.error("Failed to fetch paginated apartments:", error);
+		return { apartments: [], total: 0, page, pageSize, totalPages: 0 };
+	}
+}
 
 // Get all apartments for admin dashboard
 export async function getAllApartmentsAdmin() {
@@ -136,10 +203,10 @@ export async function getApartment(id: number) {
 				description: apartment.description || "",
 				descriptionEn: apartment.descriptionEn,
 				images: apartment.images.map((img) => img.imageUrl),
-				amenities: ["WiFi", "Parking", "Klima", "Terasa", "Kuhinja", "TV"], // Default amenities for now
-				rating: 4.9, // Default rating
-				reviewsCount: 0, // Default reviews
-				beds: 2, // Default beds (should be in DB)
+				amenities: [],
+				rating: 0,
+				reviewsCount: 0,
+				beds: Math.ceil(apartment.capacity / 2),
 				maxGuests: apartment.capacity,
 				price: apartment.pricePerNight,
 				slug: apartment.name.toLowerCase().replace(/ /g, "-"),

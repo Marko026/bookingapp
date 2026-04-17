@@ -27,12 +27,12 @@ export default function NotFound() {
 						</div>
 
 						<div className="flex flex-col sm:flex-row gap-4 pt-4">
-							<a href="/" className="w-full block">
+							<Link href="/" className="w-full block">
 								<Button className="w-full rounded-2xl bg-amber-600 text-white hover:bg-amber-700 h-14 text-base font-bold shadow-xl shadow-amber-600/20 transition-all active:scale-95">
 									<ArrowLeft size={18} className="mr-2" />
 									Nazad na početnu stranu
 								</Button>
-							</a>
+							</Link>
 						</div>
 					</div>
 				</div>

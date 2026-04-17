@@ -17,10 +17,13 @@ export const apartmentImageActionSchema = z.object({
 });
 
 export const apartmentFormSchema = z.object({
-	name: z.string().min(2, "Naziv mora imati bar 2 karaktera"),
-	nameEn: z.string().optional(),
-	description: z.string().optional(),
-	descriptionEn: z.string().optional(),
+	name: z
+		.string()
+		.min(2, "Naziv mora imati bar 2 karaktera")
+		.max(200, "Naziv je predugačak"),
+	nameEn: z.string().max(200, "Naziv je predugačak").optional(),
+	description: z.string().max(5000, "Opis je predugačak").optional(),
+	descriptionEn: z.string().max(5000, "Opis je predugačak").optional(),
 	pricePerNight: z.coerce.number().min(1, "Cena je obavezna"),
 	capacity: z.coerce.number().min(1, "Kapacitet je obavezan"),
 	latitude: z.number().nullable().optional(),
@@ -32,10 +35,10 @@ export type ApartmentFormValues = z.infer<typeof apartmentFormSchema>;
 
 // Schema for Server Action (handling FormData strings)
 export const createApartmentActionSchema = z.object({
-	name: z.string().min(1),
-	nameEn: z.string().optional(),
-	description: z.string().optional(),
-	descriptionEn: z.string().optional(),
+	name: z.string().min(1).max(200),
+	nameEn: z.string().max(200).optional(),
+	description: z.string().max(5000).optional(),
+	descriptionEn: z.string().max(5000).optional(),
 	pricePerNight: z
 		.string()
 		.transform((val) => parseInt(val, 10))

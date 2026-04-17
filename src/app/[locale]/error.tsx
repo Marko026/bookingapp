@@ -4,7 +4,7 @@ import { AlertCircle, ArrowLeft, RefreshCw } from "lucide-react";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
-export default function GlobalError({
+export default function SegmentError({
 	error,
 	reset,
 }: {
@@ -39,13 +39,12 @@ export default function GlobalError({
 
 					<div className="mt-8 p-4 bg-gray-50/50 rounded-2xl border border-dashed border-gray-200 group transition-all hover:bg-white">
 						<p className="text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-2">
-							Detalji greške
+							Status
 						</p>
-						<code className="text-xs font-mono text-gray-400 break-all opacity-70 group-hover:opacity-100 transition-opacity">
-							{error.message ||
-								(error.digest && `ID: ${error.digest}`) ||
-								"Sistemska greška (0x01)"}
-						</code>
+						<p className="text-xs text-gray-400 opacity-70 group-hover:opacity-100 transition-opacity">
+							Greška je zabeležena. Kontaktirajte podršku ako se problem
+							nastavi.
+						</p>
 					</div>
 				</div>
 

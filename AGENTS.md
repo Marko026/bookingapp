@@ -38,7 +38,7 @@ Environment validation is centralized in `src/env.ts`. Required variables includ
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `RESEND_API_KEY`
 - `RESEND_FROM_EMAIL`
-- `NEXT_PUBLIC_ADMIN_EMAIL_1` (and optional `_2`)
+- `ADMIN_EMAIL_1` (and optional `ADMIN_EMAIL_2`)
 - `CRON_SECRET`
 - `SUPABASE_SERVICE_ROLE_KEY` (required for admin-level operations)
 

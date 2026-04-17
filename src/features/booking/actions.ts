@@ -1,24 +1,33 @@
 "use server";
 
-import { and, desc, eq, gt, type InferSelectModel, lt, ne } from "drizzle-orm";
+import {
+	and,
+	desc,
+	eq,
+	gt,
+	type InferSelectModel,
+	lt,
+	ne,
+	sql,
+} from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { db } from "@/db";
 import { apartments, bookings } from "@/db/schema";
 import { getServerUser } from "@/lib/auth-server";
 import { sendBookingEmails } from "@/lib/email";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { createSafeAction } from "@/lib/safe-action";
 
 const createBookingSchema = z.object({
 	apartmentId: z.coerce.number(),
-	guestName: z.string().min(1),
-	guestEmail: z.string().email(),
-	phone: z.string().optional(),
+	guestName: z.string().min(1).max(200),
+	guestEmail: z.string().email().max(255),
+	phone: z.string().max(50).optional(),
 	checkIn: z.string(), // ISO date
 	checkOut: z.string(), // ISO date
 	totalPrice: z.coerce.number(),
-	// Dodatni tekst iz forme (poruka gosta)
-	question: z.string().optional(),
+	question: z.string().max(2000).optional(),
 });
 
 type BookingType = InferSelectModel<typeof bookings>;
@@ -26,6 +35,18 @@ type BookingType = InferSelectModel<typeof bookings>;
 export const createBooking = createSafeAction(
 	createBookingSchema,
 	async (data) => {
+		const rateLimit = checkRateLimit(`booking:${data.guestEmail}`, {
+			maxRequests: 3,
+			windowMs: 300_000,
+		});
+		if (!rateLimit.allowed) {
+			return {
+				success: false,
+				message:
+					"Previše pokušaja rezervacije. Pokušajte ponovo za nekoliko minuta.",
+			};
+		}
+
 		try {
 			return await db.transaction(async (tx) => {
 				// Check for overlapping bookings
@@ -111,26 +132,37 @@ export async function getApartmentBookings(
 	}
 }
 
-import { sql } from "drizzle-orm";
-
 export async function getAllBookings(page = 1, pageSize = 10) {
 	try {
+		const user = await getServerUser();
+		if (!user.success) {
+			return {
+				success: false,
+				message: "Unauthorized",
+				bookings: [],
+				pagination: { page: 1, pageSize: 10, total: 0, totalPages: 0 },
+			};
+		}
+
+		page = Math.max(1, page);
+		pageSize = Math.max(1, Math.min(100, pageSize));
 		const offset = (page - 1) * pageSize;
 
-		// Fetch data with pagination
-		const result = await db.query.bookings.findMany({
-			orderBy: [desc(bookings.createdAt)],
-			limit: pageSize,
-			offset: offset,
-			with: {
-				apartment: true,
-			},
-		});
+		const [result, countResult] = await Promise.all([
+			db.query.bookings.findMany({
+				orderBy: [desc(bookings.createdAt)],
+				limit: pageSize,
+				offset,
+				with: {
+					apartment: true,
+				},
+			}),
+			db
+				.select({ count: sql<number>`cast(count(*) as integer)` })
+				.from(bookings),
+		]);
 
-		// Fetch total count for pagination
-		const [countResult] = await db
-			.select({ count: sql<number>`cast(count(*) as integer)` })
-			.from(bookings);
+		const total = countResult[0]?.count ?? 0;
 
 		return {
 			success: true,
@@ -138,12 +170,18 @@ export async function getAllBookings(page = 1, pageSize = 10) {
 			pagination: {
 				page,
 				pageSize,
-				total: countResult.count,
-				totalPages: Math.ceil(countResult.count / pageSize),
+				total,
+				totalPages: Math.ceil(total / pageSize),
 			},
 		};
 	} catch (error) {
-		return { success: false, bookings: [] };
+		console.error("Failed to fetch bookings:", error);
+		return {
+			success: false,
+			message: "Failed to fetch bookings",
+			bookings: [],
+			pagination: { page: 1, pageSize: 10, total: 0, totalPages: 0 },
+		};
 	}
 }
 
@@ -173,18 +211,43 @@ export async function updateBooking(
 			return { success: false, message: "Unauthorized" };
 		}
 
-		await db
-			.update(bookings)
-			.set({
-				checkIn,
-				checkOut,
-				totalPrice,
-			})
-			.where(eq(bookings.id, id));
+		return await db.transaction(async (tx) => {
+			const booking = await tx.query.bookings.findFirst({
+				where: eq(bookings.id, id),
+			});
 
-		revalidatePath("/admin");
-		return { success: true };
+			if (!booking) {
+				return { success: false, message: "Booking not found" };
+			}
+
+			const overlap = await tx.query.bookings.findFirst({
+				where: and(
+					eq(bookings.apartmentId, booking.apartmentId),
+					ne(bookings.status, "cancelled"),
+					ne(bookings.id, id),
+					lt(bookings.checkIn, checkOut),
+					gt(bookings.checkOut, checkIn),
+				),
+			});
+
+			if (overlap) {
+				return { success: false, message: "Izabrani termin je već zauzet." };
+			}
+
+			await tx
+				.update(bookings)
+				.set({
+					checkIn,
+					checkOut,
+					totalPrice,
+				})
+				.where(eq(bookings.id, id));
+
+			revalidatePath("/admin");
+			return { success: true };
+		});
 	} catch (error) {
+		console.error("Failed to update booking:", error);
 		return { success: false, message: "Failed to update" };
 	}
 }

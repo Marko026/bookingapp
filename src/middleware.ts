@@ -6,7 +6,7 @@ import { routing } from "./i18n/routing";
 
 const handleI18nRouting = createMiddleware(routing);
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
 	// First, handle i18n routing
 	const i18nResponse = handleI18nRouting(request);
 
@@ -74,10 +74,9 @@ export async function proxy(request: NextRequest) {
 		const isDbAdmin = adminRecord?.role === "admin";
 
 		// Fallback to env vars if not found in DB (migration period)
-		const allowedEmails = [
-			env.NEXT_PUBLIC_ADMIN_EMAIL_1,
-			env.NEXT_PUBLIC_ADMIN_EMAIL_2,
-		].filter(Boolean);
+		const allowedEmails = [env.ADMIN_EMAIL_1, env.ADMIN_EMAIL_2].filter(
+			Boolean,
+		);
 
 		const isEnvAdmin = allowedEmails.includes(user.email || "");
 
