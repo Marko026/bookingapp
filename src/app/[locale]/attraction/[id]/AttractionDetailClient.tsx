@@ -1,13 +1,13 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ArrowLeft, ArrowUpRight, ExternalLink, MapPin } from "lucide-react";
-import Image from "next/image";
-import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
 import { getLocalizedField } from "@/lib/localization";
 import type { Attraction } from "@/types";
+import { motion } from "framer-motion";
+import { ArrowLeft, ArrowUpRight, ExternalLink, MapPin } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import Image from "next/image";
 
 const FALLBACK_ORIGIN = "Vinci,Golubac";
 
@@ -182,7 +182,7 @@ export default function AttractionDetailClient({
 							</div>
 
 							{/* Action Buttons */}
-							<div className="space-y-3 pt-4">
+							<div className="flex flex-col gap-6 pt-4">
 								<a
 									href={directionsUrl}
 									target="_blank"
@@ -194,17 +194,14 @@ export default function AttractionDetailClient({
 									</Button>
 								</a>
 
-								<Button
-									variant="outline"
-									onClick={() =>
-										document
-											.getElementById("apartments")
-											?.scrollIntoView({ behavior: "smooth" })
-									}
-									className="w-full !py-6 md:!py-7 text-base md:text-lg border-gray-200 text-gray-900 hover:bg-gray-50 hover:border-gray-300 rounded-xl md:rounded-2xl flex items-center justify-center gap-2"
-								>
-									{t("bookNow")} <ArrowUpRight size={18} />
-								</Button>
+								<Link href="/#apartments">
+									<Button
+										variant="outline"
+										className="w-full !py-6 md:!py-7 text-base md:text-lg border-gray-200 text-gray-900 hover:bg-gray-50 hover:border-gray-300 rounded-xl md:rounded-2xl flex items-center justify-center gap-2"
+									>
+										{t("bookNow")} <ArrowUpRight size={18} />
+									</Button>
+								</Link>
 							</div>
 						</motion.div>
 					</div>

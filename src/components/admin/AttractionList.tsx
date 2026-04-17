@@ -57,7 +57,7 @@ export function AttractionList({
 									</p>
 								</div>
 							</div>
-							<div className="flex gap-2 w-full md:w-auto">
+							<div className="flex gap-4 w-full md:w-auto">
 								<Button
 									variant="outline"
 									onClick={() => onEdit(attr)}
