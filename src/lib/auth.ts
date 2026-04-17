@@ -1,6 +1,8 @@
+"use server";
+
 import { env } from "@/env";
 import { checkRateLimit } from "@/lib/rate-limit";
-import { createClient } from "@/lib/supabase";
+import { createClient as createServerClient } from "@/lib/supabase-server";
 
 export interface AuthResult {
 	success: boolean;
@@ -30,7 +32,7 @@ export async function loginAdmin(
 	}
 
 	try {
-		const supabase = createClient();
+		const supabase = await createServerClient();
 
 		const { data, error } = await supabase.auth.signInWithPassword({
 			email,
@@ -101,7 +103,7 @@ export async function loginAdmin(
  * Logout admin user
  */
 export async function logoutAdmin(): Promise<void> {
-	const supabase = createClient();
+	const supabase = await createServerClient();
 	await supabase.auth.signOut();
 }
 
@@ -110,7 +112,7 @@ export async function logoutAdmin(): Promise<void> {
  */
 export async function getCurrentUser(): Promise<AuthResult> {
 	try {
-		const supabase = createClient();
+		const supabase = await createServerClient();
 
 		const {
 			data: { user },
@@ -168,7 +170,7 @@ export async function sendPasswordResetEmail(
 	email: string,
 ): Promise<AuthResult> {
 	try {
-		const supabase = createClient();
+		const supabase = await createServerClient();
 
 		const { error } = await supabase.auth.resetPasswordForEmail(email, {
 			redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/admin/reset-password`,
