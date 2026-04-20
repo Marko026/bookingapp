@@ -18,7 +18,7 @@ export interface Apartment {
 
 export interface Booking {
 	id: number;
-	apartmentId: number;
+	apartmentId: string;
 	guestName: string;
 	guestEmail: string;
 	phone?: string;
@@ -32,6 +32,7 @@ export interface Booking {
 
 export interface Attraction {
 	id: string;
+	uuid: string;
 	title: string;
 	titleEn?: string | null;
 	description: string | null;

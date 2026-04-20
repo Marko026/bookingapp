@@ -16,7 +16,7 @@ import {
 export const apartments = pgTable(
 	"apartments",
 	{
-		id: serial("id").primaryKey(),
+		id: uuid("id").defaultRandom().primaryKey(),
 		name: text("name").notNull(),
 		nameEn: text("name_en"),
 		description: text("description"),
@@ -38,7 +38,7 @@ export const apartmentImages = pgTable(
 	"apartment_images",
 	{
 		id: serial("id").primaryKey(),
-		apartmentId: integer("apartment_id")
+		apartmentId: uuid("apartment_id")
 			.references(() => apartments.id)
 			.notNull(),
 		imageUrl: text("image_url").notNull(), // Supabase Storage URL
@@ -60,7 +60,7 @@ export const bookings = pgTable(
 	"bookings",
 	{
 		id: serial("id").primaryKey(),
-		apartmentId: integer("apartment_id")
+		apartmentId: uuid("apartment_id")
 			.references(() => apartments.id)
 			.notNull(),
 		guestName: text("guest_name").notNull(),
@@ -98,6 +98,7 @@ export const inquiries = pgTable("inquiries", {
 
 export const attractions = pgTable("attractions", {
 	id: serial("id").primaryKey(),
+	uuid: uuid("uuid").unique().defaultRandom().notNull(),
 	title: text("title").notNull(),
 	titleEn: text("title_en"),
 	description: text("description"),
@@ -109,7 +110,7 @@ export const attractions = pgTable("attractions", {
 	latitude: doublePrecision("latitude"),
 	longitude: doublePrecision("longitude"),
 	slug: text("slug").unique().notNull(),
-	image: text("image"), // Main image URL
+	image: text("image"),
 	createdAt: timestamp("created_at").defaultNow(),
 });
 

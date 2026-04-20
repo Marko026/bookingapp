@@ -49,7 +49,7 @@ export function Location({ attractions = [] }: { attractions?: Attraction[] }) {
 					{attractions.map((attraction, index) => (
 						<AttractionCard
 							key={attraction.id}
-							slug={attraction.slug}
+							uuid={attraction.uuid}
 							image={attraction.image || "/images/placeholder.jpg"}
 							title={getLocalizedField(attraction, "title", locale)}
 							description={getLocalizedField(attraction, "description", locale)}
@@ -65,7 +65,7 @@ export function Location({ attractions = [] }: { attractions?: Attraction[] }) {
 }
 
 function AttractionCard({
-	slug,
+	uuid,
 	image,
 	title,
 	description,
@@ -73,7 +73,7 @@ function AttractionCard({
 	coords,
 	index,
 }: {
-	slug: string;
+	uuid: string;
 	image: string;
 	title: string;
 	description: string;
@@ -86,7 +86,7 @@ function AttractionCard({
 
 	return (
 		<div className="flex flex-col h-full">
-			<Link href={`/attraction/${slug}` as string} className="flex-grow">
+			<Link href={`/attraction/${uuid}` as string} className="flex-grow">
 				<motion.div
 					initial={{ opacity: 0, y: 40 }}
 					whileInView={{ opacity: 1, y: 0 }}

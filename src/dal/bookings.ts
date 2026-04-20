@@ -3,7 +3,7 @@ import { db } from "@/db";
 import { bookings } from "@/db/schema";
 import "server-only";
 
-export async function getApartmentBookings(apartmentId: number) {
+export async function getApartmentBookings(apartmentId: string) {
 	try {
 		const apartmentBookings = await db
 			.select()

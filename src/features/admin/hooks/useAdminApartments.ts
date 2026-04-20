@@ -26,7 +26,7 @@ export function useAdminApartments() {
 		}
 	}, []);
 
-	const removeApartment = async (id: number) => {
+	const removeApartment = async (id: string) => {
 		try {
 			const result = await deleteApartmentAction({ success: false }, { id });
 			if (result.success) {
@@ -41,11 +41,11 @@ export function useAdminApartments() {
 		return false;
 	};
 
-	const saveApartment = async (id: number, formData: FormData) => {
+	const saveApartment = async (id: string, formData: FormData) => {
 		try {
 			// Ensure ID is in formData for validation
 			if (!formData.has("id")) {
-				formData.append("id", id.toString());
+				formData.append("id", id);
 			}
 
 			const result = await updateApartmentAction({ success: false }, formData);

@@ -67,9 +67,9 @@ export const createApartmentActionSchema = z.object({
 });
 
 export const updateApartmentActionSchema = createApartmentActionSchema.extend({
-	id: z.number(),
+	id: z.string().uuid(),
 });
 
 export const deleteApartmentActionSchema = z.object({
-	id: z.number(),
+	id: z.string().uuid(),
 });

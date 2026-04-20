@@ -2,11 +2,11 @@
 
 import { Resend } from "resend";
 import { env } from "@/env";
+import { sanitizeErrorForProduction } from "@/lib/error-handling";
+import { logError } from "@/lib/logger";
 import { createBookingEmail } from "./emails/admin-notification";
 import { createGuestConfirmationEmail } from "./emails/guest-confirmation";
 import type { BookingData } from "./emails/types";
-import { logError } from "@/lib/logger";
-import { sanitizeErrorForProduction } from "@/lib/error-handling";
 
 const resend = new Resend(env.RESEND_API_KEY);
 

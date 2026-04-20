@@ -121,7 +121,9 @@ describe("sanitizeErrorForProduction", () => {
 	});
 
 	it("should never return raw error messages", () => {
-		const sensitiveError = new Error("Internal server error: password123 exposed");
+		const sensitiveError = new Error(
+			"Internal server error: password123 exposed",
+		);
 		const message = sanitizeErrorForProduction(sensitiveError);
 
 		expect(message).not.toContain("password123");

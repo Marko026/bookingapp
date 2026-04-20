@@ -25,7 +25,7 @@ export function BookingCalendar({
 		const fetchBookings = async () => {
 			setIsLoading(true);
 			try {
-				const result = await getApartmentBookings(Number(apartmentId));
+				const result = await getApartmentBookings(apartmentId);
 				if (result.success && result.bookings) {
 					const disabled: Date[] = [];
 					result.bookings.forEach((booking) => {

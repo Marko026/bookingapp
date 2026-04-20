@@ -5,8 +5,8 @@
  * Obezbeđuje konzistentno klasifikovanje, logovanje i user-friendly poruke.
  */
 
-import { type ErrorContext, ErrorType, createAppError } from "./error-types";
 import { getUserFriendlyMessage } from "./error-messages";
+import { createAppError, type ErrorContext, ErrorType } from "./error-types";
 import { logError } from "./logger";
 
 /**
@@ -20,7 +20,9 @@ export function classifyError(error: unknown): ErrorType {
 		typeof error === "object" &&
 		error !== null &&
 		"type" in error &&
-		Object.values(ErrorType).includes((error as { type: string }).type as ErrorType)
+		Object.values(ErrorType).includes(
+			(error as { type: string }).type as ErrorType,
+		)
 	) {
 		return (error as { type: ErrorType }).type;
 	}
@@ -196,7 +198,8 @@ export function throwError(
 	// Kreiraj Error objekat sa dodatnim poljima i originalnim stack-om
 	const error = new Error(message, { cause: appError });
 	(error as unknown as Record<string, unknown>).type = appError.type;
-	(error as unknown as Record<string, unknown>).userMessage = appError.userMessage;
+	(error as unknown as Record<string, unknown>).userMessage =
+		appError.userMessage;
 	(error as unknown as Record<string, unknown>).context = context;
 
 	throw error;

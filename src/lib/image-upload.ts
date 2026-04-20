@@ -23,26 +23,28 @@ export { validateImageFile };
 export async function uploadImage(
 	file: File,
 	bucket: string = "apartment-images",
+	options?: { maxWidth?: number; maxHeight?: number; quality?: number },
 ): Promise<UploadedImage> {
 	const supabase = createClient();
 
-	// Validate
 	const validation = validateImageFile(file);
 	if (!validation.valid) {
 		throw new Error(validation.error || "Invalid image file");
 	}
 
-	// Compress image before upload
-	const compressedBlob = await compressImage(file);
+	const compressedBlob = await compressImage(
+		file,
+		options?.maxWidth ?? 1920,
+		options?.maxHeight ?? 1080,
+		options?.quality ?? 0.85,
+	);
 
-	// Create new file from compressed blob
 	const compressedFile = new File(
 		[compressedBlob],
-		file.name.replace(/\.[^.]+$/, ".jpg"), // Force .jpg extension
+		file.name.replace(/\.[^.]+$/, ".jpg"),
 		{ type: "image/jpeg" },
 	);
 
-	// Get dimensions from compressed image
 	const dimensions = await getImageDimensions(compressedFile);
 
 	// Generate unique filename
@@ -81,8 +83,11 @@ export async function uploadImage(
 export async function uploadMultipleImages(
 	files: File[],
 	bucket: string = "apartment-images",
+	options?: { maxWidth?: number; maxHeight?: number; quality?: number },
 ): Promise<UploadedImage[]> {
-	const uploadPromises = files.map((file) => uploadImage(file, bucket));
+	const uploadPromises = files.map((file) =>
+		uploadImage(file, bucket, options),
+	);
 	return Promise.all(uploadPromises);
 }
 

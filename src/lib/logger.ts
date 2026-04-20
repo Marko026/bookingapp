@@ -88,7 +88,11 @@ function sanitizeData(data: unknown): unknown {
 	const sanitized: Record<string, unknown> = {};
 	for (const [key, value] of Object.entries(data as object)) {
 		// Preskoči osetljiva polja
-		if (SENSITIVE_FIELDS.some((field) => key.toLowerCase().includes(field.toLowerCase()))) {
+		if (
+			SENSITIVE_FIELDS.some((field) =>
+				key.toLowerCase().includes(field.toLowerCase()),
+			)
+		) {
 			sanitized[key] = "[REDACTED]";
 		} else {
 			sanitized[key] = sanitizeData(value);
@@ -219,7 +223,11 @@ export function logInfo(message: string, context?: ErrorContext): void {
 /**
  * Loguje debug poruku (samo u developmentu)
  */
-export function logDebug(message: string, data?: unknown, context?: ErrorContext): void {
+export function logDebug(
+	message: string,
+	data?: unknown,
+	context?: ErrorContext,
+): void {
 	if (!isDevelopment()) return;
 
 	const entry: LogEntry = {

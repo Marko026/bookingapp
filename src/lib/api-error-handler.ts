@@ -6,8 +6,8 @@
  */
 
 import { NextResponse } from "next/server";
-import type { ErrorContext } from "./error-types";
 import { handleError } from "./error-handling";
+import type { ErrorContext } from "./error-types";
 
 /**
  * Handler za API greške koji vraća NextResponse sa user-friendly porukom
@@ -103,7 +103,9 @@ export function handleAuthError(
  *   return NextResponse.json({ success: true, data });
  * }, { actionName: 'getData' });
  */
-export function withErrorHandling<T extends (request: Request) => Promise<NextResponse>>(
+export function withErrorHandling<
+	T extends (request: Request) => Promise<NextResponse>,
+>(
 	handler: T,
 	context?: Omit<ErrorContext, "action"> & { actionName?: string },
 ): (request: Request) => Promise<NextResponse> {

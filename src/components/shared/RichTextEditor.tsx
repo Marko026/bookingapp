@@ -1,7 +1,6 @@
 "use client";
 
 import Placeholder from "@tiptap/extension-placeholder";
-import Underline from "@tiptap/extension-underline";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import {
@@ -83,7 +82,6 @@ export function RichTextEditor({
 	const editor = useEditor({
 		extensions: [
 			StarterKit,
-			Underline,
 			Placeholder.configure({
 				placeholder,
 			}),

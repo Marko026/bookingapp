@@ -43,7 +43,7 @@ export default function AttractionDetailClient({
 			<div className="max-w-7xl mx-auto px-4 md:px-6">
 				{/* Navigation & Breadcrumbs */}
 				<div className="mb-6 md:mb-8 flex items-center gap-2">
-					<Link href="/#location">
+					<Link href="/#attractions">
 						<Button
 							variant="ghost"
 							className="pl-0 hover:bg-transparent hover:text-amber-600 transition-colors group"

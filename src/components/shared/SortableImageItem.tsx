@@ -51,6 +51,7 @@ export function SortableImageItem({
 				alt={`Uploaded ${index + 1}`}
 				fill
 				className="object-cover"
+				sizes="25vw"
 				onError={(e) => {
 					console.error("Image failed to load:", image.url);
 					console.error("Error:", e);

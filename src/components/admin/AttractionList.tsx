@@ -42,6 +42,7 @@ export function AttractionList({
 										<Image
 											src={attr.image}
 											fill
+											sizes="96px"
 											className="object-cover rounded-2xl shadow-sm"
 											alt={attr.title}
 										/>

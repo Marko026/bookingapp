@@ -16,7 +16,7 @@ import {
 	verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { Image as ImageIcon, Loader2, Upload } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { SortableImageItem } from "@/components/shared/SortableImageItem";
 import {
@@ -30,17 +30,38 @@ interface ImageUploadProps {
 	onUploadComplete: (images: UploadedImage[]) => void;
 	maxFiles?: number;
 	existingImages?: UploadedImage[];
+	uploadOptions?: { maxWidth?: number; maxHeight?: number; quality?: number };
 }
 
 export function ImageUpload({
 	onUploadComplete,
 	maxFiles = 10,
 	existingImages = [],
+	uploadOptions,
 }: ImageUploadProps) {
 	const [uploading, setUploading] = useState(false);
 	const [uploadedImages, setUploadedImages] =
 		useState<UploadedImage[]>(existingImages);
 	const [error, setError] = useState<string | null>(null);
+	const mountedRef = useRef(false);
+	const prevImagesRef = useRef<string | null>(null);
+
+	useEffect(() => {
+		mountedRef.current = true;
+	}, []);
+
+	useEffect(() => {
+		setUploadedImages(existingImages);
+	}, [existingImages]);
+
+	useEffect(() => {
+		if (!mountedRef.current) return;
+		const key = uploadedImages.map((img) => img.url).join("|");
+		if (prevImagesRef.current !== key) {
+			prevImagesRef.current = key;
+			onUploadComplete(uploadedImages);
+		}
+	}, [uploadedImages, onUploadComplete]);
 
 	const sensors = useSensors(
 		useSensor(PointerSensor),
@@ -57,9 +78,7 @@ export function ImageUpload({
 				const oldIndex = items.findIndex((item) => item.url === active.id);
 				const newIndex = items.findIndex((item) => item.url === over.id);
 
-				const newItems = arrayMove(items, oldIndex, newIndex);
-				onUploadComplete(newItems);
-				return newItems;
+				return arrayMove(items, oldIndex, newIndex);
 			});
 		}
 	};
@@ -68,7 +87,6 @@ export function ImageUpload({
 		async (acceptedFiles: File[]) => {
 			setError(null);
 
-			// Validate files
 			for (const file of acceptedFiles) {
 				const validation = validateImageFile(file);
 				if (!validation.valid) {
@@ -77,7 +95,6 @@ export function ImageUpload({
 				}
 			}
 
-			// Check max files
 			if (uploadedImages.length + acceptedFiles.length > maxFiles) {
 				setError(`Maximum ${maxFiles} images allowed`);
 				return;
@@ -86,17 +103,19 @@ export function ImageUpload({
 			setUploading(true);
 
 			try {
-				const newImages = await uploadMultipleImages(acceptedFiles);
-				const allImages = [...uploadedImages, ...newImages];
-				setUploadedImages(allImages);
-				onUploadComplete(allImages);
+				const newImages = await uploadMultipleImages(
+					acceptedFiles,
+					undefined,
+					uploadOptions,
+				);
+				setUploadedImages((prev) => [...prev, ...newImages]);
 			} catch (err) {
 				setError(err instanceof Error ? err.message : "Upload failed");
 			} finally {
 				setUploading(false);
 			}
 		},
-		[uploadedImages, maxFiles, onUploadComplete],
+		[uploadedImages.length, maxFiles, uploadOptions],
 	);
 
 	const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -115,29 +134,21 @@ export function ImageUpload({
 		const imageToRemove = uploadedImages[index];
 
 		try {
-			// Extract path from URL (last segment after the last /)
 			const path = imageToRemove.path || imageToRemove.url.split("/").pop();
 
 			if (path) {
-				console.log("🗑️ Deleting image from storage:", path);
 				const { deleteImage } = await import("@/lib/image-upload");
 				await deleteImage(path);
-				console.log("✅ Image deleted from storage:", path);
 			}
 		} catch (error) {
 			console.error("Failed to delete image from storage:", error);
-			// Continue with removal from UI even if storage deletion fails
 		}
 
-		// Remove from state
-		const newImages = uploadedImages.filter((_, i) => i !== index);
-		setUploadedImages(newImages);
-		onUploadComplete(newImages);
+		setUploadedImages((prev) => prev.filter((_, i) => i !== index));
 	};
 
 	return (
 		<div className="space-y-4">
-			{/* Upload Area */}
 			<div
 				{...getRootProps()}
 				className={cn(
@@ -175,14 +186,12 @@ export function ImageUpload({
 				</div>
 			</div>
 
-			{/* Error Message */}
 			{error && (
 				<div className="bg-destructive/10 text-destructive px-4 py-3 rounded-lg text-sm">
 					{error}
 				</div>
 			)}
 
-			{/* Uploaded Images Grid with Drag-and-Drop */}
 			{uploadedImages.length > 0 && (
 				<div className="space-y-3">
 					<p className="text-sm text-muted-foreground">
@@ -214,7 +223,6 @@ export function ImageUpload({
 				</div>
 			)}
 
-			{/* Upload Summary */}
 			{uploadedImages.length > 0 && (
 				<div className="flex items-center gap-2 text-sm text-muted-foreground">
 					<ImageIcon className="w-4 h-4" />

@@ -13,7 +13,21 @@
 			"idx": 1,
 			"version": "7",
 			"when": 1775743329622,
-			"tag": "0001_adorable_prima",
+			"tag": "0001_fix_attraction_slug",
+			"breakpoints": true
+		},
+		{
+			"idx": 2,
+			"version": "7",
+			"when": 1775743920000,
+			"tag": "0002_add_attraction_uuid",
+			"breakpoints": true
+		},
+		{
+			"idx": 3,
+			"version": "7",
+			"when": 1775744520000,
+			"tag": "0003_apartments_uuid",
 			"breakpoints": true
 		}
 	]

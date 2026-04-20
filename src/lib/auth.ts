@@ -1,9 +1,9 @@
 "use server";
 
 import { env } from "@/env";
+import { logError } from "@/lib/logger";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { createClient as createServerClient } from "@/lib/supabase-server";
-import { logError } from "@/lib/logger";
 
 export interface AuthResult {
 	success: boolean;
@@ -41,7 +41,11 @@ export async function loginAdmin(
 		});
 
 		if (error) {
-			logError(error, { action: "loginAdmin", path: "/admin/login", userId: email });
+			logError(error, {
+				action: "loginAdmin",
+				path: "/admin/login",
+				userId: email,
+			});
 
 			// User-friendly error messages u srpskom
 			if (error.message.includes("Invalid login credentials")) {
@@ -92,7 +96,11 @@ export async function loginAdmin(
 			},
 		};
 	} catch (error) {
-		logError(error, { action: "loginAdmin", path: "/admin/login", userId: email });
+		logError(error, {
+			action: "loginAdmin",
+			path: "/admin/login",
+			userId: email,
+		});
 		return {
 			success: false,
 			error: "Neočekivana greška. Pokušajte ponovo.",
@@ -178,7 +186,11 @@ export async function sendPasswordResetEmail(
 		});
 
 		if (error) {
-			logError(error, { action: "sendPasswordResetEmail", path: "/admin/forgot-password", userId: email });
+			logError(error, {
+				action: "sendPasswordResetEmail",
+				path: "/admin/forgot-password",
+				userId: email,
+			});
 			return {
 				success: false,
 				error: "Greška pri slanju email-a. Pokušajte ponovo.",
@@ -189,7 +201,11 @@ export async function sendPasswordResetEmail(
 			success: true,
 		};
 	} catch (error) {
-		logError(error, { action: "sendPasswordResetEmail", path: "/admin/forgot-password", userId: email });
+		logError(error, {
+			action: "sendPasswordResetEmail",
+			path: "/admin/forgot-password",
+			userId: email,
+		});
 		return {
 			success: false,
 			error: "Neočekivana greška. Pokušajte ponovo.",

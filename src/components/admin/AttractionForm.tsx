@@ -296,6 +296,11 @@ export function AttractionForm({
 										width: 1920,
 										height: 1080,
 									}))}
+									uploadOptions={{
+										maxWidth: 2560,
+										maxHeight: 1440,
+										quality: 0.92,
+									}}
 								/>
 							)}
 						/>

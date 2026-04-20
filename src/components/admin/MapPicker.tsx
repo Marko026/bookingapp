@@ -3,7 +3,13 @@
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useState } from "react";
-import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
+import {
+	MapContainer,
+	Marker,
+	TileLayer,
+	useMap,
+	useMapEvents,
+} from "react-leaflet";
 
 // Fix for default marker icon missing in Leaflet + React
 const icon = L.icon({
@@ -21,6 +27,18 @@ interface MapPickerProps {
 	onLocationSelect: (lat: number, lng: number) => void;
 }
 
+function MapUpdater({ position }: { position: L.LatLng | null }) {
+	const map = useMap();
+
+	useEffect(() => {
+		if (position) {
+			map.flyTo(position, map.getZoom());
+		}
+	}, [position, map]);
+
+	return null;
+}
+
 function LocationMarker({
 	position,
 	setPosition,
@@ -30,11 +48,10 @@ function LocationMarker({
 	setPosition: (pos: L.LatLng) => void;
 	onLocationSelect: (lat: number, lng: number) => void;
 }) {
-	const map = useMapEvents({
+	useMapEvents({
 		click(e) {
 			setPosition(e.latlng);
 			onLocationSelect(e.latlng.lat, e.latlng.lng);
-			map.flyTo(e.latlng, map.getZoom());
 		},
 	});
 
@@ -63,7 +80,7 @@ export default function MapPicker({
 	const [position, setPosition] = useState<L.LatLng | null>(null);
 
 	useEffect(() => {
-		if (initialLat && initialLng) {
+		if (initialLat != null && initialLng != null) {
 			setPosition(new L.LatLng(initialLat, initialLng));
 		}
 	}, [initialLat, initialLng]);
@@ -83,6 +100,7 @@ export default function MapPicker({
 					attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 				/>
+				<MapUpdater position={position} />
 				<LocationMarker
 					position={position}
 					setPosition={setPosition}

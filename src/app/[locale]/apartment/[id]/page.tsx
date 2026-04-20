@@ -29,11 +29,8 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: ApartmentDetailPageProps) {
 	const { id, locale } = await params;
-	const apartmentId = Number.parseInt(id, 10);
 
-	if (Number.isNaN(apartmentId)) return { title: "Apartman" };
-
-	const result = await getApartment(apartmentId);
+	const result = await getApartment(id);
 
 	if (!result.success || !result.apartment) {
 		return { title: "Apartman Todorović" };
@@ -61,13 +58,7 @@ export default async function ApartmentDetailPage({
 	// Enable static rendering
 	setRequestLocale(locale);
 
-	const apartmentId = Number.parseInt(id, 10);
-
-	if (Number.isNaN(apartmentId)) {
-		notFound();
-	}
-
-	const result = await getApartment(apartmentId);
+	const result = await getApartment(id);
 
 	if (!result.success || !result.apartment) {
 		notFound();

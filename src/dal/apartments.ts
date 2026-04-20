@@ -4,8 +4,8 @@ import { apartments } from "@/db/schema";
 import { getServerUser } from "@/lib/auth-server";
 import type { Apartment } from "@/types";
 
-const REVIEWS_MAP: Record<number, number> = { 1: 47, 2: 83 };
-const getReviewsCount = (id: number) => REVIEWS_MAP[id] ?? 65;
+const REVIEWS_MAP: Record<string, number> = {};
+const getReviewsCount = (id: string) => REVIEWS_MAP[id] ?? 65;
 
 import "server-only";
 
@@ -42,7 +42,7 @@ export async function getAllApartmentsPublic(): Promise<Apartment[]> {
 
 		return allApartments.map((apt) => {
 			return {
-				id: apt.id.toString(),
+				id: apt.id,
 				name: apt.name,
 				nameEn: apt.nameEn,
 				description: apt.description || "",
@@ -104,7 +104,7 @@ export async function getApartmentsPublicPaginated(
 		const total = countResult[0]?.count ?? 0;
 
 		const mappedApartments = apartmentsResult.map((apt) => ({
-			id: apt.id.toString(),
+			id: apt.id,
 			name: apt.name,
 			nameEn: apt.nameEn,
 			description: apt.description || "",
@@ -160,7 +160,7 @@ export async function getAllApartmentsAdmin() {
 		return {
 			success: true,
 			apartments: allApartments.map((apt) => ({
-				id: apt.id.toString(),
+				id: apt.id,
 				name: apt.name,
 				nameEn: apt.nameEn,
 				description: apt.description || "",
@@ -183,7 +183,7 @@ export async function getAllApartmentsAdmin() {
 	}
 }
 
-export async function getApartment(id: number) {
+export async function getApartment(id: string) {
 	try {
 		// Use Drizzle relational query to fetch apartment with images in a single query
 		const apartment = await db.query.apartments.findFirst({
@@ -202,7 +202,7 @@ export async function getApartment(id: number) {
 		return {
 			success: true,
 			apartment: {
-				id: apartment.id.toString(),
+				id: apartment.id,
 				name: apartment.name,
 				nameEn: apartment.nameEn,
 				description: apartment.description || "",

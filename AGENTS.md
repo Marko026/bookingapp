@@ -50,13 +50,14 @@ If these are missing, server startup/actions can fail early due to Zod validatio
 
 - The app uses Next.js App Router with locale-prefixed routes under `src/app/[locale]`.
 - `src/app/[locale]/layout.tsx` composes the global shell (`Navbar`, `Footer`, `Toaster`) and wraps the app in `NextIntlClientProvider`.
+- `src/app/[locale]/template.tsx` forces page re-mount on navigation (prevents bfcache blank-page issues).
 - Public pages (e.g. home and listings) use ISR (`revalidate = 3600`); admin routes are dynamic/no-cache.
 
 ### 2) i18n pipeline
 
 - Locale config lives in `src/i18n/routing.ts` (`sr` default, `en` secondary).
 - Message loading/fallback behavior is implemented in `src/i18n/request.ts` and reads from `messages/*.json`.
-- Middleware (`src/middleware.ts`) runs next-intl routing before auth checks.
+- Proxy (`src/proxy.ts`) runs next-intl routing before auth checks (Next.js 16 uses `proxy.ts` instead of `middleware.ts`).
 
 ### 3) Auth and authorization model
 
@@ -65,7 +66,7 @@ If these are missing, server startup/actions can fail early due to Zod validatio
   - Server client (cookie-aware): `src/lib/supabase-server.ts`
   - Service-role admin client: `src/lib/supabase-admin.ts`
 - Admin access is enforced in multiple layers:
-  - Middleware route protection for `/admin/*` in `src/middleware.ts`
+  - Proxy route protection for `/admin/*` in `src/proxy.ts`
   - Server-side checks in `src/lib/auth-server.ts`
 - Admin role source of truth is `admin_users` table, with env-based fallback for legacy admins.
 
@@ -89,6 +90,10 @@ If these are missing, server startup/actions can fail early due to Zod validatio
 - Booking flows send emails via `src/lib/email.ts` and templates under `src/lib/emails/*` (Resend).
 - Image handling/upload logic is in `src/lib/image-*.ts` and Supabase storage usage appears in listing actions.
 - A cron keep-alive endpoint exists at `src/app/api/cron/keep-alive/route.ts` and expects `CRON_SECRET`.
+
+## Documented Solutions
+
+`docs/solutions/` — documented solutions to past problems (bugs, best practices, workflow patterns), organized by category with YAML frontmatter (`module`, `tags`, `problem_type`, `component`). Relevant when implementing or debugging in documented areas.
 
 ## Existing guidance files and improvements
 

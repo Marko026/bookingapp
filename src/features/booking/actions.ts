@@ -20,7 +20,7 @@ import { checkRateLimit } from "@/lib/rate-limit";
 import { createSafeAction } from "@/lib/safe-action";
 
 const createBookingSchema = z.object({
-	apartmentId: z.coerce.number(),
+	apartmentId: z.string().uuid(),
 	guestName: z.string().min(1).max(200),
 	guestEmail: z.string().email().max(255),
 	phone: z.string().max(50).optional(),
@@ -114,7 +114,7 @@ export const createBooking = createSafeAction(
 );
 
 export async function getApartmentBookings(
-	apartmentId: number,
+	apartmentId: string,
 ): Promise<{ success: boolean; bookings: BookingType[] }> {
 	try {
 		const result = await db.query.bookings.findMany({

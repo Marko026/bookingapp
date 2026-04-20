@@ -59,7 +59,11 @@ export function AttractionsTab() {
 
 			let result: any | undefined;
 			if (isAddingNew) {
-				const slug = dataWithImage.title.toLowerCase().replace(/ /g, "-");
+				const slug = dataWithImage.title
+					.toLowerCase()
+					.replace(/ /g, "-")
+					.replace(/-+/g, "-")
+					.replace(/^-|-$/g, "");
 				result = await createAttraction(
 					{ success: false },
 					{
@@ -68,7 +72,11 @@ export function AttractionsTab() {
 					},
 				);
 			} else if (editingAttraction?.id) {
-				const slug = dataWithImage.title.toLowerCase().replace(/ /g, "-");
+				const slug = dataWithImage.title
+					.toLowerCase()
+					.replace(/ /g, "-")
+					.replace(/-+/g, "-")
+					.replace(/^-|-$/g, "");
 				result = await updateAttraction(
 					{ success: false },
 					{
@@ -167,6 +175,7 @@ export function AttractionsTab() {
 				onEdit={(attr) => {
 					setIsAddingNew(false);
 					setEditingAttraction(attr);
+					window.scrollTo({ top: 0, behavior: "smooth" });
 				}}
 				onDelete={setDeleteId}
 			/>

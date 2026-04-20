@@ -50,7 +50,7 @@ export function ApartmentsManager() {
 	);
 	const [deleteConfirm, setDeleteConfirm] = useState<{
 		isOpen: boolean;
-		id: number | null;
+		id: string | null;
 	}>({ isOpen: false, id: null });
 
 	const hasChanges = (
@@ -93,7 +93,7 @@ export function ApartmentsManager() {
 			formData.append("images", JSON.stringify(imagesData));
 
 			const success = await saveApartment(
-				Number(editingApartment.id),
+				String(editingApartment.id),
 				formData,
 			);
 			if (success) {
@@ -257,7 +257,7 @@ export function ApartmentsManager() {
 											onClick={() =>
 												setDeleteConfirm({
 													isOpen: true,
-													id: Number(apt.id),
+													id: apt.id,
 												})
 											}
 										>

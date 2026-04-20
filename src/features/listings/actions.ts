@@ -149,7 +149,7 @@ export const updateApartment = createSafeAction(
 );
 
 // Re-exports from DAL
-export const getApartment = async (id: number) => {
+export const getApartment = async (id: string) => {
 	return getApartmentDAL(id);
 };
 

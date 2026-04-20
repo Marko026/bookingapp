@@ -25,6 +25,56 @@ export async function getAllAttractions() {
 	}
 }
 
+export async function getAttractionById(id: number) {
+	try {
+		const attraction = await db.query.attractions.findFirst({
+			where: eq(attractions.id, id),
+			with: {
+				images: {
+					orderBy: (images, { asc }) => [asc(images.displayOrder)],
+				},
+			},
+		});
+
+		if (!attraction) return null;
+
+		return {
+			...attraction,
+			id: attraction.id.toString(),
+			distance: attraction.distance ?? "",
+			gallery: attraction.images.map((img) => img.imageUrl),
+		};
+	} catch (error) {
+		console.error("Failed to fetch attraction by id:", error);
+		return null;
+	}
+}
+
+export async function getAttractionByUuid(uuid: string) {
+	try {
+		const attraction = await db.query.attractions.findFirst({
+			where: eq(attractions.uuid, uuid),
+			with: {
+				images: {
+					orderBy: (images, { asc }) => [asc(images.displayOrder)],
+				},
+			},
+		});
+
+		if (!attraction) return null;
+
+		return {
+			...attraction,
+			id: attraction.id.toString(),
+			distance: attraction.distance ?? "",
+			gallery: attraction.images.map((img) => img.imageUrl),
+		};
+	} catch (error) {
+		console.error("Failed to fetch attraction by uuid:", error);
+		return null;
+	}
+}
+
 export async function getAttractionsPaginated(
 	page = 1,
 	pageSize = 10,
@@ -95,22 +145,30 @@ export async function getAttractionsPaginated(
 
 export async function getAttractionBySlug(slug: string) {
 	try {
-		const attraction = await db.query.attractions.findFirst({
-			where: eq(attractions.slug, slug),
-			with: {
-				images: {
-					orderBy: (images, { asc }) => [asc(images.displayOrder)],
+		// Try exact slug first, then try with trailing hyphens stripped
+		const slugsToTry = [slug, slug.replace(/-+$/g, "")].filter(Boolean);
+
+		for (const s of slugsToTry) {
+			const attraction = await db.query.attractions.findFirst({
+				where: eq(attractions.slug, s),
+				with: {
+					images: {
+						orderBy: (images, { asc }) => [asc(images.displayOrder)],
+					},
 				},
-			},
-		});
+			});
 
-		if (!attraction) return null;
+			if (attraction) {
+				return {
+					...attraction,
+					id: attraction.id.toString(),
+					distance: attraction.distance ?? "",
+					gallery: attraction.images.map((img) => img.imageUrl),
+				};
+			}
+		}
 
-		return {
-			...attraction,
-			id: attraction.id.toString(),
-			gallery: attraction.images.map((img) => img.imageUrl),
-		};
+		return null;
 	} catch (error) {
 		console.error("Failed to fetch attraction by slug:", error);
 		return null;

@@ -160,6 +160,14 @@ export async function getAllAttractions() {
 	return await attractionsDal.getAllAttractions();
 }
 
+export async function getAttractionById(id: number) {
+	return await attractionsDal.getAttractionById(id);
+}
+
+export async function getAttractionByUuid(uuid: string) {
+	return await attractionsDal.getAttractionByUuid(uuid);
+}
+
 export async function getAttractionBySlug(slug: string) {
 	return await attractionsDal.getAttractionBySlug(slug);
 }

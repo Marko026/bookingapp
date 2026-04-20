@@ -6,7 +6,7 @@ export interface BookingData {
 	checkOut: string;
 	totalPrice: number;
 	question?: string;
-	apartmentId: number;
+	apartmentId: string;
 	apartmentName: string;
 	apartmentImage: string;
 }

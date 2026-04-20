@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
 	getAllAttractions,
 	getApartmentOrigin,
-	getAttractionBySlug,
+	getAttractionByUuid,
 } from "@/features/attractions/actions";
 import { Link, routing } from "@/i18n/routing";
 import { getLocalizedField } from "@/lib/localization";
@@ -19,13 +19,12 @@ interface AttractionDetailPageProps {
 export async function generateStaticParams() {
 	const attractions = await getAllAttractions();
 
-	// Create params for every combination of locale and attraction
 	const paths = [];
 	for (const locale of routing.locales) {
 		for (const attr of attractions) {
 			paths.push({
 				locale,
-				id: attr.slug,
+				id: attr.uuid,
 			});
 		}
 	}
@@ -34,8 +33,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: AttractionDetailPageProps) {
-	const { id: slug, locale } = await params;
-	const attractionData = await getAttractionBySlug(slug);
+	const { id: uuid, locale } = await params;
+	const attractionData = await getAttractionByUuid(uuid);
 	const attraction = attractionData as unknown as Attraction;
 
 	if (!attraction) return { title: "Not Found" };
@@ -55,12 +54,12 @@ export async function generateMetadata({ params }: AttractionDetailPageProps) {
 export default async function AttractionDetailPage({
 	params,
 }: AttractionDetailPageProps) {
-	const { id: slug, locale } = await params;
+	const { id: uuid, locale } = await params;
 	setRequestLocale(locale);
 	const t = await getTranslations("AttractionDetail");
 
 	const [attractionData, originData] = await Promise.all([
-		getAttractionBySlug(slug),
+		getAttractionByUuid(uuid),
 		getApartmentOrigin(),
 	]);
 
@@ -80,7 +79,7 @@ export default async function AttractionDetailPage({
 						{t("notFound.description")}
 					</p>
 					<div className="grid grid-cols-1 gap-3">
-						<Link href="/#location" className="block">
+						<Link href="/#attractions" className="block">
 							<Button className="w-full bg-amber-600 text-white hover:bg-amber-700 py-6 rounded-xl transition-all">
 								{t("notFound.seeAll")}
 							</Button>
@@ -99,7 +98,6 @@ export default async function AttractionDetailPage({
 		);
 	}
 
-	// Sanitize on the server
 	if (attraction.longDescription) {
 		attraction.longDescription = sanitizeHtml(attraction.longDescription);
 	}
