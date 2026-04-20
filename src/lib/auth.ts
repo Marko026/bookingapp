@@ -3,6 +3,7 @@
 import { env } from "@/env";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { createClient as createServerClient } from "@/lib/supabase-server";
+import { logError } from "@/lib/logger";
 
 export interface AuthResult {
 	success: boolean;
@@ -40,7 +41,7 @@ export async function loginAdmin(
 		});
 
 		if (error) {
-			console.error("Login error:", error);
+			logError(error, { action: "loginAdmin", path: "/admin/login", userId: email });
 
 			// User-friendly error messages u srpskom
 			if (error.message.includes("Invalid login credentials")) {
@@ -91,7 +92,7 @@ export async function loginAdmin(
 			},
 		};
 	} catch (error) {
-		console.error("Unexpected login error:", error);
+		logError(error, { action: "loginAdmin", path: "/admin/login", userId: email });
 		return {
 			success: false,
 			error: "Neočekivana greška. Pokušajte ponovo.",
@@ -155,7 +156,7 @@ export async function getCurrentUser(): Promise<AuthResult> {
 			},
 		};
 	} catch (error) {
-		console.error("Get user error:", error);
+		logError(error, { action: "getCurrentUser", path: "/admin" });
 		return {
 			success: false,
 			error: "Greška prilikom provere sesije.",
@@ -177,7 +178,7 @@ export async function sendPasswordResetEmail(
 		});
 
 		if (error) {
-			console.error("Password reset error:", error);
+			logError(error, { action: "sendPasswordResetEmail", path: "/admin/forgot-password", userId: email });
 			return {
 				success: false,
 				error: "Greška pri slanju email-a. Pokušajte ponovo.",
@@ -188,7 +189,7 @@ export async function sendPasswordResetEmail(
 			success: true,
 		};
 	} catch (error) {
-		console.error("Unexpected password reset error:", error);
+		logError(error, { action: "sendPasswordResetEmail", path: "/admin/forgot-password", userId: email });
 		return {
 			success: false,
 			error: "Neočekivana greška. Pokušajte ponovo.",

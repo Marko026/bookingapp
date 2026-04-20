@@ -1,5 +1,6 @@
 import { env } from "@/env";
 import { createClient } from "@/lib/supabase-server";
+import { logError } from "@/lib/logger";
 
 export interface AuthResult {
 	success: boolean;
@@ -66,7 +67,7 @@ export async function getServerUser(): Promise<AuthResult> {
 			},
 		};
 	} catch (error) {
-		console.error("Get server user error:", error);
+		logError(error, { action: "getServerUser", path: "/admin" });
 		return {
 			success: false,
 			error: "Greška prilikom provere sesije.",

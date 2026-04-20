@@ -5,6 +5,7 @@ import { env } from "@/env";
 import { createBookingEmail } from "./emails/admin-notification";
 import { createGuestConfirmationEmail } from "./emails/guest-confirmation";
 import type { BookingData } from "./emails/types";
+import { logError } from "@/lib/logger";
 
 const resend = new Resend(env.RESEND_API_KEY);
 
@@ -35,12 +36,20 @@ export async function sendBookingEmails(bookingData: BookingData) {
 		]);
 
 		if (adminResult.error) {
-			console.error("Admin email error:", adminResult.error);
+			logError(adminResult.error, {
+				action: "sendBookingEmails",
+				path: "/api/booking",
+				metadata: { recipient: "admin", bookingId: bookingData.apartmentName },
+			});
 			throw new Error(`Admin email failed: ${adminResult.error.message}`);
 		}
 
 		if (guestResult.error) {
-			console.error("Guest confirmation email error:", guestResult.error);
+			logError(guestResult.error, {
+				action: "sendBookingEmails",
+				path: "/api/booking",
+				metadata: { recipient: "guest", bookingId: bookingData.apartmentName },
+			});
 		}
 
 		return {
@@ -49,7 +58,11 @@ export async function sendBookingEmails(bookingData: BookingData) {
 			guestEmailId: guestResult.data?.id,
 		};
 	} catch (error) {
-		console.error("Email sending error:", error);
+		logError(error, {
+			action: "sendBookingEmails",
+			path: "/api/booking",
+			metadata: { bookingId: bookingData.apartmentName },
+		});
 		return {
 			success: false,
 			error: error instanceof Error ? error.message : "Unknown error",
