@@ -64,11 +64,15 @@ function sanitizeData(data: unknown): unknown {
 	}
 
 	if (typeof data === "string") {
-		// Proveri da li string sadrži osetljive podatke
-		for (const field of SENSITIVE_FIELDS) {
-			if (data.toLowerCase().includes(field.toLowerCase())) {
-				return "[REDACTED]";
-			}
+		// Only redact strings that look like actual secrets
+		// JWT tokens, API keys, Bearer tokens, connection strings
+		if (
+			/^eyJ[A-Za-z0-9_-]+\.eyJ/.test(data) || // JWT
+			/^sk-[A-Za-z0-9]{20,}/.test(data) || // API key pattern
+			/^Bearer\s/.test(data) || // Bearer token
+			/^(postgres|mongodb|redis):\/\/.*:.*@/.test(data) // Connection string with credentials
+		) {
+			return "[REDACTED]";
 		}
 		return data;
 	}

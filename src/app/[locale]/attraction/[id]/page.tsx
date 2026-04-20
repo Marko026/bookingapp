@@ -1,5 +1,5 @@
 import { MapPin } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Button } from "@/components/ui/button";
 import {
 	getAllAttractions,
@@ -55,7 +55,8 @@ export async function generateMetadata({ params }: AttractionDetailPageProps) {
 export default async function AttractionDetailPage({
 	params,
 }: AttractionDetailPageProps) {
-	const { id: slug } = await params;
+	const { id: slug, locale } = await params;
+	setRequestLocale(locale);
 	const t = await getTranslations("AttractionDetail");
 
 	const [attractionData, originData] = await Promise.all([

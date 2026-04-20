@@ -45,23 +45,25 @@ export function classifyError(error: unknown): ErrorType {
 		errorMessage.includes("fetch") ||
 		errorMessage.includes("network") ||
 		errorMessage.includes("http") ||
-		errorMessage.includes("request")
+		errorMessage.includes("request") ||
+		errorMessage.includes("connection refused") ||
+		errorMessage.includes("connection reset") ||
+		errorMessage.includes("request timeout")
 	) {
 		return ErrorType.EXTERNAL_API_ERROR;
 	}
 
-	// Database error patterns
+	// Database error patterns - specific identifiers only (avoid broad "connection"/"timeout")
 	if (
 		errorMessage.includes("database") ||
 		errorMessage.includes("db ") ||
-		errorMessage.includes("connection") ||
-		errorMessage.includes("timeout") ||
 		errorMessage.includes("query") ||
 		errorMessage.includes("sql") ||
 		errorMessage.includes("postgres") ||
 		errorMessage.includes("drizzle") ||
 		errorMessage.includes("unique constraint") ||
-		errorMessage.includes("foreign key")
+		errorMessage.includes("foreign key") ||
+		errorMessage.includes("connection timeout")
 	) {
 		return ErrorType.DATABASE_ERROR;
 	}
@@ -191,8 +193,8 @@ export function throwError(
 	const userMessage = getUserFriendlyMessage(type);
 	const appError = createAppError(type, message, userMessage, { context });
 
-	// Kreiraj Error objekat sa dodatnim poljima
-	const error = new Error(message);
+	// Kreiraj Error objekat sa dodatnim poljima i originalnim stack-om
+	const error = new Error(message, { cause: appError });
 	(error as unknown as Record<string, unknown>).type = appError.type;
 	(error as unknown as Record<string, unknown>).userMessage = appError.userMessage;
 	(error as unknown as Record<string, unknown>).context = context;

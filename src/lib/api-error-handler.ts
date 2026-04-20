@@ -94,17 +94,18 @@ export function handleAuthError(
  * Wrapper za API route handler-e koji automatski hvata i obrađuje greške
  *
  * @param handler - Originalni route handler
+ * @param context - Opcioni kontekst (actionName se može eksplicitno proslediti)
  * @returns Wrapped handler sa error handlingom
  *
  * @example
  * export const GET = withErrorHandling(async (request: Request) => {
  *   const data = await fetchData();
  *   return NextResponse.json({ success: true, data });
- * });
+ * }, { actionName: 'getData' });
  */
 export function withErrorHandling<T extends (request: Request) => Promise<NextResponse>>(
 	handler: T,
-	context?: Omit<ErrorContext, "action">,
+	context?: Omit<ErrorContext, "action"> & { actionName?: string },
 ): (request: Request) => Promise<NextResponse> {
 	return async (request: Request): Promise<NextResponse> => {
 		try {
@@ -112,7 +113,7 @@ export function withErrorHandling<T extends (request: Request) => Promise<NextRe
 		} catch (error) {
 			return handleApiError(error, {
 				...context,
-				action: handler.name || "apiHandler",
+				action: context?.actionName || handler.name || "apiHandler",
 			});
 		}
 	};

@@ -1,5 +1,7 @@
 import type { z } from "zod";
 import { handleError } from "./error-handling";
+import { ErrorType } from "./error-types";
+import { getUserFriendlyMessage } from "./error-messages";
 
 export type ActionState<T> = {
 	success: boolean;
@@ -12,10 +14,12 @@ export type ActionState<T> = {
  * A lightweight wrapper for Server Actions to handle Zod validation and error catching.
  * @param schema Zod schema to validate the input (FormData or object)
  * @param handler The actual action logic
+ * @param actionName Optional name for error logging context (e.g., "createBooking")
  */
 export function createSafeAction<TInput, TOutput>(
 	schema: z.Schema<TInput>,
 	handler: (data: TInput) => Promise<TOutput>,
+	actionName?: string,
 ): (
 	prevState: ActionState<TOutput>,
 	formData: FormData | TInput,
@@ -37,7 +41,7 @@ export function createSafeAction<TInput, TOutput>(
 						string,
 						string[]
 					>,
-					message: "Validation failed",
+					message: getUserFriendlyMessage(ErrorType.VALIDATION_ERROR),
 				};
 			}
 
@@ -50,7 +54,7 @@ export function createSafeAction<TInput, TOutput>(
 			};
 		} catch (error) {
 			return handleError(error, {
-				action: "createSafeAction",
+				action: actionName || "createSafeAction",
 			});
 		}
 	};
