@@ -1,13 +1,13 @@
 "use client";
 
+import { motion } from "framer-motion";
+import { ArrowLeft, ArrowUpRight, ExternalLink, MapPin } from "lucide-react";
+import Image from "next/image";
+import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
 import { getLocalizedField } from "@/lib/localization";
 import type { Attraction } from "@/types";
-import { motion } from "framer-motion";
-import { ArrowLeft, ArrowUpRight, ExternalLink, MapPin } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
-import Image from "next/image";
 
 const FALLBACK_ORIGIN = "Vinci,Golubac";
 

@@ -278,7 +278,7 @@ export default function ApartmentDetailClient({
 							src={apartment.images[currentImageIndex]}
 							alt=""
 							fill
-							sizes="100vw"
+							sizes="(max-width: 640px) 90vw, 100vw"
 							priority
 							className="object-cover"
 						/>
@@ -716,7 +716,7 @@ export default function ApartmentDetailClient({
 										src={apartment.images[galleryIndex]}
 										alt="Gallery"
 										fill
-										sizes="100vw"
+										sizes="(max-width: 1280px) 100vw, 1280px"
 										className="object-contain"
 									/>
 								</motion.div>
