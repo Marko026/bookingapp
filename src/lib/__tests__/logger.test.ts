@@ -5,23 +5,21 @@ describe("Logger", () => {
 	let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
 	let consoleWarnSpy: ReturnType<typeof vi.spyOn>;
 	let consoleLogSpy: ReturnType<typeof vi.spyOn>;
-	let originalEnv: string | undefined;
 
 	beforeEach(() => {
 		consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 		consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 		consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
-		originalEnv = process.env.NODE_ENV;
 	});
 
 	afterEach(() => {
 		vi.restoreAllMocks();
-		process.env.NODE_ENV = originalEnv;
+		vi.unstubAllEnvs();
 	});
 
 	describe("logError", () => {
 		it("should log errors in development mode", () => {
-			process.env.NODE_ENV = "development";
+			vi.stubEnv("NODE_ENV", "development");
 			const error = new Error("Test error");
 			logError(error, { action: "test", userId: "123" });
 
@@ -33,7 +31,7 @@ describe("Logger", () => {
 		});
 
 		it("should log errors in production mode", () => {
-			process.env.NODE_ENV = "production";
+			vi.stubEnv("NODE_ENV", "production");
 			const error = new Error("Test error");
 			logError(error, { action: "test", userId: "123" });
 
@@ -41,7 +39,7 @@ describe("Logger", () => {
 		});
 
 		it("should handle string errors", () => {
-			process.env.NODE_ENV = "development";
+			vi.stubEnv("NODE_ENV", "development");
 			logError("String error message");
 
 			expect(consoleErrorSpy).toHaveBeenCalled();
@@ -50,7 +48,7 @@ describe("Logger", () => {
 		});
 
 		it("should handle unknown error types", () => {
-			process.env.NODE_ENV = "development";
+			vi.stubEnv("NODE_ENV", "development");
 			logError(12345);
 
 			expect(consoleErrorSpy).toHaveBeenCalled();
@@ -59,7 +57,7 @@ describe("Logger", () => {
 		});
 
 		it("should not log sensitive data in production", () => {
-			process.env.NODE_ENV = "production";
+			vi.stubEnv("NODE_ENV", "production");
 			const error = new Error("Test error");
 			logError(error, {
 				action: "login",
@@ -81,14 +79,14 @@ describe("Logger", () => {
 
 	describe("logWarn", () => {
 		it("should log warnings in development", () => {
-			process.env.NODE_ENV = "development";
+			vi.stubEnv("NODE_ENV", "development");
 			logWarn("Warning message", { action: "test" });
 
 			expect(consoleWarnSpy).toHaveBeenCalled();
 		});
 
 		it("should log warnings in production", () => {
-			process.env.NODE_ENV = "production";
+			vi.stubEnv("NODE_ENV", "production");
 			logWarn("Warning message");
 
 			expect(consoleWarnSpy).toHaveBeenCalled();
@@ -97,14 +95,14 @@ describe("Logger", () => {
 
 	describe("logInfo", () => {
 		it("should log info in development", () => {
-			process.env.NODE_ENV = "development";
+			vi.stubEnv("NODE_ENV", "development");
 			logInfo("Info message", { action: "test" });
 
 			expect(consoleLogSpy).toHaveBeenCalled();
 		});
 
 		it("should not log info in production", () => {
-			process.env.NODE_ENV = "production";
+			vi.stubEnv("NODE_ENV", "production");
 			logInfo("Info message");
 
 			expect(consoleLogSpy).not.toHaveBeenCalled();
@@ -113,14 +111,14 @@ describe("Logger", () => {
 
 	describe("logDebug", () => {
 		it("should log debug in development", () => {
-			process.env.NODE_ENV = "development";
+			vi.stubEnv("NODE_ENV", "development");
 			logDebug("Debug message", { foo: "bar" });
 
 			expect(consoleLogSpy).toHaveBeenCalled();
 		});
 
 		it("should not log debug in production", () => {
-			process.env.NODE_ENV = "production";
+			vi.stubEnv("NODE_ENV", "production");
 			logDebug("Debug message", { foo: "bar" });
 
 			expect(consoleLogSpy).not.toHaveBeenCalled();

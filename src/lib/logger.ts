@@ -82,7 +82,7 @@ function sanitizeData(data: unknown): unknown {
 	}
 
 	const sanitized: Record<string, unknown> = {};
-	for (const [key, value] of Object.entries(data as Record<string, unknown>)) {
+	for (const [key, value] of Object.entries(data as object)) {
 		// Preskoči osetljiva polja
 		if (SENSITIVE_FIELDS.some((field) => key.toLowerCase().includes(field.toLowerCase()))) {
 			sanitized[key] = "[REDACTED]";
@@ -101,7 +101,9 @@ function sanitizeContext(context?: ErrorContext): ErrorContext | undefined {
 
 	return {
 		...context,
-		metadata: context.metadata ? sanitizeData(context.metadata) : undefined,
+		metadata: context.metadata
+			? (sanitizeData(context.metadata) as Record<string, unknown>)
+			: undefined,
 	};
 }
 
