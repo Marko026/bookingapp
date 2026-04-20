@@ -51,6 +51,8 @@ describe("DAL: apartments", () => {
 			expect(result).toHaveLength(1);
 			expect(result[0].name).toBe("Test Apt");
 			expect(result[0].images).toEqual(["img1.jpg"]);
+			expect(result[0].rating).toBe(5);
+			expect(result[0].reviewsCount).toBe(42);
 		});
 
 		it("should return empty array on error", async () => {

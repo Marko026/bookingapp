@@ -164,7 +164,7 @@ export default function ApartmentDetailClient({
 							</span>
 							<span className="w-1 h-1 bg-gray-300 rounded-full" />
 							<span className="underline decoration-gray-300 underline-offset-4 cursor-pointer hover:text-amber-600 transition-colors">
-								<span>{`(42 ${t("reviews")})`}</span>
+								<span>{`(${apartment.reviewsCount} ${t("reviews")})`}</span>
 							</span>
 							<span className="w-1 h-1 bg-gray-300 rounded-full" />
 							<span className="flex items-center gap-1.5">

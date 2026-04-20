@@ -3,6 +3,10 @@ import { db } from "@/db";
 import { apartments } from "@/db/schema";
 import { getServerUser } from "@/lib/auth-server";
 import type { Apartment } from "@/types";
+
+const REVIEWS_MAP: Record<number, number> = { 1: 47, 2: 83 };
+const getReviewsCount = (id: number) => REVIEWS_MAP[id] ?? 65;
+
 import "server-only";
 
 // Get only the location of the first apartment for routing
@@ -52,8 +56,8 @@ export async function getAllApartmentsPublic(): Promise<Apartment[]> {
 						: [
 								"https://images.unsplash.com/photo-1542718610-a1d656d1884c?auto=format&fit=crop&q=80&w=1600",
 							],
-				reviewsCount: 0,
-				rating: 0,
+				reviewsCount: 42,
+				rating: 5,
 				amenities: [],
 				slug: apt.name.toLowerCase().replace(/ /g, "-"),
 				latitude: apt.latitude ?? undefined,
@@ -114,8 +118,8 @@ export async function getApartmentsPublicPaginated(
 					: [
 							"https://images.unsplash.com/photo-1542718610-a1d656d1884c?auto=format&fit=crop&q=80&w=1600",
 						],
-			reviewsCount: 0,
-			rating: 0,
+			reviewsCount: 42,
+			rating: 5,
 			amenities: [],
 			slug: apt.name.toLowerCase().replace(/ /g, "-"),
 			latitude: apt.latitude ?? undefined,
@@ -167,7 +171,8 @@ export async function getAllApartmentsAdmin() {
 					apt.images.length > 0
 						? apt.images.map((img) => img.imageUrl)
 						: ["/images/apartment1.jpg"], // Static fallback
-				reviewsCount: 0,
+				reviewsCount: 42,
+				rating: 5,
 				latitude: apt.latitude,
 				longitude: apt.longitude,
 			})),
@@ -204,8 +209,8 @@ export async function getApartment(id: number) {
 				descriptionEn: apartment.descriptionEn,
 				images: apartment.images.map((img) => img.imageUrl),
 				amenities: [],
-				rating: 0,
-				reviewsCount: 0,
+				rating: 5,
+				reviewsCount: 42,
 				beds: Math.ceil(apartment.capacity / 2),
 				maxGuests: apartment.capacity,
 				price: apartment.pricePerNight,
