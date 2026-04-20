@@ -1,4 +1,5 @@
 import type { z } from "zod";
+import { handleError } from "./error-handling";
 
 export type ActionState<T> = {
 	success: boolean;
@@ -48,14 +49,9 @@ export function createSafeAction<TInput, TOutput>(
 				message: "Success",
 			};
 		} catch (error) {
-			console.error("Action Error:", error);
-			return {
-				success: false,
-				message:
-					error instanceof Error
-						? error.message
-						: "An unexpected error occurred",
-			};
+			return handleError(error, {
+				action: "createSafeAction",
+			});
 		}
 	};
 }
