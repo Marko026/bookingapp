@@ -35,6 +35,21 @@ export function classifyError(error: unknown): ErrorType {
 		return ErrorType.UNKNOWN_ERROR;
 	}
 
+	// External API error patterns - check BEFORE database to avoid "Request" matching "query"
+	if (
+		errorMessage.includes("api") ||
+		errorMessage.includes("external") ||
+		errorMessage.includes("service") ||
+		errorMessage.includes("email") ||
+		errorMessage.includes("resend") ||
+		errorMessage.includes("fetch") ||
+		errorMessage.includes("network") ||
+		errorMessage.includes("http") ||
+		errorMessage.includes("request")
+	) {
+		return ErrorType.EXTERNAL_API_ERROR;
+	}
+
 	// Database error patterns
 	if (
 		errorMessage.includes("database") ||
@@ -82,21 +97,6 @@ export function classifyError(error: unknown): ErrorType {
 	) {
 		// Serbian "mora"
 		return ErrorType.VALIDATION_ERROR;
-	}
-
-	// External API error patterns
-	if (
-		errorMessage.includes("api") ||
-		errorMessage.includes("external") ||
-		errorMessage.includes("service") ||
-		errorMessage.includes("email") ||
-		errorMessage.includes("resend") ||
-		errorMessage.includes("fetch") ||
-		errorMessage.includes("network") ||
-		errorMessage.includes("http") ||
-		errorMessage.includes("request")
-	) {
-		return ErrorType.EXTERNAL_API_ERROR;
 	}
 
 	// Storage error patterns
