@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { env } from "@/env";
+import { handleApiError } from "@/lib/api-error-handler";
 
 // Vercel rute ovog tipa ne smeju biti keširane
 export const dynamic = "force-dynamic";
@@ -24,10 +25,9 @@ export async function GET(request: Request) {
 			timestamp: new Date().toISOString(),
 		});
 	} catch (error) {
-		console.error("Keep-alive ping failed:", error);
-		return NextResponse.json(
-			{ success: false, error: "Pingovanje baze nije uspelo" },
-			{ status: 500 },
-		);
+		return handleApiError(error, {
+			path: "/api/cron/keep-alive",
+			action: "keepAlivePing",
+		});
 	}
 }
