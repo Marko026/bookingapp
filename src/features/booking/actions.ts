@@ -15,7 +15,11 @@ import { z } from "zod";
 import { db } from "@/db";
 import { apartments, bookings } from "@/db/schema";
 import { getServerUser } from "@/lib/auth-server";
-import { sendBookingEmails } from "@/lib/email";
+import {
+	sendApprovalEmail,
+	sendBookingEmails,
+	sendCancellationEmail,
+} from "@/lib/email";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { createSafeAction } from "@/lib/safe-action";
 
@@ -262,11 +266,59 @@ export async function updateBookingStatusAction(
 			return { success: false, message: "Unauthorized" };
 		}
 
+		const booking = await db.query.bookings.findFirst({
+			where: eq(bookings.id, id),
+			with: {
+				apartment: {
+					with: {
+						images: true,
+					},
+				},
+			},
+		});
+
+		if (!booking) {
+			return { success: false, message: "Booking not found" };
+		}
+
 		await db.update(bookings).set({ status }).where(eq(bookings.id, id));
 
 		revalidatePath("/admin");
+
+		const apartment = booking.apartment;
+		if (apartment) {
+			const firstImage =
+				apartment.images?.[0]?.imageUrl || apartment.imageUrl || "";
+
+			const bookingData = {
+				guestName: booking.guestName,
+				guestEmail: booking.guestEmail,
+				checkIn: booking.checkIn,
+				checkOut: booking.checkOut,
+				totalPrice: booking.totalPrice,
+				apartmentId: booking.apartmentId,
+				apartmentName: apartment.name,
+				apartmentImage: firstImage,
+			};
+
+			try {
+				if (status === "confirmed") {
+					await sendApprovalEmail(bookingData);
+				} else if (status === "cancelled") {
+					await sendCancellationEmail(bookingData);
+				}
+			} catch (emailError) {
+				console.error("Failed to send notification email:", emailError);
+				return {
+					success: true,
+					message: "Status updated, but notification email could not be sent.",
+				};
+			}
+		}
+
 		return { success: true };
 	} catch (error) {
+		console.error("Failed to update booking status:", error);
 		return { success: false, message: "Failed to update status" };
 	}
 }
