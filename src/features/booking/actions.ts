@@ -198,7 +198,7 @@ export async function deleteBooking(id: number) {
 		await db.delete(bookings).where(eq(bookings.id, id));
 		revalidatePath("/admin");
 		return { success: true };
-	} catch (error) {
+	} catch (_error) {
 		return { success: false, message: "Failed to delete" };
 	}
 }
