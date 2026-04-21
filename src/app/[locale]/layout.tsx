@@ -53,7 +53,7 @@ export default async function RootLayout({
 	const direction = ["ar", "he", "fa"].includes(locale) ? "rtl" : "ltr";
 
 	return (
-		<html lang={locale} dir={direction} className="scroll-smooth">
+		<html lang={locale} dir={direction} className="scroll-smooth" data-scroll-behavior="smooth">
 			<body
 				suppressHydrationWarning
 				className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-black`}
