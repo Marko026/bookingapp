@@ -1,0 +1,173 @@
+﻿{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Production Security Audit Findings",
+	"description": "Structured output schema for prod-security skill findings",
+	"type": "object",
+	"required": [
+		"project",
+		"mode",
+		"date",
+		"findings",
+		"summary",
+		"verdict",
+		"coverage"
+	],
+	"properties": {
+		"project": {
+			"type": "string",
+			"description": "Project name"
+		},
+		"mode": {
+			"type": "string",
+			"enum": ["full", "quick", "auth-only", "fix"],
+			"description": "Audit mode used"
+		},
+		"date": {
+			"type": "string",
+			"format": "date-time",
+			"description": "Audit timestamp"
+		},
+		"findings": {
+			"type": "array",
+			"description": "Security findings ordered by severity",
+			"items": {
+				"type": "object",
+				"required": [
+					"id",
+					"title",
+					"severity",
+					"phase",
+					"file",
+					"line",
+					"attack_scenario",
+					"autofix_class",
+					"confidence",
+					"evidence",
+					"suggested_fix"
+				],
+				"properties": {
+					"id": {
+						"type": "string",
+						"description": "Finding identifier (e.g., F001)"
+					},
+					"title": {
+						"type": "string",
+						"description": "Short, specific issue title. 15 words or fewer.",
+						"maxLength": 150
+					},
+					"severity": {
+						"type": "string",
+						"enum": ["P0", "P1", "P2", "P3"],
+						"description": "Issue severity level"
+					},
+					"phase": {
+						"type": "string",
+						"enum": ["auth", "injection", "data-protection", "infrastructure"],
+						"description": "Which audit phase discovered this finding"
+					},
+					"file": {
+						"type": "string",
+						"description": "Relative file path where issue found"
+					},
+					"line": {
+						"type": "integer",
+						"minimum": 1,
+						"description": "Line number in file"
+					},
+					"attack_scenario": {
+						"type": "string",
+						"description": "How an attacker would exploit this vulnerability"
+					},
+					"autofix_class": {
+						"type": "string",
+						"enum": ["safe_auto", "gated_auto", "manual", "advisory"],
+						"description": "How this finding should be handled"
+					},
+					"confidence": {
+						"type": "number",
+						"minimum": 0.0,
+						"maximum": 1.0,
+						"description": "Confidence in finding (0.0-1.0)"
+					},
+					"evidence": {
+						"type": "array",
+						"description": "Code snippets or references supporting this finding",
+						"items": { "type": "string" },
+						"minItems": 1
+					},
+					"suggested_fix": {
+						"type": ["string", "null"],
+						"description": "Concrete fix with code example if applicable"
+					},
+					"owasp_category": {
+						"type": ["string", "null"],
+						"description": "OWASP Top 10 category (e.g., A01:2021)"
+					},
+					"cwe_id": {
+						"type": ["string", "null"],
+						"description": "CWE identifier if applicable (e.g., CWE-287)"
+					}
+				}
+			}
+		},
+		"summary": {
+			"type": "object",
+			"required": ["P0", "P1", "P2", "P3"],
+			"properties": {
+				"P0": { "type": "integer", "description": "Critical findings count" },
+				"P1": { "type": "integer", "description": "High findings count" },
+				"P2": { "type": "integer", "description": "Moderate findings count" },
+				"P3": { "type": "integer", "description": "Low findings count" }
+			}
+		},
+		"verdict": {
+			"type": "string",
+			"enum": ["PRODUCTION READY", "READY WITH FIXES", "NOT READY"],
+			"description": "Overall security verdict"
+		},
+		"hardening_recommendations": {
+			"type": "array",
+			"description": "Advisory recommendations for improving security posture",
+			"items": { "type": "string" }
+		},
+		"dependency_audit": {
+			"type": "object",
+			"description": "npm audit summary",
+			"properties": {
+				"critical": { "type": "integer" },
+				"high": { "type": "integer" },
+				"moderate": { "type": "integer" },
+				"low": { "type": "integer" },
+				"vulnerable_packages": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"name": { "type": "string" },
+							"severity": { "type": "string" },
+							"title": { "type": "string" },
+							"patched_in": { "type": "string" }
+						}
+					}
+				}
+			}
+		},
+		"coverage": {
+			"type": "object",
+			"required": [
+				"routes_scanned",
+				"actions_scanned",
+				"auth_flows_verified",
+				"dependencies_audited"
+			],
+			"properties": {
+				"routes_scanned": { "type": "integer" },
+				"actions_scanned": { "type": "integer" },
+				"auth_flows_verified": { "type": "integer" },
+				"dependencies_audited": { "type": "integer" },
+				"files_checked": { "type": "integer" },
+				"false_positives_suppressed": { "type": "integer" }
+			}
+		}
+	}
+}

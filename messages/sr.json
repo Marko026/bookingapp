@@ -64,6 +64,7 @@
 		"viewDetails": "Pogledaj detalje",
 		"guests": "Osobe",
 		"bed": "Francuski ležaj",
+		"beds": "Kreveti",
 		"wifi": "Brz Wifi",
 		"reviewsCount": "({count} recenzija)",
 		"reviews": "recenzija"
@@ -159,6 +160,7 @@
 				"nameEn": "Naziv Apartmana (EN)",
 				"price": "Cena (RSD) *",
 				"capacity": "Osobe *",
+				"beds": "Kreveti za spavanje *",
 				"descSr": "Opis (SR)",
 				"descEn": "Opis (EN)",
 				"location": "Lokacija Apartmana",
@@ -169,6 +171,7 @@
 				"nameEn": "npr. Todorovic Apartment 1",
 				"price": "3000",
 				"capacity": "4",
+				"beds": "2",
 				"descSr": "Detaljan opis apartmana...",
 				"descEn": "Detaljan opis na engleskom..."
 			},
@@ -205,6 +208,7 @@
 					"nameSr": "Naziv (SR)",
 					"nameEn": "Ime (EN)",
 					"pricePerNight": "Cena po noćenju",
+					"beds": "Kreveti za spavanje",
 					"descSr": "Opis (SR)",
 					"descEn": "Opis (EN)"
 				},

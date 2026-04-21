@@ -1,0 +1,1 @@
+ALTER TABLE "apartments" ADD COLUMN "beds" integer DEFAULT 2 NOT NULL;

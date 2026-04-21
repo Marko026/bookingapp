@@ -26,6 +26,7 @@ export const apartmentFormSchema = z.object({
 	descriptionEn: z.string().max(5000, "Opis je predugačak").optional(),
 	pricePerNight: z.coerce.number().min(1, "Cena je obavezna"),
 	capacity: z.coerce.number().min(1, "Kapacitet je obavezan"),
+	beds: z.coerce.number().min(1, "Bar jedan krevet je obavezan"),
 	latitude: z.number().nullable().optional(),
 	longitude: z.number().nullable().optional(),
 	images: z.array(apartmentImageSchema).min(1, "Bar jedna slika je obavezna"),
@@ -44,6 +45,10 @@ export const createApartmentActionSchema = z.object({
 		.transform((val) => parseInt(val, 10))
 		.or(z.number()),
 	capacity: z
+		.string()
+		.transform((val) => parseInt(val, 10))
+		.or(z.number()),
+	beds: z
 		.string()
 		.transform((val) => parseInt(val, 10))
 		.or(z.number()),

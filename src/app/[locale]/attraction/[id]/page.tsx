@@ -9,6 +9,7 @@ import {
 import { Link, routing } from "@/i18n/routing";
 import { getLocalizedField } from "@/lib/localization";
 import { sanitizeHtml } from "@/lib/security";
+import { buildTouristAttractionJSONLD } from "@/lib/structured-data";
 import type { Attraction } from "@/types";
 import AttractionDetailClient from "./AttractionDetailClient";
 
@@ -105,5 +106,17 @@ export default async function AttractionDetailPage({
 		attraction.longDescriptionEn = sanitizeHtml(attraction.longDescriptionEn);
 	}
 
-	return <AttractionDetailClient attraction={attraction} origin={originData} />;
+	return (
+		<>
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify(
+						buildTouristAttractionJSONLD(attraction, locale),
+					),
+				}}
+			/>
+			<AttractionDetailClient attraction={attraction} origin={originData} />
+		</>
+	);
 }

@@ -5,6 +5,7 @@ import { routing } from "@/i18n/routing";
 
 // Adapt this to your domain
 const BASE_URL = "https://apartmani-todorovic.com";
+const DEFAULT_LOCALE = routing.defaultLocale;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	const apartments = await getAllApartmentsPublic();
@@ -31,10 +32,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 		})),
 	];
 
-	// Map apartments to sitemap
 	apartments.forEach((apt) => {
 		sitemapEntries.push({
-			url: `${BASE_URL}/en/apartment/${apt.id}`, // Base URL (canonical could be one of the locales or without locale)
+			url: `${BASE_URL}/${DEFAULT_LOCALE}/apartment/${apt.id}`,
 			lastModified: new Date(),
 			alternates: {
 				languages: Object.fromEntries(
@@ -47,10 +47,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 		});
 	});
 
-	// Map attractions to sitemap
 	attractions.forEach((attr) => {
 		sitemapEntries.push({
-			url: `${BASE_URL}/en/attraction/${attr.id}`,
+			url: `${BASE_URL}/${DEFAULT_LOCALE}/attraction/${attr.id}`,
 			lastModified: new Date(),
 			alternates: {
 				languages: Object.fromEntries(

@@ -1,4 +1,21 @@
 /**
+ * Formats a date string into English format: "Mon, Jun 15, 2026"
+ */
+export function formatDateEN(dateString: string): string {
+	try {
+		const date = new Date(dateString);
+		return new Intl.DateTimeFormat("en-US", {
+			weekday: "short",
+			day: "numeric",
+			month: "short",
+			year: "numeric",
+		}).format(date);
+	} catch (_error) {
+		return dateString;
+	}
+}
+
+/**
  * Formats a date string into Serbian Cyrillic format: "пон, 15. јун 2026."
  */
 export function formatDateSR(dateString: string): string {

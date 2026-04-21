@@ -63,6 +63,7 @@ export function ApartmentsManager() {
 			current.description !== original.description ||
 			current.price !== original.price ||
 			current.maxGuests !== original.maxGuests ||
+			current.beds !== original.beds ||
 			JSON.stringify(current.images) !== JSON.stringify(original.images)
 		);
 	};
@@ -80,6 +81,7 @@ export function ApartmentsManager() {
 			formData.append("descriptionEn", "");
 			formData.append("pricePerNight", String(editingApartment.price));
 			formData.append("capacity", String(editingApartment.maxGuests));
+			formData.append("beds", String(editingApartment.beds));
 
 			const imagesData = editingApartment.images.map((url, index) => ({
 				imageUrl: url,
@@ -173,6 +175,27 @@ export function ApartmentsManager() {
 														setEditingApartment({
 															...editingApartment,
 															price: Number(e.target.value),
+														})
+													}
+												/>
+											</div>
+										</div>
+										<div className="grid grid-cols-2 gap-8">
+											<div className="space-y-2">
+												<label
+													htmlFor="beds"
+													className="text-xs font-bold uppercase text-gray-400"
+												>
+													{t("labels.beds")}
+												</label>
+												<Input
+													id="beds"
+													type="number"
+													value={editingApartment.beds}
+													onChange={(e) =>
+														setEditingApartment({
+															...editingApartment,
+															beds: Number(e.target.value),
 														})
 													}
 												/>

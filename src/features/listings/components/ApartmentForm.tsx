@@ -67,6 +67,7 @@ export function ApartmentForm() {
 			descriptionEn: "",
 			pricePerNight: 0,
 			capacity: 2,
+			beds: 2,
 			latitude: null,
 			longitude: null,
 			images: [],
@@ -95,6 +96,7 @@ export function ApartmentForm() {
 		formDataToSend.append("descriptionEn", values.descriptionEn || "");
 		formDataToSend.append("pricePerNight", values.pricePerNight.toString());
 		formDataToSend.append("capacity", values.capacity.toString());
+		formDataToSend.append("beds", values.beds.toString());
 
 		if (values.images.length > 0) {
 			formDataToSend.append("imageUrl", values.images[0].url);
@@ -184,6 +186,27 @@ export function ApartmentForm() {
 															className="text-base"
 															type="number"
 															placeholder={t("placeholders.capacity")}
+															{...field}
+															value={field.value as number}
+														/>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+									</div>
+									<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+										<FormField
+											control={form.control}
+											name="beds"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>{t("labels.beds")}</FormLabel>
+													<FormControl>
+														<Input
+															className="text-base"
+															type="number"
+															placeholder={t("placeholders.beds")}
 															{...field}
 															value={field.value as number}
 														/>

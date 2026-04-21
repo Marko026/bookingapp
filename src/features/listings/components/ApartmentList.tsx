@@ -120,7 +120,7 @@ export function ApartmentList({
 												className="md:w-4 md:h-4 lg:w-[18px] lg:h-[18px]"
 											/>
 											<span className="text-[11px] md:text-xs lg:text-sm">
-												{t("bed")}
+												{`${apt.beds} ${t("beds")}`}
 											</span>
 										</div>
 										<div className="h-3 w-px bg-gray-300" />

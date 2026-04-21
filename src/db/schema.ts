@@ -23,6 +23,7 @@ export const apartments = pgTable(
 		descriptionEn: text("description_en"),
 		pricePerNight: integer("price_per_night").notNull(),
 		capacity: integer("capacity").notNull(),
+		beds: integer("beds").notNull().default(2),
 		imageUrl: text("image_url"), // Main cover image (kept for backward compatibility)
 		latitude: doublePrecision("latitude"),
 		longitude: doublePrecision("longitude"),

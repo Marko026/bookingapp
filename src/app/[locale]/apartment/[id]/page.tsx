@@ -3,6 +3,7 @@ import { setRequestLocale } from "next-intl/server";
 import { getAllApartmentsPublic, getApartment } from "@/dal/apartments";
 import { routing } from "@/i18n/routing";
 import { sanitizeHtml } from "@/lib/security";
+import { buildLodgingBusinessJSONLD } from "@/lib/structured-data";
 import type { Apartment } from "@/types";
 import ApartmentDetailClient from "./ApartmentDetailClient";
 
@@ -73,5 +74,15 @@ export default async function ApartmentDetailPage({
 		apt.descriptionEn = sanitizeHtml(apt.descriptionEn);
 	}
 
-	return <ApartmentDetailClient apartment={apt as unknown as Apartment} />;
+	return (
+		<>
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify(buildLodgingBusinessJSONLD(apt, locale)),
+				}}
+			/>
+			<ApartmentDetailClient apartment={apt as unknown as Apartment} />
+		</>
+	);
 }

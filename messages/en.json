@@ -15,7 +15,7 @@
 		"title_word_2": "in",
 		"title_word_3": "the",
 		"title_word_4": "Moment.",
-		"subtitle": "Discover curated sanctuaries where architectural elegance meets nature's raw beauty. Your escape from the ordinary begins here.",
+		"subtitle": "Luxury apartments in Vinci near Golubac - eastern Serbia, steps from the Danube.",
 		"explore": "Explore Homes",
 		"est": "Est. 2014",
 		"happyClients": "Happy Clients",
@@ -64,6 +64,7 @@
 		"viewDetails": "View Details",
 		"guests": "Guests",
 		"bed": "King Bed",
+		"beds": "Beds",
 		"wifi": "Fast Wifi",
 		"reviewsCount": "({count} reviews)",
 		"reviews": "reviews"
@@ -159,6 +160,7 @@
 				"nameEn": "Apartment Name (EN)",
 				"price": "Price (RSD) *",
 				"capacity": "Persons *",
+				"beds": "Sleeping Beds *",
 				"descSr": "Description (SR)",
 				"descEn": "Description (EN)",
 				"location": "Apartment Location",
@@ -169,6 +171,7 @@
 				"nameEn": "e.g. Todorovic Apartment 1",
 				"price": "3000",
 				"capacity": "4",
+				"beds": "2",
 				"descSr": "Detailed apartment description...",
 				"descEn": "Detailed descriptions in English..."
 			},
@@ -205,6 +208,7 @@
 					"nameSr": "Naziv (SR)",
 					"nameEn": "Name (EN)",
 					"pricePerNight": "Price per night",
+					"beds": "Sleeping Beds",
 					"descSr": "Opis (SR)",
 					"descEn": "Description (EN)"
 				},
@@ -350,7 +354,7 @@
 		}
 	},
 	"Footer": {
-		"subtitle": "Luxury boutique apartments in the heart of Vrnjačka Banja.",
+		"subtitle": "Your oasis in eastern Serbia in Vinci near Golubac.",
 		"about": "About Us",
 		"contact": "Contact",
 		"privacy": "Privacy Policy",

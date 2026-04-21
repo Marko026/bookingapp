@@ -4,6 +4,7 @@ import { AttractionsSection } from "@/features/landing/components/AttractionsSec
 import { Features } from "@/features/landing/components/Features";
 import { Hero } from "@/features/landing/components/Hero";
 import { ApartmentsSection } from "@/features/listings/components/ApartmentsSection";
+import { buildWebSiteJSONLD } from "@/lib/structured-data";
 
 export const revalidate = 3600; // Revalidate every hour (ISR)
 
@@ -42,29 +43,37 @@ export default async function Home({
 	setRequestLocale(locale);
 
 	return (
-		<div className="flex flex-col min-h-screen">
-			<Hero />
-			<Features />
+		<>
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify(buildWebSiteJSONLD()),
+				}}
+			/>
+			<div className="flex flex-col min-h-screen">
+				<Hero />
+				<Features />
 
-			<Suspense
-				fallback={
-					<div className="py-24 flex justify-center">
-						<div className="animate-pulse h-12 w-12 bg-amber-100 rounded-full" />
-					</div>
-				}
-			>
-				<ApartmentsSection />
-			</Suspense>
+				<Suspense
+					fallback={
+						<div className="py-24 flex justify-center">
+							<div className="animate-pulse h-12 w-12 bg-amber-100 rounded-full" />
+						</div>
+					}
+				>
+					<ApartmentsSection />
+				</Suspense>
 
-			<Suspense
-				fallback={
-					<div className="py-24 flex justify-center">
-						<div className="animate-pulse h-12 w-12 bg-gray-100 rounded-full" />
-					</div>
-				}
-			>
-				<AttractionsSection />
-			</Suspense>
-		</div>
+				<Suspense
+					fallback={
+						<div className="py-24 flex justify-center">
+							<div className="animate-pulse h-12 w-12 bg-gray-100 rounded-full" />
+						</div>
+					}
+				>
+					<AttractionsSection />
+				</Suspense>
+			</div>
+		</>
 	);
 }

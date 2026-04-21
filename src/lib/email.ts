@@ -5,6 +5,8 @@ import { env } from "@/env";
 import { sanitizeErrorForProduction } from "@/lib/error-handling";
 import { logError } from "@/lib/logger";
 import { createBookingEmail } from "./emails/admin-notification";
+import { createGuestApprovalEmail } from "./emails/guest-approval-email";
+import { createGuestCancellationEmail } from "./emails/guest-cancellation-email";
 import { createGuestConfirmationEmail } from "./emails/guest-confirmation";
 import type { BookingData } from "./emails/types";
 
@@ -63,6 +65,80 @@ export async function sendBookingEmails(bookingData: BookingData) {
 		logError(error, {
 			action: "sendBookingEmails",
 			path: "/api/booking",
+			metadata: { bookingId: bookingData.apartmentName },
+		});
+		return {
+			success: false,
+			error: sanitizeErrorForProduction(error),
+		};
+	}
+}
+
+export async function sendApprovalEmail(bookingData: BookingData) {
+	const fromEmail = `Apartmani Todorović <${env.RESEND_FROM_EMAIL}>`;
+
+	try {
+		const result = await resend.emails.send({
+			from: fromEmail,
+			to: bookingData.guestEmail,
+			subject: `Booking Confirmed / Rezervacija Potvrđena - ${bookingData.apartmentName}`,
+			html: createGuestApprovalEmail(bookingData),
+		});
+
+		if (result.error) {
+			logError(result.error, {
+				action: "sendApprovalEmail",
+				path: "/admin/bookings",
+				metadata: { recipient: "guest", bookingId: bookingData.apartmentName },
+			});
+			throw new Error("Approval email failed");
+		}
+
+		return {
+			success: true,
+			emailId: result.data?.id,
+		};
+	} catch (error) {
+		logError(error, {
+			action: "sendApprovalEmail",
+			path: "/admin/bookings",
+			metadata: { bookingId: bookingData.apartmentName },
+		});
+		return {
+			success: false,
+			error: sanitizeErrorForProduction(error),
+		};
+	}
+}
+
+export async function sendCancellationEmail(bookingData: BookingData) {
+	const fromEmail = `Apartmani Todorović <${env.RESEND_FROM_EMAIL}>`;
+
+	try {
+		const result = await resend.emails.send({
+			from: fromEmail,
+			to: bookingData.guestEmail,
+			subject: `Booking Cancelled / Rezervacija Otkazana - ${bookingData.apartmentName}`,
+			html: createGuestCancellationEmail(bookingData),
+		});
+
+		if (result.error) {
+			logError(result.error, {
+				action: "sendCancellationEmail",
+				path: "/admin/bookings",
+				metadata: { recipient: "guest", bookingId: bookingData.apartmentName },
+			});
+			throw new Error("Cancellation email failed");
+		}
+
+		return {
+			success: true,
+			emailId: result.data?.id,
+		};
+	} catch (error) {
+		logError(error, {
+			action: "sendCancellationEmail",
+			path: "/admin/bookings",
 			metadata: { bookingId: bookingData.apartmentName },
 		});
 		return {

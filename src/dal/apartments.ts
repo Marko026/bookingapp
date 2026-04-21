@@ -49,7 +49,7 @@ export async function getAllApartmentsPublic(): Promise<Apartment[]> {
 				descriptionEn: apt.descriptionEn,
 				price: apt.pricePerNight,
 				maxGuests: apt.capacity,
-				beds: Math.ceil(apt.capacity / 2),
+				beds: apt.beds,
 				images:
 					apt.images.length > 0
 						? apt.images.map((img) => img.imageUrl)
@@ -111,7 +111,7 @@ export async function getApartmentsPublicPaginated(
 			descriptionEn: apt.descriptionEn,
 			price: apt.pricePerNight,
 			maxGuests: apt.capacity,
-			beds: Math.ceil(apt.capacity / 2),
+			beds: apt.beds,
 			images:
 				apt.images.length > 0
 					? apt.images.map((img) => img.imageUrl)
@@ -167,6 +167,7 @@ export async function getAllApartmentsAdmin() {
 				descriptionEn: apt.descriptionEn,
 				price: apt.pricePerNight,
 				maxGuests: apt.capacity,
+				beds: apt.beds,
 				images:
 					apt.images.length > 0
 						? apt.images.map((img) => img.imageUrl)
@@ -211,7 +212,7 @@ export async function getApartment(id: string) {
 				amenities: [],
 				rating: 5,
 				reviewsCount: 42,
-				beds: Math.ceil(apartment.capacity / 2),
+				beds: apartment.beds,
 				maxGuests: apartment.capacity,
 				price: apartment.pricePerNight,
 				slug: apartment.name.toLowerCase().replace(/ /g, "-"),
