@@ -8,7 +8,9 @@ import { createBookingEmail } from "./emails/admin-notification";
 import { createGuestApprovalEmail } from "./emails/guest-approval-email";
 import { createGuestCancellationEmail } from "./emails/guest-cancellation-email";
 import { createGuestConfirmationEmail } from "./emails/guest-confirmation";
+import { createInquiryEmail } from "./emails/inquiry-email";
 import type { BookingData } from "./emails/types";
+import type { InquiryData } from "./emails/inquiry-email";
 
 const resend = new Resend(env.RESEND_API_KEY);
 
@@ -140,6 +142,45 @@ export async function sendCancellationEmail(bookingData: BookingData) {
 			action: "sendCancellationEmail",
 			path: "/admin/bookings",
 			metadata: { bookingId: bookingData.apartmentName },
+		});
+		return {
+			success: false,
+			error: sanitizeErrorForProduction(error),
+		};
+	}
+}
+
+export async function sendInquiryEmail(inquiryData: InquiryData) {
+	const adminEmail = env.ADMIN_EMAIL_1;
+	const fromEmail = `Apartmani Todorović <${env.RESEND_FROM_EMAIL}>`;
+
+	try {
+		const result = await resend.emails.send({
+			from: fromEmail,
+			to: adminEmail,
+			replyTo: inquiryData.email,
+			subject: `Nova Poruka od ${inquiryData.name}`,
+			html: createInquiryEmail(inquiryData),
+		});
+
+		if (result.error) {
+			logError(result.error, {
+				action: "sendInquiryEmail",
+				path: "/contact",
+				metadata: { recipient: "admin", from: inquiryData.email },
+			});
+			throw new Error("Inquiry email failed");
+		}
+
+		return {
+			success: true,
+			emailId: result.data?.id,
+		};
+	} catch (error) {
+		logError(error, {
+			action: "sendInquiryEmail",
+			path: "/contact",
+			metadata: { from: inquiryData.email },
 		});
 		return {
 			success: false,

@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { db } from "@/db";
 import { inquiries } from "@/db/schema";
+import { sendInquiryEmail } from "@/lib/email";
 import { createSafeAction } from "@/lib/safe-action";
 
 const contactSchema = z.object({
@@ -18,5 +19,17 @@ const contactSchema = z.object({
 
 export const submitInquiry = createSafeAction(contactSchema, async (data) => {
 	await db.insert(inquiries).values(data);
+
+	try {
+		await sendInquiryEmail({
+			name: data.name,
+			email: data.email,
+			message: data.message,
+		});
+	} catch (_emailError) {
+		// Email failure should not block the user from seeing success
+		console.error("Inquiry email failed:", _emailError);
+	}
+
 	return { message: "Message sent successfully!" };
 });

@@ -301,19 +301,33 @@ export async function updateBookingStatusAction(
 				apartmentImage: firstImage,
 			};
 
-			try {
-				if (status === "confirmed") {
-					await sendApprovalEmail(bookingData);
-				} else if (status === "cancelled") {
-					await sendCancellationEmail(bookingData);
+		try {
+			if (status === "confirmed") {
+				const emailResult = await sendApprovalEmail(bookingData);
+				if (!emailResult.success) {
+					console.error("Approval email failed:", emailResult.error);
+					return {
+						success: true,
+						message: "Status updated, but approval email could not be sent.",
+					};
 				}
-			} catch (emailError) {
-				console.error("Failed to send notification email:", emailError);
-				return {
-					success: true,
-					message: "Status updated, but notification email could not be sent.",
-				};
+			} else if (status === "cancelled") {
+				const emailResult = await sendCancellationEmail(bookingData);
+				if (!emailResult.success) {
+					console.error("Cancellation email failed:", emailResult.error);
+					return {
+						success: true,
+						message: "Status updated, but cancellation email could not be sent.",
+					};
+				}
 			}
+		} catch (emailError) {
+			console.error("Failed to send notification email:", emailError);
+			return {
+				success: true,
+				message: "Status updated, but notification email could not be sent.",
+			};
+		}
 		}
 
 		return { success: true };

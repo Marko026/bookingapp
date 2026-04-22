@@ -43,19 +43,23 @@ export function useAdminBookings(initialPage = 1) {
 		const result = await updateBookingStatusAction(id, status);
 		if (result.success) {
 			await fetchBookings(pagination.page);
-			if (status === "confirmed") {
+			if (result.message?.includes("email could not be sent")) {
+				toast.warning("Status je ažuriran", {
+					description: result.message,
+				});
+			} else if (status === "confirmed") {
 				toast.success("Rezervacija je potvrđena", {
-					description: "Gost je obavešten emailom.",
+					description: result.message || "Gost je obavešten emailom.",
 				});
 			} else {
 				toast.info("Rezervacija je odbijena", {
-					description: "Gost je obavešten.",
+					description: result.message || "Gost je obavešten.",
 				});
 			}
 			return true;
 		} else {
 			toast.error("Greška pri ažuriranju statusa", {
-				description: "Pokušajte ponovo.",
+				description: result.message || "Pokušajte ponovo.",
 			});
 			return false;
 		}
