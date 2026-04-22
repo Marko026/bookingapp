@@ -304,20 +304,20 @@ export async function updateBookingStatusAction(
 		try {
 			if (status === "confirmed") {
 				const emailResult = await sendApprovalEmail(bookingData);
-				if (!emailResult.success) {
-					console.error("Approval email failed:", emailResult.error);
+				if (emailResult.message) {
+					console.error("Approval email issue:", emailResult.message);
 					return {
 						success: true,
-						message: "Status updated, but approval email could not be sent.",
+						message: emailResult.message,
 					};
 				}
 			} else if (status === "cancelled") {
 				const emailResult = await sendCancellationEmail(bookingData);
-				if (!emailResult.success) {
-					console.error("Cancellation email failed:", emailResult.error);
+				if (emailResult.message) {
+					console.error("Cancellation email issue:", emailResult.message);
 					return {
 						success: true,
-						message: "Status updated, but cancellation email could not be sent.",
+						message: emailResult.message,
 					};
 				}
 			}
