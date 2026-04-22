@@ -14,13 +14,21 @@ import type { InquiryData } from "./emails/inquiry-email";
 
 const resend = new Resend(env.RESEND_API_KEY);
 
+function getResendErrorMessage(error: unknown): string {
+	if (typeof error === "object" && error !== null && "message" in error) {
+		return String((error as {message: string}).message);
+	}
+	return JSON.stringify(error);
+}
+
 export async function sendBookingEmails(bookingData: BookingData) {
 	const adminEmail = env.ADMIN_EMAIL_1;
-
 	const fromEmail = `Apartmani Todorović <${env.RESEND_FROM_EMAIL}>`;
 
+	// Send admin email (this should work - goes to your own address)
+	let adminResult;
 	try {
-		const adminEmailPromise = resend.emails.send({
+		adminResult = await resend.emails.send({
 			from: fromEmail,
 			to: adminEmail,
 			replyTo: bookingData.guestEmail,
@@ -28,60 +36,64 @@ export async function sendBookingEmails(bookingData: BookingData) {
 			html: createBookingEmail(bookingData),
 		});
 
-		const guestEmailPromise = resend.emails.send({
-			from: fromEmail,
-			to: bookingData.guestEmail,
-			subject: `Potvrda Rezervacije - ${bookingData.apartmentName}`,
-			html: createGuestConfirmationEmail(bookingData),
-		});
-
-		const [adminResult, guestResult] = await Promise.all([
-			adminEmailPromise,
-			guestEmailPromise,
-		]);
-
 		if (adminResult.error) {
-			const errorMsg = typeof adminResult.error === "object" && adminResult.error !== null && "message" in adminResult.error 
-				? String((adminResult.error as {message: string}).message) 
-				: JSON.stringify(adminResult.error);
+			const errorMsg = getResendErrorMessage(adminResult.error);
 			console.error("Resend admin email error:", errorMsg);
 			logError(errorMsg, {
 				action: "sendBookingEmails",
 				path: "/api/booking",
 				metadata: { recipient: "admin", bookingId: bookingData.apartmentName },
 			});
-			throw new Error(`Admin email failed: ${errorMsg}`);
 		}
+	} catch (error) {
+		logError(error, {
+			action: "sendBookingEmails",
+			path: "/api/booking",
+			metadata: { recipient: "admin", bookingId: bookingData.apartmentName },
+		});
+	}
+
+	// Send guest email (requires verified domain on Resend free tier)
+	let guestResult;
+	try {
+		guestResult = await resend.emails.send({
+			from: fromEmail,
+			to: bookingData.guestEmail,
+			subject: `Potvrda Rezervacije - ${bookingData.apartmentName}`,
+			html: createGuestConfirmationEmail(bookingData),
+		});
 
 		if (guestResult.error) {
-			const errorMsg = typeof guestResult.error === "object" && guestResult.error !== null && "message" in guestResult.error 
-				? String((guestResult.error as {message: string}).message) 
-				: JSON.stringify(guestResult.error);
+			const errorMsg = getResendErrorMessage(guestResult.error);
 			console.error("Resend guest email error:", errorMsg);
 			logError(errorMsg, {
 				action: "sendBookingEmails",
 				path: "/api/booking",
 				metadata: { recipient: "guest", bookingId: bookingData.apartmentName },
 			});
-			throw new Error(`Guest email failed: ${errorMsg}`);
 		}
-
-		return {
-			success: true,
-			adminEmailId: adminResult.data?.id,
-			guestEmailId: guestResult.data?.id,
-		};
 	} catch (error) {
 		logError(error, {
 			action: "sendBookingEmails",
 			path: "/api/booking",
-			metadata: { bookingId: bookingData.apartmentName },
+			metadata: { recipient: "guest", bookingId: bookingData.apartmentName },
 		});
+	}
+
+	// If admin email succeeded, consider it a success (guest email requires domain verification)
+	if (adminResult && !adminResult.error) {
 		return {
-			success: false,
-			error: sanitizeErrorForProduction(error),
+			success: true,
+			adminEmailId: adminResult.data?.id,
+			guestEmailId: guestResult && !guestResult.error ? guestResult.data?.id : undefined,
+			guestEmailSkipped: guestResult && guestResult.error ? true : undefined,
 		};
 	}
+
+	return {
+		success: false,
+		error: "Došlo je do greške prilikom slanja emailova.",
+	};
 }
 
 export async function sendApprovalEmail(bookingData: BookingData) {
@@ -96,16 +108,18 @@ export async function sendApprovalEmail(bookingData: BookingData) {
 		});
 
 		if (result.error) {
-			const errorMsg = typeof result.error === "object" && result.error !== null && "message" in result.error 
-				? String((result.error as {message: string}).message) 
-				: JSON.stringify(result.error);
+			const errorMsg = getResendErrorMessage(result.error);
 			console.error("Resend approval email error:", errorMsg);
 			logError(errorMsg, {
 				action: "sendApprovalEmail",
 				path: "/admin/bookings",
 				metadata: { recipient: "guest", bookingId: bookingData.apartmentName },
 			});
-			throw new Error(`Approval email failed: ${errorMsg}`);
+			// Return partial success - status is updated but email couldn't be sent
+			return {
+				success: true,
+				message: "Status updated, but approval email could not be sent. Please verify a domain at resend.com/domains to send emails to guests.",
+			};
 		}
 
 		return {
@@ -119,8 +133,8 @@ export async function sendApprovalEmail(bookingData: BookingData) {
 			metadata: { bookingId: bookingData.apartmentName },
 		});
 		return {
-			success: false,
-			error: sanitizeErrorForProduction(error),
+			success: true,
+			message: "Status updated, but approval email could not be sent due to an error.",
 		};
 	}
 }
@@ -137,16 +151,17 @@ export async function sendCancellationEmail(bookingData: BookingData) {
 		});
 
 		if (result.error) {
-			const errorMsg = typeof result.error === "object" && result.error !== null && "message" in result.error 
-				? String((result.error as {message: string}).message) 
-				: JSON.stringify(result.error);
+			const errorMsg = getResendErrorMessage(result.error);
 			console.error("Resend cancellation email error:", errorMsg);
 			logError(errorMsg, {
 				action: "sendCancellationEmail",
 				path: "/admin/bookings",
 				metadata: { recipient: "guest", bookingId: bookingData.apartmentName },
 			});
-			throw new Error(`Cancellation email failed: ${errorMsg}`);
+			return {
+				success: true,
+				message: "Status updated, but cancellation email could not be sent. Please verify a domain at resend.com/domains to send emails to guests.",
+			};
 		}
 
 		return {
@@ -160,8 +175,8 @@ export async function sendCancellationEmail(bookingData: BookingData) {
 			metadata: { bookingId: bookingData.apartmentName },
 		});
 		return {
-			success: false,
-			error: sanitizeErrorForProduction(error),
+			success: true,
+			message: "Status updated, but cancellation email could not be sent due to an error.",
 		};
 	}
 }
