@@ -41,21 +41,29 @@ export async function sendBookingEmails(bookingData: BookingData) {
 		]);
 
 		if (adminResult.error) {
-			logError(adminResult.error, {
+			const errorMsg = typeof adminResult.error === "object" && adminResult.error !== null && "message" in adminResult.error 
+				? String((adminResult.error as {message: string}).message) 
+				: JSON.stringify(adminResult.error);
+			console.error("Resend admin email error:", errorMsg);
+			logError(errorMsg, {
 				action: "sendBookingEmails",
 				path: "/api/booking",
 				metadata: { recipient: "admin", bookingId: bookingData.apartmentName },
 			});
-			throw new Error("Admin email failed");
+			throw new Error(`Admin email failed: ${errorMsg}`);
 		}
 
 		if (guestResult.error) {
-			logError(guestResult.error, {
+			const errorMsg = typeof guestResult.error === "object" && guestResult.error !== null && "message" in guestResult.error 
+				? String((guestResult.error as {message: string}).message) 
+				: JSON.stringify(guestResult.error);
+			console.error("Resend guest email error:", errorMsg);
+			logError(errorMsg, {
 				action: "sendBookingEmails",
 				path: "/api/booking",
 				metadata: { recipient: "guest", bookingId: bookingData.apartmentName },
 			});
-			throw new Error("Guest email failed");
+			throw new Error(`Guest email failed: ${errorMsg}`);
 		}
 
 		return {
@@ -88,12 +96,16 @@ export async function sendApprovalEmail(bookingData: BookingData) {
 		});
 
 		if (result.error) {
-			logError(result.error, {
+			const errorMsg = typeof result.error === "object" && result.error !== null && "message" in result.error 
+				? String((result.error as {message: string}).message) 
+				: JSON.stringify(result.error);
+			console.error("Resend approval email error:", errorMsg);
+			logError(errorMsg, {
 				action: "sendApprovalEmail",
 				path: "/admin/bookings",
 				metadata: { recipient: "guest", bookingId: bookingData.apartmentName },
 			});
-			throw new Error("Approval email failed");
+			throw new Error(`Approval email failed: ${errorMsg}`);
 		}
 
 		return {
@@ -125,12 +137,16 @@ export async function sendCancellationEmail(bookingData: BookingData) {
 		});
 
 		if (result.error) {
-			logError(result.error, {
+			const errorMsg = typeof result.error === "object" && result.error !== null && "message" in result.error 
+				? String((result.error as {message: string}).message) 
+				: JSON.stringify(result.error);
+			console.error("Resend cancellation email error:", errorMsg);
+			logError(errorMsg, {
 				action: "sendCancellationEmail",
 				path: "/admin/bookings",
 				metadata: { recipient: "guest", bookingId: bookingData.apartmentName },
 			});
-			throw new Error("Cancellation email failed");
+			throw new Error(`Cancellation email failed: ${errorMsg}`);
 		}
 
 		return {
@@ -164,12 +180,16 @@ export async function sendInquiryEmail(inquiryData: InquiryData) {
 		});
 
 		if (result.error) {
-			logError(result.error, {
+			const errorMsg = typeof result.error === "object" && result.error !== null && "message" in result.error 
+				? String((result.error as {message: string}).message) 
+				: JSON.stringify(result.error);
+			console.error("Resend inquiry email error:", errorMsg);
+			logError(errorMsg, {
 				action: "sendInquiryEmail",
 				path: "/contact",
 				metadata: { recipient: "admin", from: inquiryData.email },
 			});
-			throw new Error("Inquiry email failed");
+			throw new Error(`Inquiry email failed: ${errorMsg}`);
 		}
 
 		return {
