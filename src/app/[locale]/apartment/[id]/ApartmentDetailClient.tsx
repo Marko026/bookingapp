@@ -360,9 +360,7 @@ export default function ApartmentDetailClient({
 						</div>
 
 						<div className="mb-6 md:mb-8">
-							<h2 className="text-xl md:text-2xl font-serif font-medium mb-4 md:mb-6">
-								{t("amenitiesTitle")}
-							</h2>
+							
 							<div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
 								{apartment.amenities.map((am) => (
 									<div
