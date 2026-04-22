@@ -69,7 +69,7 @@ export interface WebSiteSchema {
 
 export function buildLodgingBusinessJSONLD(
 	apartment: Apartment,
-	locale: string,
+locale: string,
 ): LodgingBusinessSchema {
 	const name =
 		locale === "en" && apartment.nameEn ? apartment.nameEn : apartment.name;
@@ -113,7 +113,7 @@ export function buildLodgingBusinessJSONLD(
 
 export function buildTouristAttractionJSONLD(
 	attraction: Attraction,
-	locale: string,
+locale: string,
 ): TouristAttractionSchema {
 	const name =
 		locale === "en" && attraction.titleEn
@@ -129,7 +129,7 @@ export function buildTouristAttractionJSONLD(
 		"@type": "TouristAttraction",
 		name,
 		description: description.substring(0, 500),
-		image:
+image:
 			attraction.gallery.length > 0
 				? attraction.gallery
 				: attraction.image
