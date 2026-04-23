@@ -1,0 +1,2 @@
+ALTER TABLE "bookings" ADD CONSTRAINT "bookings_total_price_positive" CHECK ("bookings"."total_price" > 0);--> statement-breakpoint
+ALTER TABLE "bookings" ADD CONSTRAINT "bookings_check_out_after_check_in" CHECK ("bookings"."check_out" > "bookings"."check_in");

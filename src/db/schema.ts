@@ -1,6 +1,7 @@
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
 	boolean,
+	check,
 	date,
 	doublePrecision,
 	index,
@@ -78,6 +79,14 @@ export const bookings = pgTable(
 				table.apartmentId,
 				table.checkIn,
 				table.checkOut,
+			),
+			totalPricePositive: check(
+				"bookings_total_price_positive",
+				sql`${table.totalPrice} > 0`,
+			),
+			checkOutAfterCheckIn: check(
+				"bookings_check_out_after_check_in",
+				sql`${table.checkOut} > ${table.checkIn}`,
 			),
 		};
 	},
