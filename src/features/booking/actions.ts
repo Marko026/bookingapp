@@ -15,6 +15,7 @@ import { z } from "zod";
 import { db } from "@/db";
 import { apartments, bookings } from "@/db/schema";
 import { getServerUser } from "@/lib/auth-server";
+import { calculateNights, parseLocalDate } from "@/lib/booking";
 import {
 	sendApprovalEmail,
 	sendBookingEmails,
@@ -23,16 +24,21 @@ import {
 import { checkRateLimit } from "@/lib/rate-limit";
 import { createSafeAction } from "@/lib/safe-action";
 
-const createBookingSchema = z.object({
-	apartmentId: z.string().uuid(),
-	guestName: z.string().min(1).max(200),
-	guestEmail: z.string().email().max(255),
-	phone: z.string().max(50).optional(),
-	checkIn: z.string(), // ISO date
-	checkOut: z.string(), // ISO date
-	totalPrice: z.coerce.number(),
-	question: z.string().max(2000).optional(),
-});
+const createBookingSchema = z
+	.object({
+		apartmentId: z.string().uuid(),
+		guestName: z.string().min(1).max(200),
+		guestEmail: z.string().email().max(255),
+		phone: z.string().max(50).optional(),
+		checkIn: z.string().date(),
+		checkOut: z.string().date(),
+		totalPrice: z.coerce.number().positive().optional(),
+		question: z.string().max(2000).optional(),
+	})
+	.refine((data) => data.checkOut > data.checkIn, {
+		message: "Datum odjave mora biti nakon datuma prijave",
+		path: ["checkOut"],
+	});
 
 type BookingType = InferSelectModel<typeof bookings>;
 
@@ -53,6 +59,33 @@ export const createBooking = createSafeAction(
 
 		try {
 			return await db.transaction(async (tx) => {
+				const apartment = await tx.query.apartments.findFirst({
+					where: eq(apartments.id, data.apartmentId),
+					with: {
+						images: true,
+					},
+				});
+
+				if (!apartment) {
+					return {
+						success: false,
+						message: "Apartman nije pronađen.",
+					};
+				}
+
+				const checkInDate = parseLocalDate(data.checkIn);
+				const checkOutDate = parseLocalDate(data.checkOut);
+				const nights = calculateNights(checkInDate, checkOutDate);
+
+				if (nights < 1) {
+					return {
+						success: false,
+						message: "Rezervacija mora trajati barem jednu noć.",
+					};
+				}
+
+				const calculatedTotalPrice = nights * apartment.pricePerNight;
+
 				// Check for overlapping bookings
 				const overlap = await tx.query.bookings.findFirst({
 					where: and(
@@ -73,35 +106,26 @@ export const createBooking = createSafeAction(
 					guestEmail: data.guestEmail,
 					checkIn: data.checkIn,
 					checkOut: data.checkOut,
-					totalPrice: data.totalPrice,
+					totalPrice: calculatedTotalPrice,
 					status: "pending",
 				});
 
-				const apartment = await tx.query.apartments.findFirst({
-					where: eq(apartments.id, data.apartmentId),
-					with: {
-						images: true,
-					},
+				const firstImage =
+					apartment.images?.[0]?.imageUrl || apartment.imageUrl || "";
+
+				await sendBookingEmails({
+					guestName: data.guestName,
+					guestEmail: data.guestEmail,
+					phone: data.phone,
+					// ovde prosleđujemo kompletan dodatni tekst iz forme
+					question: data.question,
+					checkIn: data.checkIn,
+					checkOut: data.checkOut,
+					totalPrice: calculatedTotalPrice,
+					apartmentId: data.apartmentId,
+					apartmentName: apartment.name,
+					apartmentImage: firstImage,
 				});
-
-				if (apartment) {
-					const firstImage =
-						apartment.images?.[0]?.imageUrl || apartment.imageUrl || "";
-
-					await sendBookingEmails({
-						guestName: data.guestName,
-						guestEmail: data.guestEmail,
-						phone: data.phone,
-						// ovde prosleđujemo kompletan dodatni tekst iz forme
-						question: data.question,
-						checkIn: data.checkIn,
-						checkOut: data.checkOut,
-						totalPrice: data.totalPrice,
-						apartmentId: data.apartmentId,
-						apartmentName: apartment.name,
-						apartmentImage: firstImage,
-					});
-				}
 
 				return { success: true };
 			});
@@ -207,12 +231,19 @@ export async function updateBooking(
 	id: number,
 	checkIn: string,
 	checkOut: string,
-	totalPrice: number,
+	_totalPrice: number,
 ) {
 	try {
 		const user = await getServerUser();
 		if (!user.success) {
 			return { success: false, message: "Unauthorized" };
+		}
+
+		if (checkOut <= checkIn) {
+			return {
+				success: false,
+				message: "Datum odjave mora biti nakon datuma prijave",
+			};
 		}
 
 		return await db.transaction(async (tx) => {
@@ -223,6 +254,27 @@ export async function updateBooking(
 			if (!booking) {
 				return { success: false, message: "Booking not found" };
 			}
+
+			const apartment = await tx.query.apartments.findFirst({
+				where: eq(apartments.id, booking.apartmentId),
+			});
+
+			if (!apartment) {
+				return { success: false, message: "Apartman nije pronađen." };
+			}
+
+			const checkInDate = parseLocalDate(checkIn);
+			const checkOutDate = parseLocalDate(checkOut);
+			const nights = calculateNights(checkInDate, checkOutDate);
+
+			if (nights < 1) {
+				return {
+					success: false,
+					message: "Rezervacija mora trajati barem jednu noć.",
+				};
+			}
+
+			const calculatedTotalPrice = nights * apartment.pricePerNight;
 
 			const overlap = await tx.query.bookings.findFirst({
 				where: and(
@@ -243,7 +295,7 @@ export async function updateBooking(
 				.set({
 					checkIn,
 					checkOut,
-					totalPrice,
+					totalPrice: calculatedTotalPrice,
 				})
 				.where(eq(bookings.id, id));
 
@@ -301,33 +353,33 @@ export async function updateBookingStatusAction(
 				apartmentImage: firstImage,
 			};
 
-		try {
-			if (status === "confirmed") {
-				const emailResult = await sendApprovalEmail(bookingData);
-				if (emailResult.message) {
-					console.error("Approval email issue:", emailResult.message);
-					return {
-						success: true,
-						message: emailResult.message,
-					};
+			try {
+				if (status === "confirmed") {
+					const emailResult = await sendApprovalEmail(bookingData);
+					if (emailResult.message) {
+						console.error("Approval email issue:", emailResult.message);
+						return {
+							success: true,
+							message: emailResult.message,
+						};
+					}
+				} else if (status === "cancelled") {
+					const emailResult = await sendCancellationEmail(bookingData);
+					if (emailResult.message) {
+						console.error("Cancellation email issue:", emailResult.message);
+						return {
+							success: true,
+							message: emailResult.message,
+						};
+					}
 				}
-			} else if (status === "cancelled") {
-				const emailResult = await sendCancellationEmail(bookingData);
-				if (emailResult.message) {
-					console.error("Cancellation email issue:", emailResult.message);
-					return {
-						success: true,
-						message: emailResult.message,
-					};
-				}
+			} catch (emailError) {
+				console.error("Failed to send notification email:", emailError);
+				return {
+					success: true,
+					message: "Status updated, but notification email could not be sent.",
+				};
 			}
-		} catch (emailError) {
-			console.error("Failed to send notification email:", emailError);
-			return {
-				success: true,
-				message: "Status updated, but notification email could not be sent.",
-			};
-		}
 		}
 
 		return { success: true };
