@@ -25,15 +25,11 @@ import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { Button } from "@/components/ui/button";
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { BookingCalendar } from "@/features/booking/components/BookingCalendar";
 import { BookingForm } from "@/features/booking/components/BookingForm";
 import { useRouter } from "@/i18n/routing";
+import { calculateNights, calculateTotalPrice } from "@/lib/booking";
 import { getLocalizedField } from "@/lib/localization";
 import { toast } from "@/lib/toast";
 import type { Apartment } from "@/types";
@@ -360,7 +356,6 @@ export default function ApartmentDetailClient({
 						</div>
 
 						<div className="mb-6 md:mb-8">
-							
 							<div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
 								{apartment.amenities.map((am) => (
 									<div
@@ -462,17 +457,15 @@ export default function ApartmentDetailClient({
 								<div className="bg-white p-4 rounded-2xl mb-4 space-y-2 text-xs md:text-sm border border-gray-100 shadow-sm">
 									<div className="flex justify-between text-gray-600">
 										<span>
-											{Math.ceil(
-												(dateRange.to.getTime() - dateRange.from.getTime()) /
-													(1000 * 3600 * 24),
-											)}{" "}
+											{calculateNights(dateRange.from, dateRange.to)}{" "}
 											{t("nights")}
 										</span>
 										<span className="font-medium text-gray-900">
-											{Math.ceil(
-												(dateRange.to.getTime() - dateRange.from.getTime()) /
-													(1000 * 3600 * 24),
-											) * apartment.price}
+											{calculateTotalPrice(
+												dateRange.from,
+												dateRange.to,
+												apartment.price,
+											)}
 											€
 										</span>
 									</div>
@@ -480,10 +473,11 @@ export default function ApartmentDetailClient({
 									<div className="flex justify-between text-base md:text-lg font-serif font-medium text-gray-900">
 										<span>{t("total")}</span>
 										<span>
-											{Math.ceil(
-												(dateRange.to.getTime() - dateRange.from.getTime()) /
-													(1000 * 3600 * 24),
-											) * apartment.price}
+											{calculateTotalPrice(
+												dateRange.from,
+												dateRange.to,
+												apartment.price,
+											)}
 											€
 										</span>
 									</div>
@@ -577,17 +571,15 @@ export default function ApartmentDetailClient({
 								<div className="bg-white p-4 rounded-2xl space-y-3 text-sm border border-gray-100 shadow-sm">
 									<div className="flex justify-between text-gray-600">
 										<span className="font-medium">
-											{Math.ceil(
-												(dateRange.to.getTime() - dateRange.from.getTime()) /
-													(1000 * 3600 * 24),
-											)}{" "}
+											{calculateNights(dateRange.from, dateRange.to)}{" "}
 											{t("nights")}
 										</span>
 										<span className="font-semibold text-gray-900">
-											{Math.ceil(
-												(dateRange.to.getTime() - dateRange.from.getTime()) /
-													(1000 * 3600 * 24),
-											) * apartment.price}
+											{calculateTotalPrice(
+												dateRange.from,
+												dateRange.to,
+												apartment.price,
+											)}
 											€
 										</span>
 									</div>
@@ -595,10 +587,11 @@ export default function ApartmentDetailClient({
 									<div className="flex justify-between text-lg font-serif font-semibold text-gray-900">
 										<span>{t("total")}</span>
 										<span>
-											{Math.ceil(
-												(dateRange.to.getTime() - dateRange.from.getTime()) /
-													(1000 * 3600 * 24),
-											) * apartment.price}
+											{calculateTotalPrice(
+												dateRange.from,
+												dateRange.to,
+												apartment.price,
+											)}
 											€
 										</span>
 									</div>
@@ -657,12 +650,11 @@ export default function ApartmentDetailClient({
 								apartmentImage={apartment.images[0]}
 								checkIn={dateRange.from}
 								checkOut={dateRange.to}
-								totalPrice={
-									Math.ceil(
-										(dateRange.to.getTime() - dateRange.from.getTime()) /
-											(1000 * 3600 * 24),
-									) * apartment.price
-								}
+								totalPrice={calculateTotalPrice(
+									dateRange.from,
+									dateRange.to,
+									apartment.price,
+								)}
 								onClose={() => setBookingFormVisible(false)}
 								onSuccess={handleBookingSuccess}
 							/>

@@ -12,6 +12,11 @@ interface BookingCalendarProps {
 	onDateSelect: (range: DateRange | undefined) => void;
 }
 
+function parseLocalDate(dateString: string): Date {
+	const [y, m, d] = dateString.split("-").map(Number);
+	return new Date(y, m - 1, d);
+}
+
 export function BookingCalendar({
 	apartmentId,
 	onDateSelect,
@@ -30,11 +35,17 @@ export function BookingCalendar({
 					const disabled: Date[] = [];
 					result.bookings.forEach((booking) => {
 						if (booking.status !== "cancelled") {
-							let current = new Date(booking.checkIn);
-							const end = new Date(booking.checkOut);
+							const checkIn = parseLocalDate(booking.checkIn);
+							const checkOut = parseLocalDate(booking.checkOut);
+							let current = new Date(checkIn);
+							const end = new Date(checkOut);
 							while (current < end) {
 								disabled.push(new Date(current));
 								current = addDays(current, 1);
+							}
+							// Same-day bookings: block the check-in date too
+							if (isSameDay(checkIn, checkOut)) {
+								disabled.push(new Date(checkIn));
 							}
 						}
 					});
@@ -71,6 +82,18 @@ export function BookingCalendar({
 			}
 			setDate(range);
 			onDateSelect(range);
+			return;
+		}
+
+		// Reject same-day selections (minimum 1 night)
+		if (isSameDay(range.from, range.to)) {
+			toast.error(t("calendar.minStayTitle") || "Minimum boravak", {
+				description:
+					t("calendar.minStayDesc") ||
+					"Minimum boravak je 1 noć. Izaberite datum odjave nakon datuma prijave.",
+			});
+			setDate({ from: undefined, to: undefined });
+			onDateSelect({ from: undefined, to: undefined });
 			return;
 		}
 
