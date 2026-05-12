@@ -1,6 +1,6 @@
 "use server";
 
-import { Resend } from "resend";
+import { MailerooClient, EmailAddress } from "maileroo-sdk";
 import { env } from "@/env";
 import { sanitizeErrorForProduction } from "@/lib/error-handling";
 import { logError } from "@/lib/logger";
@@ -12,40 +12,63 @@ import { createInquiryEmail } from "./emails/inquiry-email";
 import type { BookingData } from "./emails/types";
 import type { InquiryData } from "./emails/inquiry-email";
 
-const resend = new Resend(env.RESEND_API_KEY);
+const getMailerooClient = () => {
+	if (!env.MAILEROO_API_KEY) {
+		throw new Error("MAILEROO_API_KEY is not configured");
+	}
+	return new MailerooClient(env.MAILEROO_API_KEY);
+};
 
-function getResendErrorMessage(error: unknown): string {
-	if (typeof error === "object" && error !== null && "message" in error) {
-		return String((error as {message: string}).message);
+function htmlToPlain(html: string): string {
+	return html
+		.replace(/<[^>]*>/g, "")
+		.replace(/&nbsp;/g, " ")
+		.replace(/&amp;/g, "&")
+		.replace(/&lt;/g, "<")
+		.replace(/&gt;/g, ">")
+		.replace(/&quot;/g, '"')
+		.trim();
+}
+
+function getMailerooErrorMessage(error: unknown): string {
+	if (error instanceof Error) {
+		return error.message;
 	}
 	return JSON.stringify(error);
 }
 
 export async function sendBookingEmails(bookingData: BookingData) {
 	const adminEmail = env.ADMIN_EMAIL_1;
-	const fromEmail = `Apartmani Todorović <${env.RESEND_FROM_EMAIL}>`;
+	const fromEmailAddress = env.MAILEROO_FROM_EMAIL || env.RESEND_FROM_EMAIL;
 
-	// Send admin email (this should work - goes to your own address)
+	if (!fromEmailAddress) {
+		return { success: false, error: "No from email configured" };
+	}
+
+	let client: MailerooClient;
+	try {
+		client = getMailerooClient();
+	} catch (error) {
+		logError(error, { action: "sendBookingEmails", path: "/api/booking" });
+		return { success: false, error: "Maileroo client not configured" };
+	}
+
+	const fromEmail = new EmailAddress(fromEmailAddress, "Apartmani Todorović");
+
 	let adminResult;
 	try {
-		adminResult = await resend.emails.send({
+		const adminEmailObj = new EmailAddress(adminEmail);
+		adminResult = await client.sendBasicEmail({
 			from: fromEmail,
-			to: adminEmail,
-			replyTo: bookingData.guestEmail,
+			to: [adminEmailObj],
+			reply_to: new EmailAddress(bookingData.guestEmail),
 			subject: `Nova Rezervacija - ${bookingData.apartmentName}`,
 			html: createBookingEmail(bookingData),
+			plain: htmlToPlain(createBookingEmail(bookingData)),
 		});
-
-		if (adminResult.error) {
-			const errorMsg = getResendErrorMessage(adminResult.error);
-			console.error("Resend admin email error:", errorMsg);
-			logError(errorMsg, {
-				action: "sendBookingEmails",
-				path: "/api/booking",
-				metadata: { recipient: "admin", bookingId: bookingData.apartmentName },
-			});
-		}
 	} catch (error) {
+		const errorMsg = getMailerooErrorMessage(error);
+		console.error("Maileroo admin email error:", errorMsg);
 		logError(error, {
 			action: "sendBookingEmails",
 			path: "/api/booking",
@@ -53,26 +76,19 @@ export async function sendBookingEmails(bookingData: BookingData) {
 		});
 	}
 
-	// Send guest email (requires verified domain on Resend free tier)
 	let guestResult;
 	try {
-		guestResult = await resend.emails.send({
+		const guestEmailObj = new EmailAddress(bookingData.guestEmail);
+		guestResult = await client.sendBasicEmail({
 			from: fromEmail,
-			to: bookingData.guestEmail,
+			to: [guestEmailObj],
 			subject: `Potvrda Rezervacije - ${bookingData.apartmentName}`,
 			html: createGuestConfirmationEmail(bookingData),
+			plain: htmlToPlain(createGuestConfirmationEmail(bookingData)),
 		});
-
-		if (guestResult.error) {
-			const errorMsg = getResendErrorMessage(guestResult.error);
-			console.error("Resend guest email error:", errorMsg);
-			logError(errorMsg, {
-				action: "sendBookingEmails",
-				path: "/api/booking",
-				metadata: { recipient: "guest", bookingId: bookingData.apartmentName },
-			});
-		}
 	} catch (error) {
+		const errorMsg = getMailerooErrorMessage(error);
+		console.error("Maileroo guest email error:", errorMsg);
 		logError(error, {
 			action: "sendBookingEmails",
 			path: "/api/booking",
@@ -80,13 +96,12 @@ export async function sendBookingEmails(bookingData: BookingData) {
 		});
 	}
 
-	// If admin email succeeded, consider it a success (guest email requires domain verification)
-	if (adminResult && !adminResult.error) {
+	if (adminResult) {
 		return {
 			success: true,
-			adminEmailId: adminResult.data?.id,
-			guestEmailId: guestResult && !guestResult.error ? guestResult.data?.id : undefined,
-			guestEmailSkipped: guestResult && guestResult.error ? true : undefined,
+			adminEmailId: adminResult,
+			guestEmailId: guestResult || undefined,
+			guestEmailSkipped: guestResult ? false : true,
 		};
 	}
 
@@ -97,36 +112,45 @@ export async function sendBookingEmails(bookingData: BookingData) {
 }
 
 export async function sendApprovalEmail(bookingData: BookingData) {
-	const fromEmail = `Apartmani Todorović <${env.RESEND_FROM_EMAIL}>`;
+	const fromEmailAddress = env.MAILEROO_FROM_EMAIL || env.RESEND_FROM_EMAIL;
+
+	if (!fromEmailAddress) {
+		return {
+			success: true,
+			message: "Status updated, but no from email configured.",
+		};
+	}
+
+	let client: MailerooClient;
+	try {
+		client = getMailerooClient();
+	} catch (error) {
+		logError(error, { action: "sendApprovalEmail", path: "/admin/bookings" });
+		return {
+			success: true,
+			message: "Status updated, but Maileroo is not configured.",
+		};
+	}
 
 	try {
-		const result = await resend.emails.send({
+		const fromEmail = new EmailAddress(fromEmailAddress, "Apartmani Todorović");
+		const guestEmail = new EmailAddress(bookingData.guestEmail);
+
+		const result = await client.sendBasicEmail({
 			from: fromEmail,
-			to: bookingData.guestEmail,
+			to: [guestEmail],
 			subject: `Booking Confirmed / Rezervacija Potvrđena - ${bookingData.apartmentName}`,
 			html: createGuestApprovalEmail(bookingData),
+			plain: htmlToPlain(createGuestApprovalEmail(bookingData)),
 		});
-
-		if (result.error) {
-			const errorMsg = getResendErrorMessage(result.error);
-			console.error("Resend approval email error:", errorMsg);
-			logError(errorMsg, {
-				action: "sendApprovalEmail",
-				path: "/admin/bookings",
-				metadata: { recipient: "guest", bookingId: bookingData.apartmentName },
-			});
-			// Return partial success - status is updated but email couldn't be sent
-			return {
-				success: true,
-				message: "Status updated, but approval email could not be sent. Please verify a domain at resend.com/domains to send emails to guests.",
-			};
-		}
 
 		return {
 			success: true,
-			emailId: result.data?.id,
+			emailId: result,
 		};
 	} catch (error) {
+		const errorMsg = getMailerooErrorMessage(error);
+		console.error("Maileroo approval email error:", errorMsg);
 		logError(error, {
 			action: "sendApprovalEmail",
 			path: "/admin/bookings",
@@ -134,41 +158,51 @@ export async function sendApprovalEmail(bookingData: BookingData) {
 		});
 		return {
 			success: true,
-			message: "Status updated, but approval email could not be sent due to an error.",
+			message: "Status updated, but approval email could not be sent.",
 		};
 	}
 }
 
 export async function sendCancellationEmail(bookingData: BookingData) {
-	const fromEmail = `Apartmani Todorović <${env.RESEND_FROM_EMAIL}>`;
+	const fromEmailAddress = env.MAILEROO_FROM_EMAIL || env.RESEND_FROM_EMAIL;
+
+	if (!fromEmailAddress) {
+		return {
+			success: true,
+			message: "Status updated, but no from email configured.",
+		};
+	}
+
+	let client: MailerooClient;
+	try {
+		client = getMailerooClient();
+	} catch (error) {
+		logError(error, { action: "sendCancellationEmail", path: "/admin/bookings" });
+		return {
+			success: true,
+			message: "Status updated, but Maileroo is not configured.",
+		};
+	}
 
 	try {
-		const result = await resend.emails.send({
+		const fromEmail = new EmailAddress(fromEmailAddress, "Apartmani Todorović");
+		const guestEmail = new EmailAddress(bookingData.guestEmail);
+
+		const result = await client.sendBasicEmail({
 			from: fromEmail,
-			to: bookingData.guestEmail,
+			to: [guestEmail],
 			subject: `Booking Cancelled / Rezervacija Otkazana - ${bookingData.apartmentName}`,
 			html: createGuestCancellationEmail(bookingData),
+			plain: htmlToPlain(createGuestCancellationEmail(bookingData)),
 		});
-
-		if (result.error) {
-			const errorMsg = getResendErrorMessage(result.error);
-			console.error("Resend cancellation email error:", errorMsg);
-			logError(errorMsg, {
-				action: "sendCancellationEmail",
-				path: "/admin/bookings",
-				metadata: { recipient: "guest", bookingId: bookingData.apartmentName },
-			});
-			return {
-				success: true,
-				message: "Status updated, but cancellation email could not be sent. Please verify a domain at resend.com/domains to send emails to guests.",
-			};
-		}
 
 		return {
 			success: true,
-			emailId: result.data?.id,
+			emailId: result,
 		};
 	} catch (error) {
+		const errorMsg = getMailerooErrorMessage(error);
+		console.error("Maileroo cancellation email error:", errorMsg);
 		logError(error, {
 			action: "sendCancellationEmail",
 			path: "/admin/bookings",
@@ -176,42 +210,54 @@ export async function sendCancellationEmail(bookingData: BookingData) {
 		});
 		return {
 			success: true,
-			message: "Status updated, but cancellation email could not be sent due to an error.",
+			message: "Status updated, but cancellation email could not be sent.",
 		};
 	}
 }
 
 export async function sendInquiryEmail(inquiryData: InquiryData) {
 	const adminEmail = env.ADMIN_EMAIL_1;
-	const fromEmail = `Apartmani Todorović <${env.RESEND_FROM_EMAIL}>`;
+	const fromEmailAddress = env.MAILEROO_FROM_EMAIL || env.RESEND_FROM_EMAIL;
+
+	if (!fromEmailAddress) {
+		return {
+			success: false,
+			error: "No from email configured",
+		};
+	}
+
+	let client: MailerooClient;
+	try {
+		client = getMailerooClient();
+	} catch (error) {
+		logError(error, { action: "sendInquiryEmail", path: "/contact" });
+		return {
+			success: false,
+			error: sanitizeErrorForProduction(error),
+		};
+	}
 
 	try {
-		const result = await resend.emails.send({
+		const fromEmail = new EmailAddress(fromEmailAddress, "Apartmani Todorović");
+		const adminEmailObj = new EmailAddress(adminEmail);
+		const replyToEmail = new EmailAddress(inquiryData.email);
+
+		const result = await client.sendBasicEmail({
 			from: fromEmail,
-			to: adminEmail,
-			replyTo: inquiryData.email,
+			to: [adminEmailObj],
+			reply_to: replyToEmail,
 			subject: `Nova Poruka od ${inquiryData.name}`,
 			html: createInquiryEmail(inquiryData),
+			plain: htmlToPlain(createInquiryEmail(inquiryData)),
 		});
-
-		if (result.error) {
-			const errorMsg = typeof result.error === "object" && result.error !== null && "message" in result.error 
-				? String((result.error as {message: string}).message) 
-				: JSON.stringify(result.error);
-			console.error("Resend inquiry email error:", errorMsg);
-			logError(errorMsg, {
-				action: "sendInquiryEmail",
-				path: "/contact",
-				metadata: { recipient: "admin", from: inquiryData.email },
-			});
-			throw new Error(`Inquiry email failed: ${errorMsg}`);
-		}
 
 		return {
 			success: true,
-			emailId: result.data?.id,
+			emailId: result,
 		};
 	} catch (error) {
+		const errorMsg = getMailerooErrorMessage(error);
+		console.error("Maileroo inquiry email error:", errorMsg);
 		logError(error, {
 			action: "sendInquiryEmail",
 			path: "/contact",
