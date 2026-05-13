@@ -22,38 +22,47 @@ function getResendErrorMessage(error: unknown): string {
 }
 
 export async function sendBookingEmails(bookingData: BookingData) {
-	const adminEmail = env.ADMIN_EMAIL_1;
+	const adminEmails = [env.ADMIN_EMAIL_1, env.ADMIN_EMAIL_2].filter(
+		(e): e is string => Boolean(e),
+	);
 	const fromEmail = `Apartmani Todorović <${env.RESEND_FROM_EMAIL}>`;
 
-	// Send admin email (this should work - goes to your own address)
-	let adminResult;
-	try {
-		adminResult = await resend.emails.send({
-			from: fromEmail,
-			to: adminEmail,
-			replyTo: bookingData.guestEmail,
-			subject: `Nova Rezervacija - ${bookingData.apartmentName}`,
-			html: createBookingEmail(bookingData),
-		});
+	// Send admin emails individually so one failure doesn't block the other
+	const adminResults: Array<{ email: string; id?: string; error?: string }> = [];
+	for (const email of adminEmails) {
+		try {
+			const result = await resend.emails.send({
+				from: fromEmail,
+				to: email,
+				replyTo: bookingData.guestEmail,
+				subject: `Nova Rezervacija - ${bookingData.apartmentName}`,
+				html: createBookingEmail(bookingData),
+			});
 
-		if (adminResult.error) {
-			const errorMsg = getResendErrorMessage(adminResult.error);
-			console.error("Resend admin email error:", errorMsg);
-			logError(errorMsg, {
+			if (result.error) {
+				const errorMsg = getResendErrorMessage(result.error);
+				console.error(`Resend email error for ${email}:`, errorMsg);
+				logError(errorMsg, {
+					action: "sendBookingEmails",
+					path: "/api/booking",
+					metadata: { recipient: email, bookingId: bookingData.apartmentName },
+				});
+				adminResults.push({ email, error: errorMsg });
+			} else {
+				adminResults.push({ email, id: result.data?.id });
+			}
+		} catch (error) {
+			console.error(`Resend email exception for ${email}:`, error);
+			logError(error, {
 				action: "sendBookingEmails",
 				path: "/api/booking",
-				metadata: { recipient: "admin", bookingId: bookingData.apartmentName },
+				metadata: { recipient: email, bookingId: bookingData.apartmentName },
 			});
+			adminResults.push({ email, error: String(error) });
 		}
-	} catch (error) {
-		logError(error, {
-			action: "sendBookingEmails",
-			path: "/api/booking",
-			metadata: { recipient: "admin", bookingId: bookingData.apartmentName },
-		});
 	}
 
-	// Send guest email (requires verified domain on Resend free tier)
+	// Send guest confirmation (will likely fail with onboarding@resend.dev, but try anyway)
 	let guestResult;
 	try {
 		guestResult = await resend.emails.send({
@@ -80,19 +89,26 @@ export async function sendBookingEmails(bookingData: BookingData) {
 		});
 	}
 
-	// If admin email succeeded, consider it a success (guest email requires domain verification)
-	if (adminResult && !adminResult.error) {
+	const anyAdminSent = adminResults.some((r) => r.id);
+	const allFailed = adminResults.length > 0 && adminResults.every((r) => r.error);
+
+	if (anyAdminSent) {
 		return {
 			success: true,
-			adminEmailId: adminResult.data?.id,
+			adminResults,
 			guestEmailId: guestResult && !guestResult.error ? guestResult.data?.id : undefined,
 			guestEmailSkipped: guestResult && guestResult.error ? true : undefined,
 		};
 	}
 
+	if (allFailed) {
+		console.error("All admin emails failed:", adminResults.map((r) => r.error).join(", "));
+	}
+
 	return {
-		success: false,
-		error: "Došlo je do greške prilikom slanja emailova.",
+		success: anyAdminSent,
+		adminResults,
+		guestEmailId: guestResult && !guestResult.error ? guestResult.data?.id : undefined,
 	};
 }
 
@@ -182,44 +198,54 @@ export async function sendCancellationEmail(bookingData: BookingData) {
 }
 
 export async function sendInquiryEmail(inquiryData: InquiryData) {
-	const adminEmail = env.ADMIN_EMAIL_1;
+	const adminEmails = [env.ADMIN_EMAIL_1, env.ADMIN_EMAIL_2].filter(
+		(e): e is string => Boolean(e),
+	);
 	const fromEmail = `Apartmani Todorović <${env.RESEND_FROM_EMAIL}>`;
 
-	try {
-		const result = await resend.emails.send({
-			from: fromEmail,
-			to: adminEmail,
-			replyTo: inquiryData.email,
-			subject: `Nova Poruka od ${inquiryData.name}`,
-			html: createInquiryEmail(inquiryData),
-		});
+	// Send to each admin individually
+	let anySuccess = false;
+	const errors: string[] = [];
 
-		if (result.error) {
-			const errorMsg = typeof result.error === "object" && result.error !== null && "message" in result.error 
-				? String((result.error as {message: string}).message) 
-				: JSON.stringify(result.error);
-			console.error("Resend inquiry email error:", errorMsg);
-			logError(errorMsg, {
+	for (const email of adminEmails) {
+		try {
+			const result = await resend.emails.send({
+				from: fromEmail,
+				to: email,
+				replyTo: inquiryData.email,
+				subject: `Nova Poruka od ${inquiryData.name}`,
+				html: createInquiryEmail(inquiryData),
+			});
+
+			if (result.error) {
+				const errorMsg = getResendErrorMessage(result.error);
+				console.error(`Resend inquiry email error for ${email}:`, errorMsg);
+				logError(errorMsg, {
+					action: "sendInquiryEmail",
+					path: "/contact",
+					metadata: { recipient: email, from: inquiryData.email },
+				});
+				errors.push(errorMsg);
+			} else {
+				anySuccess = true;
+			}
+		} catch (error) {
+			logError(error, {
 				action: "sendInquiryEmail",
 				path: "/contact",
-				metadata: { recipient: "admin", from: inquiryData.email },
+				metadata: { recipient: email, from: inquiryData.email },
 			});
-			throw new Error(`Inquiry email failed: ${errorMsg}`);
+			errors.push(String(error));
 		}
-
-		return {
-			success: true,
-			emailId: result.data?.id,
-		};
-	} catch (error) {
-		logError(error, {
-			action: "sendInquiryEmail",
-			path: "/contact",
-			metadata: { from: inquiryData.email },
-		});
-		return {
-			success: false,
-			error: sanitizeErrorForProduction(error),
-		};
 	}
+
+	if (anySuccess) {
+		return { success: true };
+	}
+
+	const errorMsg = errors.join(", ");
+	return {
+		success: false,
+		error: sanitizeErrorForProduction(errorMsg),
+	};
 }
