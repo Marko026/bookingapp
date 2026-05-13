@@ -12,6 +12,7 @@
 
 # testing
 /coverage
+test-*
 
 # next.js
 /.next/
@@ -54,6 +55,10 @@ REDEPLOY_INSTRUCTIONS.md
 *.log
 runtime_logs.txt
 email-preview.html
+
+# Agent artifacts
+.claude/
+.opencode/
 
 # Taskplane runtime artifacts (machine-specific, do not commit)
 .pi/batch-state.json

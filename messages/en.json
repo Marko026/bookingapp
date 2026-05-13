@@ -344,7 +344,9 @@
 		},
 		"calendar": {
 			"unavailableTitle": "Selected dates are unavailable",
-			"unavailableDesc": "Please choose other dates."
+			"unavailableDesc": "Please choose other dates.",
+			"minStayTitle": "Minimum stay required",
+			"minStayDesc": "Minimum stay is 1 night. Select a check-out date after the check-in date."
 		},
 		"toast": {
 			"successTitle": "Reservation request sent!",

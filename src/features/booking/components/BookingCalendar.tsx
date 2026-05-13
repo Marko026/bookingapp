@@ -85,19 +85,7 @@ export function BookingCalendar({
 			return;
 		}
 
-		// Reject same-day selections (minimum 1 night)
-		if (isSameDay(range.from, range.to)) {
-			toast.error(t("calendar.minStayTitle") || "Minimum boravak", {
-				description:
-					t("calendar.minStayDesc") ||
-					"Minimum boravak je 1 noć. Izaberite datum odjave nakon datuma prijave.",
-			});
-			setDate({ from: undefined, to: undefined });
-			onDateSelect({ from: undefined, to: undefined });
-			return;
-		}
-
-		// Provjeri da li je bilo koji dan u rasponu zauzet
+		// Skip same-day validation - will be validated on form submission
 		let current = new Date(range.from);
 		let isInvalid = false;
 		while (current <= range.to) {

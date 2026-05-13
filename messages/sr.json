@@ -344,7 +344,9 @@
 		},
 		"calendar": {
 			"unavailableTitle": "Izabrani datumi nisu dostupni",
-			"unavailableDesc": "Molimo izaberite druge datume."
+			"unavailableDesc": "Molimo izaberite druge datume.",
+			"minStayTitle": "Minimalan boravak obavezan",
+			"minStayDesc": "Minimalan boravak je 1 noć. Izaberite datum odjave nakon datuma prijave."
 		},
 		"toast": {
 			"successTitle": "Zahtev za rezervaciju poslat!",
