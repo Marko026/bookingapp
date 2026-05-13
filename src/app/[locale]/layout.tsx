@@ -1,4 +1,3 @@
-import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
@@ -131,7 +130,6 @@ export default async function RootLayout({
 					<Navbar />
 					<main className="min-h-screen">{children}</main>
 					<Footer />
-					<Analytics />
 				</NextIntlClientProvider>
 			</body>
 		</html>
